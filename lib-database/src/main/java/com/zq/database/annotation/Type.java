@@ -1,4 +1,4 @@
-package com.zq.db.annotation;
+package com.zq.database.annotation;
 
 /**
  * Created by zhangqiang on 17-6-8.

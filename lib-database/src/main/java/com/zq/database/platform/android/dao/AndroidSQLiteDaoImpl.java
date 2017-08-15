@@ -1,14 +1,14 @@
-package com.zq.db.platform.android.dao;
+package com.zq.database.platform.android.dao;
 
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import com.zq.db.annotation.Type;
-import com.zq.db.bean.SQLBean;
-import com.zq.db.bean.SQLBeanCreator;
-import com.zq.db.dao.AbstractDao;
+import com.zq.database.annotation.Type;
+import com.zq.database.bean.SQLBean;
+import com.zq.database.bean.SQLBeanCreator;
+import com.zq.database.dao.AbstractDao;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,6 +1,6 @@
-package com.zq.db.dao;
+package com.zq.database.dao;
 
-import com.zq.db.bean.SQLBean;
+import com.zq.database.bean.SQLBean;
 
 import java.util.List;
 

@@ -1,16 +1,17 @@
-package com.zq.db.sql.factory;
+package com.zq.database.sql.factory;
 
 
 import android.database.sqlite.SQLiteOpenHelper;
 
-import com.zq.db.bean.DefaultSQLBeanCreator;
-import com.zq.db.bean.SQLBean;
-import com.zq.db.bean.SQLBeanCreator;
-import com.zq.db.dao.Dao;
-import com.zq.db.platform.android.sql.factory.AndroidSQLFactory;
-import com.zq.db.platform.mysql.sql.factory.MySQLFactory;
-import com.zq.db.sql.SQL;
-import com.zq.db.table.TableHandler;
+import com.zq.database.bean.DefaultSQLBeanCreator;
+import com.zq.database.bean.SQLBean;
+import com.zq.database.bean.SQLBeanCreator;
+import com.zq.database.dao.Dao;
+import com.zq.database.platform.android.sql.factory.AndroidSQLFactory;
+import com.zq.database.platform.mysql.sql.factory.MySQLFactory;
+import com.zq.database.sql.SQL;
+import com.zq.database.table.TableHandler;
+
 
 /**
  * Created by zhangqiang on 17-6-21.
@@ -45,7 +46,7 @@ public interface SQLFactory {
             return new IMPL(new MySQLFactory(url,userName,password)).getSQL();
         }
 
-        public static <T extends SQLBean> Dao<T> getDao(SQL sql,Class<T> sqlBeanClass,SQLBeanCreator<T> sqlBeanCreator){
+        public static <T extends SQLBean> Dao<T> getDao(SQL sql, Class<T> sqlBeanClass, SQLBeanCreator<T> sqlBeanCreator){
 
             return sql.getDaoFactory().getDao(sqlBeanClass,sqlBeanCreator);
         }
@@ -55,7 +56,7 @@ public interface SQLFactory {
             return getDao(sql,sqlBeanClass,new DefaultSQLBeanCreator<T>());
         }
 
-        public static <T extends SQLBean> TableHandler getTableHandler(SQL sql,Class<T> sqlBeanClass,SQLBeanCreator<T> sqlBeanCreator){
+        public static <T extends SQLBean> TableHandler getTableHandler(SQL sql, Class<T> sqlBeanClass, SQLBeanCreator<T> sqlBeanCreator){
 
             return sql.getTableHandlerFactory().getTableHandler(sqlBeanClass,sqlBeanCreator);
         }

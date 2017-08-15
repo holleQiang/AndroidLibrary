@@ -1,6 +1,6 @@
-package com.zq.db.bean;
+package com.zq.database.bean;
 
-import com.zq.db.annotation.Type;
+import com.zq.database.annotation.Type;
 
 import java.lang.reflect.Field;
 import java.util.HashMap;

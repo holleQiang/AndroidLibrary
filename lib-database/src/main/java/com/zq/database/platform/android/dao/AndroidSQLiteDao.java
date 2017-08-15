@@ -1,11 +1,10 @@
-package com.zq.db.platform.android.dao;
+package com.zq.database.platform.android.dao;
 
 import android.content.ContentValues;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 
-import com.zq.db.bean.SQLBean;
-import com.zq.db.dao.Dao;
+import com.zq.database.bean.SQLBean;
+import com.zq.database.dao.Dao;
 
 /**
  * Created by zhangqiang on 17-6-19.

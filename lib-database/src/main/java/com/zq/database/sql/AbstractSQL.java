@@ -1,7 +1,4 @@
-package com.zq.db.sql;
-
-import com.zq.db.bean.SQLBean;
-import com.zq.db.bean.SQLBeanCreator;
+package com.zq.database.sql;
 
 /**
  * Created by zhangqiang on 17-6-21.

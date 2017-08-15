@@ -4,6 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/AndroidLibrary.iml" filepath="$PROJECT_DIR$/AndroidLibrary.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/lib-database/lib-database.iml" filepath="$PROJECT_DIR$/lib-database/lib-database.iml" />
       <module fileurl="file://$PROJECT_DIR$/lib-recyclerviewadapter/lib-recyclerviewadapter.iml" filepath="$PROJECT_DIR$/lib-recyclerviewadapter/lib-recyclerviewadapter.iml" />
       <module fileurl="file://$PROJECT_DIR$/lib-wheelview/lib-wheelview.iml" filepath="$PROJECT_DIR$/lib-wheelview/lib-wheelview.iml" />
     </modules>

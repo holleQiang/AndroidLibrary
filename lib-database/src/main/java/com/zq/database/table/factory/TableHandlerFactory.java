@@ -1,8 +1,9 @@
-package com.zq.db.table.factory;
+package com.zq.database.table.factory;
 
-import com.zq.db.bean.SQLBean;
-import com.zq.db.bean.SQLBeanCreator;
-import com.zq.db.table.TableHandler;
+
+import com.zq.database.bean.SQLBean;
+import com.zq.database.bean.SQLBeanCreator;
+import com.zq.database.table.TableHandler;
 
 /**
  * Created by zhangqiang on 17-7-4.

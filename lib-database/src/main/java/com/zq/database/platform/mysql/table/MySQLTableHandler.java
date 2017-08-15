@@ -1,17 +1,15 @@
-package com.zq.db.platform.mysql.table;
+package com.zq.database.platform.mysql.table;
 
-import com.zq.db.annotation.Type;
-import com.zq.db.bean.SQLBean;
-import com.zq.db.bean.SQLBeanCreator;
-import com.zq.db.platform.mysql.sql.ConnectionPool;
-import com.zq.db.table.TableHandler;
+import com.zq.database.annotation.Type;
+import com.zq.database.bean.SQLBean;
+import com.zq.database.platform.mysql.sql.ConnectionPool;
+import com.zq.database.table.TableHandler;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 
 /**

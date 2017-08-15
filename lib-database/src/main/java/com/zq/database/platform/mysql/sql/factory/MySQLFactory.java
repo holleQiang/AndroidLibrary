@@ -1,16 +1,15 @@
-package com.zq.db.platform.mysql.sql.factory;
+package com.zq.database.platform.mysql.sql.factory;
 
-import com.zq.db.bean.SQLBean;
-import com.zq.db.bean.SQLBeanCreator;
-import com.zq.db.platform.mysql.sql.MySQL;
-import com.zq.db.sql.SQL;
-import com.zq.db.sql.factory.SQLFactory;
+
+import com.zq.database.platform.mysql.sql.MySQL;
+import com.zq.database.sql.SQL;
+import com.zq.database.sql.factory.SQLFactory;
 
 /**
  * Created by zhangqiang on 17-7-4.
  */
 
-public class MySQLFactory implements SQLFactory{
+public class MySQLFactory implements SQLFactory {
 
     private SQL sql;
     private String url;

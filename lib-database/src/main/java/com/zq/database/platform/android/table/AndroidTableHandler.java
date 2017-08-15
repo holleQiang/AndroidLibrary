@@ -1,9 +1,9 @@
-package com.zq.db.platform.android.table;
+package com.zq.database.platform.android.table;
 
-import com.zq.db.annotation.Type;
-import com.zq.db.bean.SQLBean;
-import com.zq.db.bean.SQLBeanCreator;
-import com.zq.db.table.TableHandler;
+
+import com.zq.database.annotation.Type;
+import com.zq.database.bean.SQLBean;
+import com.zq.database.table.TableHandler;
 
 import java.util.List;
 

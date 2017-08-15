@@ -1,12 +1,11 @@
-package com.zq.db.platform.mysql.sql;
+package com.zq.database.platform.mysql.sql;
 
-import com.zq.db.bean.SQLBean;
-import com.zq.db.bean.SQLBeanCreator;
-import com.zq.db.dao.factory.DaoFactory;
-import com.zq.db.platform.mysql.dao.factory.MySQLDaoFactory;
-import com.zq.db.platform.mysql.table.factory.MySQLTableHandlerFactory;
-import com.zq.db.sql.AbstractSQL;
-import com.zq.db.table.factory.TableHandlerFactory;
+
+import com.zq.database.dao.factory.DaoFactory;
+import com.zq.database.platform.mysql.dao.factory.MySQLDaoFactory;
+import com.zq.database.platform.mysql.table.factory.MySQLTableHandlerFactory;
+import com.zq.database.sql.AbstractSQL;
+import com.zq.database.table.factory.TableHandlerFactory;
 
 import java.sql.Connection;
 import java.sql.DriverManager;

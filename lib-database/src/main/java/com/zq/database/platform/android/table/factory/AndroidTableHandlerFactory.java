@@ -1,12 +1,11 @@
-package com.zq.db.platform.android.table.factory;
+package com.zq.database.platform.android.table.factory;
 
-import android.database.sqlite.SQLiteDatabase;
 
-import com.zq.db.bean.SQLBean;
-import com.zq.db.bean.SQLBeanCreator;
-import com.zq.db.platform.android.table.AndroidTableHandler;
-import com.zq.db.table.TableHandler;
-import com.zq.db.table.factory.TableHandlerFactory;
+import com.zq.database.bean.SQLBean;
+import com.zq.database.bean.SQLBeanCreator;
+import com.zq.database.platform.android.table.AndroidTableHandler;
+import com.zq.database.table.TableHandler;
+import com.zq.database.table.factory.TableHandlerFactory;
 
 /**
  * Created by zhangqiang on 17-7-4.

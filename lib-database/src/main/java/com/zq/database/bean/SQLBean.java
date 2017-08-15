@@ -1,6 +1,7 @@
-package com.zq.db.bean;
+package com.zq.database.bean;
 
-import com.zq.db.annotation.Type;
+
+import com.zq.database.annotation.Type;
 
 import java.util.List;
 import java.util.Map;

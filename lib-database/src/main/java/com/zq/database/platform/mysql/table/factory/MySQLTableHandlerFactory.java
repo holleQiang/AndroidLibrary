@@ -1,11 +1,13 @@
-package com.zq.db.platform.mysql.table.factory;
+package com.zq.database.platform.mysql.table.factory;
 
-import com.zq.db.bean.SQLBean;
-import com.zq.db.bean.SQLBeanCreator;
-import com.zq.db.platform.mysql.sql.ConnectionPool;
-import com.zq.db.platform.mysql.table.MySQLTableHandler;
-import com.zq.db.table.TableHandler;
-import com.zq.db.table.factory.TableHandlerFactory;
+
+
+import com.zq.database.bean.SQLBean;
+import com.zq.database.bean.SQLBeanCreator;
+import com.zq.database.platform.mysql.sql.ConnectionPool;
+import com.zq.database.platform.mysql.table.MySQLTableHandler;
+import com.zq.database.table.TableHandler;
+import com.zq.database.table.factory.TableHandlerFactory;
 
 import java.util.HashMap;
 import java.util.Map;

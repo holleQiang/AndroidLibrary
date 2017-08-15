@@ -1,9 +1,9 @@
-package com.zq.db.platform.mysql.dao;
+package com.zq.database.platform.mysql.dao;
 
-import com.zq.db.bean.SQLBean;
-import com.zq.db.bean.SQLBeanCreator;
-import com.zq.db.dao.AbstractDao;
-import com.zq.db.platform.mysql.sql.ConnectionPool;
+import com.zq.database.bean.SQLBean;
+import com.zq.database.bean.SQLBeanCreator;
+import com.zq.database.dao.AbstractDao;
+import com.zq.database.platform.mysql.sql.ConnectionPool;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;

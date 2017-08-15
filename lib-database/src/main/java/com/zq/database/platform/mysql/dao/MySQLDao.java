@@ -1,9 +1,8 @@
-package com.zq.db.platform.mysql.dao;
+package com.zq.database.platform.mysql.dao;
 
-import com.zq.db.bean.SQLBean;
-import com.zq.db.dao.Dao;
 
-import java.sql.Connection;
+import com.zq.database.bean.SQLBean;
+import com.zq.database.dao.Dao;
 
 public interface MySQLDao<T extends SQLBean> extends Dao<T> {
 

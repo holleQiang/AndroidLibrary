@@ -1,6 +1,4 @@
-package com.zq.db.table;
-
-import com.zq.db.bean.SQLBean;
+package com.zq.database.table;
 
 /**
  * Created by zhangqiang on 17-7-4.

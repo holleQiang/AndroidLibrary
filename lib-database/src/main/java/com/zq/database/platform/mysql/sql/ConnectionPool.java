@@ -1,4 +1,4 @@
-package com.zq.db.platform.mysql.sql;
+package com.zq.database.platform.mysql.sql;
 
 import java.sql.Connection;
 import java.sql.SQLException;

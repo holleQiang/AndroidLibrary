@@ -1,11 +1,12 @@
-package com.zq.db.platform.mysql.dao.factory;
+package com.zq.database.platform.mysql.dao.factory;
 
-import com.zq.db.bean.SQLBean;
-import com.zq.db.bean.SQLBeanCreator;
-import com.zq.db.dao.Dao;
-import com.zq.db.dao.factory.DaoFactory;
-import com.zq.db.platform.mysql.dao.MySQLDaoIMPL;
-import com.zq.db.platform.mysql.sql.ConnectionPool;
+
+import com.zq.database.bean.SQLBean;
+import com.zq.database.bean.SQLBeanCreator;
+import com.zq.database.dao.Dao;
+import com.zq.database.dao.factory.DaoFactory;
+import com.zq.database.platform.mysql.dao.MySQLDaoIMPL;
+import com.zq.database.platform.mysql.sql.ConnectionPool;
 
 import java.util.HashMap;
 import java.util.Map;

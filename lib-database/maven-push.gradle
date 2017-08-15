@@ -14,9 +14,9 @@ uploadArchives {
                 authentication(userName: "admin", password: "zhang@123")
             }
 
-            pom.groupId = 'com.zq.view.recyclerview'
-            pom.artifactId = 'adapter'
-            pom.version = '0.0.2'
+            pom.groupId = 'com.zq.database'
+            pom.artifactId = 'database'
+            pom.version = '0.0.1'
 
             pom.project {
 

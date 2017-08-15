@@ -1,4 +1,4 @@
-package com.zq.db.bean;
+package com.zq.database.bean;
 
 /**
  * Created by zhangqiang on 17-6-20.

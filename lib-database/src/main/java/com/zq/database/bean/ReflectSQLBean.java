@@ -1,16 +1,11 @@
-package com.zq.db.bean;
+package com.zq.database.bean;
 
-import com.zq.db.annotation.Column;
-import com.zq.db.annotation.Table;
-import com.zq.db.annotation.Type;
+import com.zq.database.annotation.Column;
+import com.zq.database.annotation.Table;
+import com.zq.database.annotation.Type;
 
-import org.json.JSONArray;
-
-import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Field;
 import java.math.BigDecimal;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
