@@ -41,18 +41,16 @@ public abstract class BaseCell implements Cell<RecyclerViewHolder> {
     @Override
     public void onRecycle(RecyclerViewHolder viewHolder) {
 
-        Log.i("Test","==========onRecycle=====" + viewHolder.getLayoutPosition());
     }
 
     @Override
     public void onAttachToWindow(RecyclerViewHolder viewHolder) {
 
-        Log.i("Test","==========onAttachToWindow=====" + viewHolder.getLayoutPosition());
     }
 
     @Override
     public void onDetachFromWindow(RecyclerViewHolder viewHolder) {
-        Log.i("Test","==========onDetachFromWindow=====" + viewHolder.getLayoutPosition());
+
     }
 
     public void registerCellObserver(CellObserver observer){

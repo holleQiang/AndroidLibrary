@@ -3,6 +3,7 @@ package com.zq.database.platform.android.sql.factory;
 
 import android.database.sqlite.SQLiteOpenHelper;
 
+import com.zq.database.bean.SQLBean;
 import com.zq.database.platform.android.sql.AndroidSQL;
 import com.zq.database.sql.SQL;
 import com.zq.database.sql.factory.SQLFactory;
@@ -11,7 +12,7 @@ import com.zq.database.sql.factory.SQLFactory;
  * Created by zhangqiang on 17-6-21.
  */
 
-public class AndroidSQLFactory implements SQLFactory {
+public class AndroidSQLFactory<T extends SQLBean> implements SQLFactory<T> {
 
     private SQLiteOpenHelper sqLiteOpenHelper;
 
@@ -22,7 +23,7 @@ public class AndroidSQLFactory implements SQLFactory {
     }
 
     @Override
-    public SQL getSQL() {
+    public SQL<T> getSQL() {
 
         if(sql == null){
             sql = new AndroidSQL(sqLiteOpenHelper);

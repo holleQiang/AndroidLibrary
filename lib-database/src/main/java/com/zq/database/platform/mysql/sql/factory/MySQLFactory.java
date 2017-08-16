@@ -1,6 +1,7 @@
 package com.zq.database.platform.mysql.sql.factory;
 
 
+import com.zq.database.bean.SQLBean;
 import com.zq.database.platform.mysql.sql.MySQL;
 import com.zq.database.sql.SQL;
 import com.zq.database.sql.factory.SQLFactory;
@@ -9,7 +10,7 @@ import com.zq.database.sql.factory.SQLFactory;
  * Created by zhangqiang on 17-7-4.
  */
 
-public class MySQLFactory implements SQLFactory {
+public class MySQLFactory<T extends SQLBean> implements SQLFactory<T> {
 
     private SQL sql;
     private String url;
@@ -23,7 +24,7 @@ public class MySQLFactory implements SQLFactory {
     }
 
     @Override
-    public SQL getSQL() {
+    public SQL<T> getSQL() {
 
         if(sql == null){
             sql = new MySQL(url,userName,password);

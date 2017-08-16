@@ -18,8 +18,8 @@ import java.util.Map;
 
 public class MySQLTableHandlerFactory implements TableHandlerFactory {
 
-    private Map<String,TableHandler> tableHandlerCache = new HashMap<>();
     private ConnectionPool connectionPool;
+    private TableHandler tableHandler;
 
     public MySQLTableHandlerFactory(ConnectionPool connectionPool) {
         this.connectionPool = connectionPool;
@@ -28,12 +28,8 @@ public class MySQLTableHandlerFactory implements TableHandlerFactory {
     @Override
     public <T extends SQLBean> TableHandler getTableHandler(Class<T> sqlBeanClass, SQLBeanCreator<T> sqlBeanCreator) {
 
-        String cacheKey = sqlBeanClass.getName();
-        TableHandler tableHandler = tableHandlerCache.get(cacheKey);
         if(tableHandler == null){
-
             tableHandler = new MySQLTableHandler<>(sqlBeanCreator.createSQLBean(sqlBeanClass), connectionPool);
-            tableHandlerCache.put(cacheKey,tableHandler);
         }
         return tableHandler;
     }

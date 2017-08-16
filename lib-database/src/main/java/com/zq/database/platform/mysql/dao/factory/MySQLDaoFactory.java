@@ -15,29 +15,21 @@ import java.util.Map;
  * Created by zhangqiang on 17-7-4.
  */
 
-public class MySQLDaoFactory implements DaoFactory {
+public class MySQLDaoFactory<T extends SQLBean> implements DaoFactory<T> {
 
-    private Map<String,Dao> daoCache = new HashMap<>();
     private ConnectionPool connectionPool;
+    private Dao<T> dao;
 
     public MySQLDaoFactory(ConnectionPool connectionPool) {
         this.connectionPool = connectionPool;
     }
 
     @Override
-    @SuppressWarnings("unchecked")
-    public <T extends SQLBean> Dao<T> getDao(Class<T> sqlBeanClass, SQLBeanCreator<T> sqlBeanCreator) {
-
-        String sqlBeanClassName = sqlBeanClass.getName();
-
-        Dao<T> dao = daoCache.get(sqlBeanClassName);
+    public  Dao<T> getDao(Class<T> sqlBeanClass, SQLBeanCreator<T> sqlBeanCreator) {
 
         if(dao == null){
 
-
             dao = new MySQLDaoIMPL<>(sqlBeanClass,sqlBeanCreator,connectionPool);
-
-            daoCache.put(sqlBeanClassName,dao);
         }
         return dao;
     }

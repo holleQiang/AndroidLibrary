@@ -16,7 +16,7 @@ uploadArchives {
 
             pom.groupId = 'com.zq.database'
             pom.artifactId = 'database'
-            pom.version = '0.0.1'
+            pom.version = '0.0.4'
 
             pom.project {
 

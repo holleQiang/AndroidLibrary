@@ -16,7 +16,7 @@ uploadArchives {
 
             pom.groupId = 'com.zq.view'
             pom.artifactId = 'wheelview'
-            pom.version = '0.0.10'
+            pom.version = '0.0.11'
 
             pom.project {
 

@@ -17,53 +17,64 @@ import com.zq.database.table.TableHandler;
  * Created by zhangqiang on 17-6-21.
  */
 
-public interface SQLFactory {
+public interface SQLFactory<T extends SQLBean> {
 
-    SQL getSQL();
+    SQL<T> getSQL();
 
-    class IMPL implements SQLFactory{
+    class IMPL<T extends SQLBean> implements SQLFactory<T>{
 
-        private SQLFactory factory;
+        private SQLFactory<T> factory;
 
-        private IMPL(SQLFactory factory) {
+        private IMPL(SQLFactory<T> factory) {
             this.factory = factory;
         }
 
         @Override
-        public SQL getSQL() {
+        public SQL<T> getSQL() {
 
             return factory.getSQL();
         }
 
+        public static <T extends SQLBean> SQL<T> getAndroidSQL(SQLiteOpenHelper sqLiteOpenHelper){
 
-        public static SQL getAndroidSQL(SQLiteOpenHelper sqLiteOpenHelper){
-
-            return new IMPL(new AndroidSQLFactory(sqLiteOpenHelper)).getSQL();
+            return new IMPL<>(new AndroidSQLFactory<T>(sqLiteOpenHelper)).getSQL();
         }
 
-        public static SQL getMySQL(String url, String userName, String password){
+        public static <T extends SQLBean> SQL getMySQL(String url, String userName, String password){
 
-            return new IMPL(new MySQLFactory(url,userName,password)).getSQL();
+            return new IMPL<>(new MySQLFactory<T>(url,userName,password)).getSQL();
         }
 
-        public static <T extends SQLBean> Dao<T> getDao(SQL sql, Class<T> sqlBeanClass, SQLBeanCreator<T> sqlBeanCreator){
+        public static <T extends SQLBean> Dao<T> getDao(SQLiteOpenHelper sqLiteOpenHelper, Class<T> sqlBeanClass, SQLBeanCreator<T> sqlBeanCreator){
 
-            return sql.getDaoFactory().getDao(sqlBeanClass,sqlBeanCreator);
+            SQL<T> sql = getAndroidSQL(sqLiteOpenHelper);
+            return sql.getDao(sqlBeanClass,sqlBeanCreator);
         }
 
-        public static <T extends SQLBean> Dao<T> getDao(SQL sql,Class<T> sqlBeanClass){
+        public static <T extends SQLBean> Dao<T> getDao(SQLiteOpenHelper sqLiteOpenHelper, Class<T> sqlBeanClass){
+
+            SQL<T> sql = getAndroidSQL(sqLiteOpenHelper);
+            return sql.getDao(sqlBeanClass,null);
+        }
+
+        public static <T extends SQLBean> Dao<T> getDao(SQL<T> sql, Class<T> sqlBeanClass, SQLBeanCreator<T> sqlBeanCreator){
+
+            return sql.getDao(sqlBeanClass,sqlBeanCreator);
+        }
+
+        public static <T extends SQLBean> Dao<T> getDao(SQL<T> sql,Class<T> sqlBeanClass){
 
             return getDao(sql,sqlBeanClass,new DefaultSQLBeanCreator<T>());
         }
 
-        public static <T extends SQLBean> TableHandler getTableHandler(SQL sql, Class<T> sqlBeanClass, SQLBeanCreator<T> sqlBeanCreator){
+        public static <T extends SQLBean> TableHandler getTableHandler(SQL<T> sql, Class<T> sqlBeanClass, SQLBeanCreator<T> sqlBeanCreator){
 
-            return sql.getTableHandlerFactory().getTableHandler(sqlBeanClass,sqlBeanCreator);
+            return sql.getTableHandler(sqlBeanClass,sqlBeanCreator);
         }
 
-        public static <T extends SQLBean> TableHandler getTableHandler(SQL sql,Class<T> sqlBeanClass){
+        public static <T extends SQLBean> TableHandler getTableHandler(SQL<T> sql,Class<T> sqlBeanClass){
 
-            return sql.getTableHandlerFactory().getTableHandler(sqlBeanClass,new DefaultSQLBeanCreator<T>());
+            return sql.getTableHandler(sqlBeanClass,new DefaultSQLBeanCreator<T>());
         }
     }
 }
