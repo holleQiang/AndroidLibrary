@@ -10,10 +10,10 @@ import java.util.List;
  * Created by zhangqiang on 17-7-4.
  */
 
-public class MultiBeanCell extends BeanCell<LayoutWrapper> {
+public class MultiCell extends BeanCell<LayoutWrapper> {
 
 
-    public MultiBeanCell(LayoutWrapper bean) {
+    public MultiCell(LayoutWrapper bean) {
         super(bean.getLayoutId(), bean.getSpanSize(), bean);
     }
 
@@ -24,18 +24,18 @@ public class MultiBeanCell extends BeanCell<LayoutWrapper> {
         bean.bindData(viewHolder);
     }
 
-    public static <T> MultiBeanCell convert(int layoutRes, T bean, DataBinder<T> dataBinder) {
+    public static <T> MultiCell convert(int layoutRes, T bean, DataBinder<T> dataBinder) {
 
-        return new MultiBeanCell(new LayoutWrapper<>(layoutRes, bean, dataBinder));
+        return new MultiCell(new LayoutWrapper<>(layoutRes, bean, dataBinder));
     }
 
-    public static <T> List<MultiBeanCell> convert(int layoutRes, List<T> beanList, DataBinder<T> dataBinder) {
+    public static <T> List<MultiCell> convert(int layoutRes, List<T> beanList, DataBinder<T> dataBinder) {
 
         if (beanList == null) {
             return null;
         }
 
-        List<MultiBeanCell> multiBeanCellList = new ArrayList<>();
+        List<MultiCell> multiBeanCellList = new ArrayList<>();
 
         for (T bean :
                 beanList) {

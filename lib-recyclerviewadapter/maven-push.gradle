@@ -16,7 +16,7 @@ uploadArchives {
 
             pom.groupId = 'com.zq.view.recyclerview'
             pom.artifactId = 'adapter'
-            pom.version = '0.0.4'
+            pom.version = '0.0.5'
 
             pom.project {
 

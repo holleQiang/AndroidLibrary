@@ -415,6 +415,7 @@ public final class CellAdapter<C extends Cell<RecyclerViewHolder>> extends BaseO
         @Override
         public void onCellInsert(Cell<RecyclerViewHolder> cell) {
 
+            
         }
 
         @Override

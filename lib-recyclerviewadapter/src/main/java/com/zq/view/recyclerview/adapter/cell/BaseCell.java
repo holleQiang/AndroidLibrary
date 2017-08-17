@@ -27,7 +27,6 @@ public abstract class BaseCell implements Cell<RecyclerViewHolder> {
         this.spanSize = spanSize;
     }
 
-
     @Override
     public int getLayoutId() {
         return layoutId;
