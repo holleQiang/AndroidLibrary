@@ -19,10 +19,10 @@ import android.widget.CompoundButton;
  * Created by zhangqiang on 16-10-10.
  */
 
-public class RecyclerViewHolder extends RecyclerView.ViewHolder implements SuperViewHolder {
+public class RecyclerViewHolder extends RecyclerView.ViewHolder implements RVViewHolder {
 
     private int layoutId;
-    private SuperViewHolder superViewHolder;
+    private RVViewHolder superViewHolder;
 
     public static RecyclerViewHolder create(Context context, int layoutId, ViewGroup root) {
 
@@ -56,167 +56,167 @@ public class RecyclerViewHolder extends RecyclerView.ViewHolder implements Super
     }
 
     @Override
-    public SuperViewHolder setText(int viewId, CharSequence charSequence) {
+    public RVViewHolder setText(int viewId, CharSequence charSequence) {
         return superViewHolder.setText(viewId, charSequence);
     }
 
     @Override
-    public SuperViewHolder setImageResource(int viewId, int imageResource) {
+    public RVViewHolder setImageResource(int viewId, int imageResource) {
         return superViewHolder.setImageResource(viewId, imageResource);
     }
 
     @Override
-    public SuperViewHolder setImageBitmap(int viewId, Bitmap bitmap) {
+    public RVViewHolder setImageBitmap(int viewId, Bitmap bitmap) {
         return superViewHolder.setImageBitmap(viewId, bitmap);
     }
 
     @Override
-    public SuperViewHolder setImageDrawable(int viewId, Drawable drawable) {
+    public RVViewHolder setImageDrawable(int viewId, Drawable drawable) {
         return superViewHolder.setImageDrawable(viewId, drawable);
     }
 
     @Override
-    public SuperViewHolder setBackgroundColor(int viewId, int color) {
+    public RVViewHolder setBackgroundColor(int viewId, int color) {
         return superViewHolder.setBackgroundColor(viewId, color);
     }
 
     @Override
-    public SuperViewHolder setBackgroundRes(int viewId, int backgroundRes) {
+    public RVViewHolder setBackgroundRes(int viewId, int backgroundRes) {
         return superViewHolder.setBackgroundRes(viewId, backgroundRes);
     }
 
     @Override
-    public SuperViewHolder setTextColor(int viewId, int textColor) {
+    public RVViewHolder setTextColor(int viewId, int textColor) {
         return superViewHolder.setTextColor(viewId, textColor);
     }
 
     @Override
-    public SuperViewHolder setTextColorRes(int viewId, int textColorRes) {
+    public RVViewHolder setTextColorRes(int viewId, int textColorRes) {
         return superViewHolder.setTextColorRes(viewId, textColorRes);
     }
 
     @Override
-    public SuperViewHolder setAlpha(int viewId, float value) {
+    public RVViewHolder setAlpha(int viewId, float value) {
         return superViewHolder.setAlpha(viewId, value);
     }
 
     @Override
-    public SuperViewHolder setVisible(int viewId, boolean visible) {
+    public RVViewHolder setVisible(int viewId, boolean visible) {
         return superViewHolder.setVisible(viewId, visible);
     }
 
     @Override
-    public SuperViewHolder setVisibility(int viewId, int visible) {
+    public RVViewHolder setVisibility(int viewId, int visible) {
         return superViewHolder.setVisibility(viewId, visible);
     }
 
     @Override
-    public SuperViewHolder linkify(int viewId) {
+    public RVViewHolder linkify(int viewId) {
         return superViewHolder.linkify(viewId);
     }
 
     @Override
-    public SuperViewHolder setTypeface(Typeface typeface, int... viewIds) {
+    public RVViewHolder setTypeface(Typeface typeface, int... viewIds) {
         return superViewHolder.setTypeface(typeface, viewIds);
     }
 
     @Override
-    public SuperViewHolder setProgress(int viewId, int progress) {
+    public RVViewHolder setProgress(int viewId, int progress) {
         return superViewHolder.setProgress(viewId, progress);
     }
 
     @Override
-    public SuperViewHolder setProgress(int viewId, int progress, int max) {
+    public RVViewHolder setProgress(int viewId, int progress, int max) {
         return superViewHolder.setProgress(viewId, progress, max);
     }
 
     @Override
-    public SuperViewHolder setMax(int viewId, int max) {
+    public RVViewHolder setMax(int viewId, int max) {
         return superViewHolder.setMax(viewId, max);
     }
 
     @Override
-    public SuperViewHolder setRating(int viewId, float rating) {
+    public RVViewHolder setRating(int viewId, float rating) {
         return superViewHolder.setRating(viewId, rating);
     }
 
     @Override
-    public SuperViewHolder setRating(int viewId, float rating, int max) {
+    public RVViewHolder setRating(int viewId, float rating, int max) {
         return superViewHolder.setRating(viewId, rating, max);
     }
 
     @Override
-    public SuperViewHolder setTag(int viewId, Object tag) {
+    public RVViewHolder setTag(int viewId, Object tag) {
         return superViewHolder.setTag(viewId, tag);
     }
 
     @Override
-    public SuperViewHolder setTag(int viewId, int key, Object tag) {
+    public RVViewHolder setTag(int viewId, int key, Object tag) {
         return superViewHolder.setTag(viewId, key, tag);
     }
 
     @Override
-    public SuperViewHolder setChecked(int viewId, boolean checked) {
+    public RVViewHolder setChecked(int viewId, boolean checked) {
         return superViewHolder.setChecked(viewId, checked);
     }
 
     @Override
-    public SuperViewHolder setOnClickListener(int viewId, View.OnClickListener listener) {
+    public RVViewHolder setOnClickListener(int viewId, View.OnClickListener listener) {
         return superViewHolder.setOnClickListener(viewId, listener);
     }
 
     @Override
-    public SuperViewHolder setOnTouchListener(int viewId, View.OnTouchListener listener) {
+    public RVViewHolder setOnTouchListener(int viewId, View.OnTouchListener listener) {
         return superViewHolder.setOnTouchListener(viewId, listener);
     }
 
     @Override
-    public SuperViewHolder setOnLongClickListener(int viewId, View.OnLongClickListener listener) {
+    public RVViewHolder setOnLongClickListener(int viewId, View.OnLongClickListener listener) {
         return superViewHolder.setOnLongClickListener(viewId, listener);
     }
 
     @Override
-    public SuperViewHolder setAdapter(int viewId, Adapter adapter) {
+    public RVViewHolder setAdapter(int viewId, Adapter adapter) {
         return superViewHolder.setAdapter(viewId, adapter);
     }
 
     @Override
-    public SuperViewHolder setOnItemClickListener(int viewId, AdapterView.OnItemClickListener itemClickListener) {
+    public RVViewHolder setOnItemClickListener(int viewId, AdapterView.OnItemClickListener itemClickListener) {
         return superViewHolder.setOnItemClickListener(viewId, itemClickListener);
     }
 
     @Override
-    public SuperViewHolder setCompoundDrawablePadding(int viewId, int pad) {
+    public RVViewHolder setCompoundDrawablePadding(int viewId, int pad) {
         return superViewHolder.setCompoundDrawablePadding(viewId, pad);
     }
 
     @Override
-    public SuperViewHolder setCompoundDrawablesWithIntrinsicBounds(int viewId, Drawable left, Drawable top, Drawable right, Drawable bottom) {
+    public RVViewHolder setCompoundDrawablesWithIntrinsicBounds(int viewId, Drawable left, Drawable top, Drawable right, Drawable bottom) {
         return superViewHolder.setCompoundDrawablesWithIntrinsicBounds(viewId, left, top, right, bottom);
     }
 
     @Override
-    public SuperViewHolder setOnCheckedChangeListener(int viewId, CompoundButton.OnCheckedChangeListener onCheckedChangeListener) {
+    public RVViewHolder setOnCheckedChangeListener(int viewId, CompoundButton.OnCheckedChangeListener onCheckedChangeListener) {
         return superViewHolder.setOnCheckedChangeListener(viewId, onCheckedChangeListener);
     }
 
     @Override
-    public SuperViewHolder setBackgroundResource(int viewId, int resId) {
+    public RVViewHolder setBackgroundResource(int viewId, int resId) {
         return superViewHolder.setBackgroundResource(viewId, resId);
     }
 
     @Override
-    public SuperViewHolder addTextChangedListener(int viewId, TextWatcher textWatcher) {
+    public RVViewHolder addTextChangedListener(int viewId, TextWatcher textWatcher) {
         return superViewHolder.addTextChangedListener(viewId, textWatcher);
     }
 
     @Override
-    public SuperViewHolder setMovementMethod(int viewId, MovementMethod movement) {
+    public RVViewHolder setMovementMethod(int viewId, MovementMethod movement) {
         return superViewHolder.setMovementMethod(viewId, movement);
     }
 
     @Override
-    public SuperViewHolder setEnable(int viewId, boolean enable) {
+    public RVViewHolder setEnable(int viewId, boolean enable) {
         return superViewHolder.setEnable(viewId, enable);
     }
 
@@ -226,32 +226,32 @@ public class RecyclerViewHolder extends RecyclerView.ViewHolder implements Super
     }
 
     @Override
-    public SuperViewHolder setLayouParams(int viewId, ViewGroup.LayoutParams layoutParams) {
+    public RVViewHolder setLayouParams(int viewId, ViewGroup.LayoutParams layoutParams) {
         return superViewHolder.setLayouParams(viewId, layoutParams);
     }
 
     @Override
-    public SuperViewHolder setOnItemLongClickListener(int viewId, AdapterView.OnItemLongClickListener onItemLongClickListener) {
+    public RVViewHolder setOnItemLongClickListener(int viewId, AdapterView.OnItemLongClickListener onItemLongClickListener) {
         return superViewHolder.setOnItemLongClickListener(viewId, onItemLongClickListener);
     }
 
     @Override
-    public SuperViewHolder removeAllViews(int viewId) {
+    public RVViewHolder removeAllViews(int viewId) {
         return superViewHolder.removeAllViews(viewId);
     }
 
     @Override
-    public SuperViewHolder addView(int viewId, View childView) {
+    public RVViewHolder addView(int viewId, View childView) {
         return superViewHolder.addView(viewId, childView);
     }
 
     @Override
-    public SuperViewHolder setTextSize(int viewId, int unit, float textSize) {
+    public RVViewHolder setTextSize(int viewId, int unit, float textSize) {
         return superViewHolder.setTextSize(viewId, unit, textSize);
     }
 
     @Override
-    public SuperViewHolder setTextSize(int viewId, float textSize) {
+    public RVViewHolder setTextSize(int viewId, float textSize) {
         return superViewHolder.setTextSize(viewId, textSize);
     }
 }

@@ -26,7 +26,7 @@ import android.widget.TextView;
  * Created by zhangqiang on 17-6-30.
  */
 
-public class SuperViewHolderIMPL implements SuperViewHolder {
+public class SuperViewHolderIMPL implements RVViewHolder {
 
     private SparseArray<View> views = new SparseArray<>();
 
@@ -62,7 +62,7 @@ public class SuperViewHolderIMPL implements SuperViewHolder {
     }
 
     @Override
-    public SuperViewHolder setText(int viewId, CharSequence charSequence) {
+    public RVViewHolder setText(int viewId, CharSequence charSequence) {
 
         TextView textView = getView(viewId);
         textView.setText(charSequence);
@@ -70,7 +70,7 @@ public class SuperViewHolderIMPL implements SuperViewHolder {
     }
 
     @Override
-    public SuperViewHolder setImageResource(int viewId, int imageResource) {
+    public RVViewHolder setImageResource(int viewId, int imageResource) {
 
         ImageView imageView = getView(viewId);
         imageView.setImageResource(imageResource);
@@ -78,76 +78,77 @@ public class SuperViewHolderIMPL implements SuperViewHolder {
     }
 
     @Override
-    public SuperViewHolder setImageBitmap(int viewId, Bitmap bitmap) {
+    public RVViewHolder setImageBitmap(int viewId, Bitmap bitmap) {
         ImageView view = getView(viewId);
         view.setImageBitmap(bitmap);
         return this;
     }
 
     @Override
-    public SuperViewHolder setImageDrawable(int viewId, Drawable drawable) {
+    public RVViewHolder setImageDrawable(int viewId, Drawable drawable) {
         ImageView view = getView(viewId);
         view.setImageDrawable(drawable);
         return this;
     }
 
     @Override
-    public SuperViewHolder setBackgroundColor(int viewId, int color) {
+    public RVViewHolder setBackgroundColor(int viewId, int color) {
         View view = getView(viewId);
         view.setBackgroundColor(color);
         return this;
     }
 
-    public SuperViewHolder setBackgroundRes(int viewId, int backgroundRes) {
+    public RVViewHolder setBackgroundRes(int viewId, int backgroundRes) {
         View view = getView(viewId);
         view.setBackgroundResource(backgroundRes);
         return this;
     }
 
     @Override
-    public SuperViewHolder setTextColor(int viewId, int textColor) {
+    public RVViewHolder setTextColor(int viewId, int textColor) {
         TextView view = getView(viewId);
         view.setTextColor(textColor);
         return this;
     }
 
     @Override
-    public SuperViewHolder setTextColorRes(int viewId, int textColorRes) {
+    public RVViewHolder setTextColorRes(int viewId, int textColorRes) {
         TextView view = getView(viewId);
         view.setTextColor(context.getResources().getColor(textColorRes));
         return this;
     }
 
     @Override
-    public SuperViewHolder setAlpha(int viewId, float value) {
+    public RVViewHolder setAlpha(int viewId, float value) {
 
         getView(viewId).setAlpha(value);
         return this;
     }
 
     @Override
-    public SuperViewHolder setVisible(int viewId, boolean visible) {
+    public RVViewHolder setVisible(int viewId, boolean visible) {
         View view = getView(viewId);
         view.setVisibility(visible ? View.VISIBLE : View.GONE);
         return this;
     }
 
     @Override
-    public SuperViewHolder setVisibility(int viewId, int visible) {
+    public RVViewHolder setVisibility(int viewId, int visible) {
         View view = getView(viewId);
         view.setVisibility(visible);
         return this;
     }
 
     @Override
-    public SuperViewHolder linkify(int viewId) {
+    public RVViewHolder addLinks(int viewId,int mask) {
         TextView view = getView(viewId);
-        Linkify.addLinks(view, Linkify.ALL);
+//        Linkify.addLinks(view, Linkify.ALL);
+        Linkify.addLinks(view, mask);
         return this;
     }
 
     @Override
-    public SuperViewHolder setTypeface(Typeface typeface, int... viewIds) {
+    public RVViewHolder setTypeface(Typeface typeface, int... viewIds) {
         for (int viewId : viewIds) {
             TextView view = getView(viewId);
             view.setTypeface(typeface);
@@ -157,14 +158,14 @@ public class SuperViewHolderIMPL implements SuperViewHolder {
     }
 
     @Override
-    public SuperViewHolder setProgress(int viewId, int progress) {
+    public RVViewHolder setProgress(int viewId, int progress) {
         ProgressBar view = getView(viewId);
         view.setProgress(progress);
         return this;
     }
 
     @Override
-    public SuperViewHolder setProgress(int viewId, int progress, int max) {
+    public RVViewHolder setProgress(int viewId, int progress, int max) {
         ProgressBar view = getView(viewId);
         view.setMax(max);
         view.setProgress(progress);
@@ -172,21 +173,21 @@ public class SuperViewHolderIMPL implements SuperViewHolder {
     }
 
     @Override
-    public SuperViewHolder setMax(int viewId, int max) {
+    public RVViewHolder setMax(int viewId, int max) {
         ProgressBar view = getView(viewId);
         view.setMax(max);
         return this;
     }
 
     @Override
-    public SuperViewHolder setRating(int viewId, float rating) {
+    public RVViewHolder setRating(int viewId, float rating) {
         RatingBar view = getView(viewId);
         view.setRating(rating);
         return this;
     }
 
     @Override
-    public SuperViewHolder setRating(int viewId, float rating, int max) {
+    public RVViewHolder setRating(int viewId, float rating, int max) {
         RatingBar view = getView(viewId);
         view.setMax(max);
         view.setRating(rating);
@@ -194,21 +195,21 @@ public class SuperViewHolderIMPL implements SuperViewHolder {
     }
 
     @Override
-    public SuperViewHolder setTag(int viewId, Object tag) {
+    public RVViewHolder setTag(int viewId, Object tag) {
         View view = getView(viewId);
         view.setTag(tag);
         return this;
     }
 
     @Override
-    public SuperViewHolder setTag(int viewId, int key, Object tag) {
+    public RVViewHolder setTag(int viewId, int key, Object tag) {
         View view = getView(viewId);
         view.setTag(key, tag);
         return this;
     }
 
     @Override
-    public SuperViewHolder setChecked(int viewId, boolean checked) {
+    public RVViewHolder setChecked(int viewId, boolean checked) {
         Checkable view = (Checkable) getView(viewId);
         view.setChecked(checked);
         return this;
@@ -218,28 +219,28 @@ public class SuperViewHolderIMPL implements SuperViewHolder {
      * 关于事件的
      */
     @Override
-    public SuperViewHolder setOnClickListener(int viewId, View.OnClickListener listener) {
+    public RVViewHolder setOnClickListener(int viewId, View.OnClickListener listener) {
         View view = getView(viewId);
         view.setOnClickListener(listener);
         return this;
     }
 
     @Override
-    public SuperViewHolder setOnTouchListener(int viewId, View.OnTouchListener listener) {
+    public RVViewHolder setOnTouchListener(int viewId, View.OnTouchListener listener) {
         View view = getView(viewId);
         view.setOnTouchListener(listener);
         return this;
     }
 
     @Override
-    public SuperViewHolder setOnLongClickListener(int viewId, View.OnLongClickListener listener) {
+    public RVViewHolder setOnLongClickListener(int viewId, View.OnLongClickListener listener) {
         View view = getView(viewId);
         view.setOnLongClickListener(listener);
         return this;
     }
 
     @Override
-    public SuperViewHolder setAdapter(int viewId,Adapter adapter){
+    public RVViewHolder setAdapter(int viewId, Adapter adapter){
 
         AdapterView<Adapter> adapterView = getView(viewId);
         adapterView.setAdapter(adapter);
@@ -247,7 +248,7 @@ public class SuperViewHolderIMPL implements SuperViewHolder {
     }
 
     @Override
-    public SuperViewHolder setOnItemClickListener(int viewId,AdapterView.OnItemClickListener itemClickListener){
+    public RVViewHolder setOnItemClickListener(int viewId, AdapterView.OnItemClickListener itemClickListener){
 
         AdapterView<Adapter> adapterView = getView(viewId);
         adapterView.setOnItemClickListener(itemClickListener);
@@ -255,7 +256,7 @@ public class SuperViewHolderIMPL implements SuperViewHolder {
     }
 
     @Override
-    public SuperViewHolder setCompoundDrawablePadding(int viewId, int pad){
+    public RVViewHolder setCompoundDrawablePadding(int viewId, int pad){
 
         TextView textView = getView(viewId);
         textView.setCompoundDrawablePadding(pad);
@@ -263,7 +264,7 @@ public class SuperViewHolderIMPL implements SuperViewHolder {
     }
 
     @Override
-    public SuperViewHolder setCompoundDrawablesWithIntrinsicBounds(int viewId, Drawable left, Drawable top, Drawable right, Drawable bottom) {
+    public RVViewHolder setCompoundDrawablesWithIntrinsicBounds(int viewId, Drawable left, Drawable top, Drawable right, Drawable bottom) {
 
         TextView textView = getView(viewId);
         textView.setCompoundDrawablesWithIntrinsicBounds(left, top, right, bottom);
@@ -271,7 +272,7 @@ public class SuperViewHolderIMPL implements SuperViewHolder {
     }
 
     @Override
-    public SuperViewHolder setOnCheckedChangeListener(int viewId, CompoundButton.OnCheckedChangeListener onCheckedChangeListener){
+    public RVViewHolder setOnCheckedChangeListener(int viewId, CompoundButton.OnCheckedChangeListener onCheckedChangeListener){
 
         CompoundButton checkBox = getView(viewId);
         checkBox.setOnCheckedChangeListener(onCheckedChangeListener);
@@ -279,7 +280,7 @@ public class SuperViewHolderIMPL implements SuperViewHolder {
     }
 
     @Override
-    public SuperViewHolder setBackgroundResource(int viewId, int resId) {
+    public RVViewHolder setBackgroundResource(int viewId, int resId) {
 
         View v = getView(viewId);
         v.setBackgroundResource(resId);
@@ -287,7 +288,7 @@ public class SuperViewHolderIMPL implements SuperViewHolder {
     }
 
     @Override
-    public SuperViewHolder addTextChangedListener(int viewId, TextWatcher textWatcher) {
+    public RVViewHolder addTextChangedListener(int viewId, TextWatcher textWatcher) {
 
         EditText v = getView(viewId);
         v.addTextChangedListener(textWatcher);
@@ -295,7 +296,7 @@ public class SuperViewHolderIMPL implements SuperViewHolder {
     }
 
     @Override
-    public SuperViewHolder setMovementMethod(int viewId, MovementMethod movement) {
+    public RVViewHolder setMovementMethod(int viewId, MovementMethod movement) {
 
         TextView textView = getView(viewId);
         textView.setMovementMethod(movement);
@@ -303,7 +304,7 @@ public class SuperViewHolderIMPL implements SuperViewHolder {
     }
 
     @Override
-    public SuperViewHolder setEnable(int viewId, boolean enable) {
+    public RVViewHolder setEnable(int viewId, boolean enable) {
 
         getView(viewId).setEnabled(enable);
         return this;
@@ -316,14 +317,14 @@ public class SuperViewHolderIMPL implements SuperViewHolder {
     }
 
     @Override
-    public SuperViewHolder setLayouParams(int viewId, ViewGroup.LayoutParams layoutParams) {
+    public RVViewHolder setLayouParams(int viewId, ViewGroup.LayoutParams layoutParams) {
 
         getView(viewId).setLayoutParams(layoutParams);
         return this;
     }
 
     @Override
-    public SuperViewHolder setOnItemLongClickListener(int viewId, AdapterView.OnItemLongClickListener onItemLongClickListener) {
+    public RVViewHolder setOnItemLongClickListener(int viewId, AdapterView.OnItemLongClickListener onItemLongClickListener) {
 
         AdapterView adapterView = getView(viewId);
         adapterView.setOnItemLongClickListener(onItemLongClickListener);
@@ -331,7 +332,7 @@ public class SuperViewHolderIMPL implements SuperViewHolder {
     }
 
     @Override
-    public SuperViewHolder removeAllViews(int viewId) {
+    public RVViewHolder removeAllViews(int viewId) {
 
         ViewGroup viewGroup = getView(viewId);
         viewGroup.removeAllViews();
@@ -339,7 +340,7 @@ public class SuperViewHolderIMPL implements SuperViewHolder {
     }
 
     @Override
-    public SuperViewHolder addView(int viewId, View childView) {
+    public RVViewHolder addView(int viewId, View childView) {
 
         ViewGroup viewGroup = getView(viewId);
         viewGroup.addView(childView);
@@ -347,7 +348,7 @@ public class SuperViewHolderIMPL implements SuperViewHolder {
     }
 
     @Override
-    public SuperViewHolder setTextSize(int viewId,int unit, float textSize) {
+    public RVViewHolder setTextSize(int viewId, int unit, float textSize) {
 
         TextView textView = getView(viewId);
         textView.setTextSize(unit,textSize);
@@ -355,7 +356,7 @@ public class SuperViewHolderIMPL implements SuperViewHolder {
     }
 
     @Override
-    public SuperViewHolder setTextSize(int viewId, float textSize) {
+    public RVViewHolder setTextSize(int viewId, float textSize) {
 
         TextView textView = getView(viewId);
         textView.setTextSize(TypedValue.COMPLEX_UNIT_SP,textSize);

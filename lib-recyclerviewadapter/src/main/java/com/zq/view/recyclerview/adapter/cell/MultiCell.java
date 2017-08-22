@@ -1,48 +1,36 @@
 package com.zq.view.recyclerview.adapter.cell;
 
+import android.support.annotation.LayoutRes;
 
-import com.zq.view.recyclerview.viewholder.RecyclerViewHolder;
-
-import java.util.ArrayList;
-import java.util.List;
+import com.zq.view.recyclerview.viewholder.RVViewHolder;
 
 /**
- * Created by zhangqiang on 17-7-4.
+ * Created by zhangqiang on 2017/8/9.
  */
 
-public class MultiCell extends BeanCell<LayoutWrapper> {
+public abstract class BeanCell<B> extends MultiCell {
 
+    private B bean;
 
-    public MultiCell(LayoutWrapper bean) {
-        super(bean.getLayoutId(), bean.getSpanSize(), bean);
+    public BeanCell(@LayoutRes int layoutId, B bean) {
+        super(layoutId);
+        this.bean = bean;
     }
 
+    public BeanCell(@LayoutRes int layoutId, int spanSize, B bean) {
+        super(layoutId, spanSize);
+        this.bean = bean;
+    }
+
+    public B getBean() {
+        return bean;
+    }
 
     @Override
-    public void onBind(RecyclerViewHolder viewHolder, LayoutWrapper bean) {
+    public void onBind(RVViewHolder viewHolder) {
 
-        bean.bindData(viewHolder);
+        onBind(viewHolder, bean);
     }
 
-    public static <T> MultiCell convert(int layoutRes, T bean, DataBinder<T> dataBinder) {
-
-        return new MultiCell(new LayoutWrapper<>(layoutRes, bean, dataBinder));
-    }
-
-    public static <T> List<MultiCell> convert(int layoutRes, List<T> beanList, DataBinder<T> dataBinder) {
-
-        if (beanList == null) {
-            return null;
-        }
-
-        List<MultiCell> multiBeanCellList = new ArrayList<>();
-
-        for (T bean :
-                beanList) {
-
-            multiBeanCellList.add(convert(layoutRes, bean, dataBinder));
-        }
-
-        return multiBeanCellList;
-    }
+    public abstract void onBind(RVViewHolder viewHolder, B bean);
 }
