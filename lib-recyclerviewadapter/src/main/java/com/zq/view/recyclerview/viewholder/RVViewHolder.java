@@ -19,22 +19,22 @@ import android.widget.CompoundButton;
  * Created by zhangqiang on 16-10-10.
  */
 
-public class RecyclerViewHolder extends RecyclerView.ViewHolder implements RVViewHolder {
+public class RVViewHolder extends RecyclerView.ViewHolder implements IViewHolder {
 
     private int layoutId;
-    private RVViewHolder superViewHolder;
+    private IViewHolder viewHolderDelegate;
 
-    public static RecyclerViewHolder create(Context context, int layoutId, ViewGroup root) {
+    public static RVViewHolder create(Context context, int layoutId, ViewGroup root) {
 
         View mConvertView = LayoutInflater.from(context).inflate(layoutId, root, false);
-        RecyclerViewHolder recyclerViewHolder = new RecyclerViewHolder(mConvertView);
+        RVViewHolder recyclerViewHolder = new RVViewHolder(mConvertView);
         recyclerViewHolder.setLayoutId(layoutId);
         return recyclerViewHolder;
     }
 
-    private RecyclerViewHolder(View itemView) {
+    private RVViewHolder(View itemView) {
         super(itemView);
-        superViewHolder = new SuperViewHolderIMPL(itemView);
+        setViewHolderDelegate(new ViewHolderImpl(itemView));
     }
 
     public int getLayoutId() {
@@ -47,211 +47,219 @@ public class RecyclerViewHolder extends RecyclerView.ViewHolder implements RVVie
 
     @Override
     public <T extends View> T getView(int viewId) {
-        return superViewHolder.getView(viewId);
+        return getViewHolderDelegate().getView(viewId);
     }
 
     @Override
     public View getView() {
-        return superViewHolder.getView();
+        return getViewHolderDelegate().getView();
     }
 
     @Override
-    public RVViewHolder setText(int viewId, CharSequence charSequence) {
-        return superViewHolder.setText(viewId, charSequence);
+    public IViewHolder setText(int viewId, CharSequence charSequence) {
+        return getViewHolderDelegate().setText(viewId, charSequence);
     }
 
     @Override
-    public RVViewHolder setImageResource(int viewId, int imageResource) {
-        return superViewHolder.setImageResource(viewId, imageResource);
+    public IViewHolder setImageResource(int viewId, int imageResource) {
+        return getViewHolderDelegate().setImageResource(viewId, imageResource);
     }
 
     @Override
-    public RVViewHolder setImageBitmap(int viewId, Bitmap bitmap) {
-        return superViewHolder.setImageBitmap(viewId, bitmap);
+    public IViewHolder setImageBitmap(int viewId, Bitmap bitmap) {
+        return getViewHolderDelegate().setImageBitmap(viewId, bitmap);
     }
 
     @Override
-    public RVViewHolder setImageDrawable(int viewId, Drawable drawable) {
-        return superViewHolder.setImageDrawable(viewId, drawable);
+    public IViewHolder setImageDrawable(int viewId, Drawable drawable) {
+        return getViewHolderDelegate().setImageDrawable(viewId, drawable);
     }
 
     @Override
-    public RVViewHolder setBackgroundColor(int viewId, int color) {
-        return superViewHolder.setBackgroundColor(viewId, color);
+    public IViewHolder setBackgroundColor(int viewId, int color) {
+        return getViewHolderDelegate().setBackgroundColor(viewId, color);
     }
 
     @Override
-    public RVViewHolder setBackgroundRes(int viewId, int backgroundRes) {
-        return superViewHolder.setBackgroundRes(viewId, backgroundRes);
+    public IViewHolder setBackgroundRes(int viewId, int backgroundRes) {
+        return getViewHolderDelegate().setBackgroundRes(viewId, backgroundRes);
     }
 
     @Override
-    public RVViewHolder setTextColor(int viewId, int textColor) {
-        return superViewHolder.setTextColor(viewId, textColor);
+    public IViewHolder setTextColor(int viewId, int textColor) {
+        return getViewHolderDelegate().setTextColor(viewId, textColor);
     }
 
     @Override
-    public RVViewHolder setTextColorRes(int viewId, int textColorRes) {
-        return superViewHolder.setTextColorRes(viewId, textColorRes);
+    public IViewHolder setTextColorRes(int viewId, int textColorRes) {
+        return getViewHolderDelegate().setTextColorRes(viewId, textColorRes);
     }
 
     @Override
-    public RVViewHolder setAlpha(int viewId, float value) {
-        return superViewHolder.setAlpha(viewId, value);
+    public IViewHolder setAlpha(int viewId, float value) {
+        return getViewHolderDelegate().setAlpha(viewId, value);
     }
 
     @Override
-    public RVViewHolder setVisible(int viewId, boolean visible) {
-        return superViewHolder.setVisible(viewId, visible);
+    public IViewHolder setVisible(int viewId, boolean visible) {
+        return getViewHolderDelegate().setVisible(viewId, visible);
     }
 
     @Override
-    public RVViewHolder setVisibility(int viewId, int visible) {
-        return superViewHolder.setVisibility(viewId, visible);
+    public IViewHolder setVisibility(int viewId, int visible) {
+        return getViewHolderDelegate().setVisibility(viewId, visible);
     }
 
     @Override
-    public RVViewHolder linkify(int viewId) {
-        return superViewHolder.linkify(viewId);
+    public IViewHolder addLinks(int viewId,int mask) {
+        return getViewHolderDelegate().addLinks(viewId,mask);
     }
 
     @Override
-    public RVViewHolder setTypeface(Typeface typeface, int... viewIds) {
-        return superViewHolder.setTypeface(typeface, viewIds);
+    public IViewHolder setTypeface(Typeface typeface, int... viewIds) {
+        return getViewHolderDelegate().setTypeface(typeface, viewIds);
     }
 
     @Override
-    public RVViewHolder setProgress(int viewId, int progress) {
-        return superViewHolder.setProgress(viewId, progress);
+    public IViewHolder setProgress(int viewId, int progress) {
+        return getViewHolderDelegate().setProgress(viewId, progress);
     }
 
     @Override
-    public RVViewHolder setProgress(int viewId, int progress, int max) {
-        return superViewHolder.setProgress(viewId, progress, max);
+    public IViewHolder setProgress(int viewId, int progress, int max) {
+        return getViewHolderDelegate().setProgress(viewId, progress, max);
     }
 
     @Override
-    public RVViewHolder setMax(int viewId, int max) {
-        return superViewHolder.setMax(viewId, max);
+    public IViewHolder setMax(int viewId, int max) {
+        return getViewHolderDelegate().setMax(viewId, max);
     }
 
     @Override
-    public RVViewHolder setRating(int viewId, float rating) {
-        return superViewHolder.setRating(viewId, rating);
+    public IViewHolder setRating(int viewId, float rating) {
+        return getViewHolderDelegate().setRating(viewId, rating);
     }
 
     @Override
-    public RVViewHolder setRating(int viewId, float rating, int max) {
-        return superViewHolder.setRating(viewId, rating, max);
+    public IViewHolder setRating(int viewId, float rating, int max) {
+        return getViewHolderDelegate().setRating(viewId, rating, max);
     }
 
     @Override
-    public RVViewHolder setTag(int viewId, Object tag) {
-        return superViewHolder.setTag(viewId, tag);
+    public IViewHolder setTag(int viewId, Object tag) {
+        return getViewHolderDelegate().setTag(viewId, tag);
     }
 
     @Override
-    public RVViewHolder setTag(int viewId, int key, Object tag) {
-        return superViewHolder.setTag(viewId, key, tag);
+    public IViewHolder setTag(int viewId, int key, Object tag) {
+        return getViewHolderDelegate().setTag(viewId, key, tag);
     }
 
     @Override
-    public RVViewHolder setChecked(int viewId, boolean checked) {
-        return superViewHolder.setChecked(viewId, checked);
+    public IViewHolder setChecked(int viewId, boolean checked) {
+        return getViewHolderDelegate().setChecked(viewId, checked);
     }
 
     @Override
-    public RVViewHolder setOnClickListener(int viewId, View.OnClickListener listener) {
-        return superViewHolder.setOnClickListener(viewId, listener);
+    public IViewHolder setOnClickListener(int viewId, View.OnClickListener listener) {
+        return getViewHolderDelegate().setOnClickListener(viewId, listener);
     }
 
     @Override
-    public RVViewHolder setOnTouchListener(int viewId, View.OnTouchListener listener) {
-        return superViewHolder.setOnTouchListener(viewId, listener);
+    public IViewHolder setOnTouchListener(int viewId, View.OnTouchListener listener) {
+        return getViewHolderDelegate().setOnTouchListener(viewId, listener);
     }
 
     @Override
-    public RVViewHolder setOnLongClickListener(int viewId, View.OnLongClickListener listener) {
-        return superViewHolder.setOnLongClickListener(viewId, listener);
+    public IViewHolder setOnLongClickListener(int viewId, View.OnLongClickListener listener) {
+        return getViewHolderDelegate().setOnLongClickListener(viewId, listener);
     }
 
     @Override
-    public RVViewHolder setAdapter(int viewId, Adapter adapter) {
-        return superViewHolder.setAdapter(viewId, adapter);
+    public IViewHolder setAdapter(int viewId, Adapter adapter) {
+        return getViewHolderDelegate().setAdapter(viewId, adapter);
     }
 
     @Override
-    public RVViewHolder setOnItemClickListener(int viewId, AdapterView.OnItemClickListener itemClickListener) {
-        return superViewHolder.setOnItemClickListener(viewId, itemClickListener);
+    public IViewHolder setOnItemClickListener(int viewId, AdapterView.OnItemClickListener itemClickListener) {
+        return getViewHolderDelegate().setOnItemClickListener(viewId, itemClickListener);
     }
 
     @Override
-    public RVViewHolder setCompoundDrawablePadding(int viewId, int pad) {
-        return superViewHolder.setCompoundDrawablePadding(viewId, pad);
+    public IViewHolder setCompoundDrawablePadding(int viewId, int pad) {
+        return getViewHolderDelegate().setCompoundDrawablePadding(viewId, pad);
     }
 
     @Override
-    public RVViewHolder setCompoundDrawablesWithIntrinsicBounds(int viewId, Drawable left, Drawable top, Drawable right, Drawable bottom) {
-        return superViewHolder.setCompoundDrawablesWithIntrinsicBounds(viewId, left, top, right, bottom);
+    public IViewHolder setCompoundDrawablesWithIntrinsicBounds(int viewId, Drawable left, Drawable top, Drawable right, Drawable bottom) {
+        return getViewHolderDelegate().setCompoundDrawablesWithIntrinsicBounds(viewId, left, top, right, bottom);
     }
 
     @Override
-    public RVViewHolder setOnCheckedChangeListener(int viewId, CompoundButton.OnCheckedChangeListener onCheckedChangeListener) {
-        return superViewHolder.setOnCheckedChangeListener(viewId, onCheckedChangeListener);
+    public IViewHolder setOnCheckedChangeListener(int viewId, CompoundButton.OnCheckedChangeListener onCheckedChangeListener) {
+        return getViewHolderDelegate().setOnCheckedChangeListener(viewId, onCheckedChangeListener);
     }
 
     @Override
-    public RVViewHolder setBackgroundResource(int viewId, int resId) {
-        return superViewHolder.setBackgroundResource(viewId, resId);
+    public IViewHolder setBackgroundResource(int viewId, int resId) {
+        return getViewHolderDelegate().setBackgroundResource(viewId, resId);
     }
 
     @Override
-    public RVViewHolder addTextChangedListener(int viewId, TextWatcher textWatcher) {
-        return superViewHolder.addTextChangedListener(viewId, textWatcher);
+    public IViewHolder addTextChangedListener(int viewId, TextWatcher textWatcher) {
+        return getViewHolderDelegate().addTextChangedListener(viewId, textWatcher);
     }
 
     @Override
-    public RVViewHolder setMovementMethod(int viewId, MovementMethod movement) {
-        return superViewHolder.setMovementMethod(viewId, movement);
+    public IViewHolder setMovementMethod(int viewId, MovementMethod movement) {
+        return getViewHolderDelegate().setMovementMethod(viewId, movement);
     }
 
     @Override
-    public RVViewHolder setEnable(int viewId, boolean enable) {
-        return superViewHolder.setEnable(viewId, enable);
+    public IViewHolder setEnable(int viewId, boolean enable) {
+        return getViewHolderDelegate().setEnable(viewId, enable);
     }
 
     @Override
     public int getVisibility(int viewId) {
-        return superViewHolder.getVisibility(viewId);
+        return getViewHolderDelegate().getVisibility(viewId);
     }
 
     @Override
-    public RVViewHolder setLayouParams(int viewId, ViewGroup.LayoutParams layoutParams) {
-        return superViewHolder.setLayouParams(viewId, layoutParams);
+    public IViewHolder setLayouParams(int viewId, ViewGroup.LayoutParams layoutParams) {
+        return getViewHolderDelegate().setLayouParams(viewId, layoutParams);
     }
 
     @Override
-    public RVViewHolder setOnItemLongClickListener(int viewId, AdapterView.OnItemLongClickListener onItemLongClickListener) {
-        return superViewHolder.setOnItemLongClickListener(viewId, onItemLongClickListener);
+    public IViewHolder setOnItemLongClickListener(int viewId, AdapterView.OnItemLongClickListener onItemLongClickListener) {
+        return getViewHolderDelegate().setOnItemLongClickListener(viewId, onItemLongClickListener);
     }
 
     @Override
-    public RVViewHolder removeAllViews(int viewId) {
-        return superViewHolder.removeAllViews(viewId);
+    public IViewHolder removeAllViews(int viewId) {
+        return getViewHolderDelegate().removeAllViews(viewId);
     }
 
     @Override
-    public RVViewHolder addView(int viewId, View childView) {
-        return superViewHolder.addView(viewId, childView);
+    public IViewHolder addView(int viewId, View childView) {
+        return getViewHolderDelegate().addView(viewId, childView);
     }
 
     @Override
-    public RVViewHolder setTextSize(int viewId, int unit, float textSize) {
-        return superViewHolder.setTextSize(viewId, unit, textSize);
+    public IViewHolder setTextSize(int viewId, int unit, float textSize) {
+        return getViewHolderDelegate().setTextSize(viewId, unit, textSize);
     }
 
     @Override
-    public RVViewHolder setTextSize(int viewId, float textSize) {
-        return superViewHolder.setTextSize(viewId, textSize);
+    public IViewHolder setTextSize(int viewId, float textSize) {
+        return getViewHolderDelegate().setTextSize(viewId, textSize);
+    }
+
+    public IViewHolder getViewHolderDelegate() {
+        return viewHolderDelegate;
+    }
+
+    public void setViewHolderDelegate(IViewHolder viewHolderDelegate) {
+        this.viewHolderDelegate = viewHolderDelegate;
     }
 }

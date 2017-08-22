@@ -1,5 +1,26 @@
 apply plugin: 'maven'
-apply plugin: 'maven-publish'
+
+
+// 生成sources.jar
+task androidSourcesJar(type: Jar) {
+
+    classifier = ''
+    from './build/intermediates/classes/release'
+
+    //过滤不需要的class
+    exclude "**/**/BuildConfig.class"
+    exclude "**/**/BuildConfig\$*.class"
+    exclude "**/R.class"
+    exclude "**/R\$*.class"
+
+    //指定打包的class
+    include "com/zq/**/*.class"
+
+}
+// 产生相关配置文件的任务
+artifacts {
+    archives androidSourcesJar
+}
 
 
 uploadArchives {
@@ -16,7 +37,7 @@ uploadArchives {
 
             pom.groupId = 'com.zq.database'
             pom.artifactId = 'database'
-            pom.version = '0.0.4'
+            pom.version = '0.0.12'
 
             pom.project {
 

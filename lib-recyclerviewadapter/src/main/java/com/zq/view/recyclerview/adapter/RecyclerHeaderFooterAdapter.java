@@ -219,7 +219,7 @@ public abstract class RecyclerHeaderFooterAdapter<VH extends RecyclerView.ViewHo
     public boolean isFooterItem(int position){
 
         final int validHeaderCount = isHeaderEnable() ? getHeaderItemCount() : 0;
-        return position >= getItemCount() - getContentItemCount()- validHeaderCount;
+        return position >= getContentItemCount() + validHeaderCount;
     }
 
     @Override

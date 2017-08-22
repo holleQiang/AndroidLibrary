@@ -2,7 +2,7 @@ package com.zq.view.recyclerview.adapter.cell;
 
 import android.support.annotation.LayoutRes;
 
-import com.zq.view.recyclerview.viewholder.RecyclerViewHolder;
+import com.zq.view.recyclerview.viewholder.RVViewHolder;
 
 
 /**
@@ -46,7 +46,7 @@ public class LayoutWrapper<T> {
         return spanSize;
     }
 
-    public void bindData(RecyclerViewHolder viewHolder){
+    public void bindData(RVViewHolder viewHolder){
 
         if(this.dataBinder == null){
             return;

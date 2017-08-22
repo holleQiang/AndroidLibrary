@@ -1,6 +1,4 @@
 apply plugin: 'maven'
-apply plugin: 'maven-publish'
-
 
 uploadArchives {
     repositories {
@@ -16,7 +14,7 @@ uploadArchives {
 
             pom.groupId = 'com.zq.view.recyclerview'
             pom.artifactId = 'adapter'
-            pom.version = '0.0.5'
+            pom.version = '0.0.14'
 
             pom.project {
 

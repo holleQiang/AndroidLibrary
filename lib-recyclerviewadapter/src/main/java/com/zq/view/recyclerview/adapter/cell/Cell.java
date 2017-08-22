@@ -4,12 +4,13 @@ import android.support.annotation.LayoutRes;
 import android.support.v7.widget.RecyclerView;
 
 import com.zq.view.recyclerview.adapter.cell.ob.CellObserver;
+import com.zq.view.recyclerview.viewholder.RVViewHolder;
 
 /**
  * Created by zhangqiang on 17-6-29.
  */
 
-public interface Cell<VH extends RecyclerView.ViewHolder>{
+public interface Cell{
 
     public static final int FULL_SPAN = -1;
 
@@ -18,13 +19,11 @@ public interface Cell<VH extends RecyclerView.ViewHolder>{
 
     int getSpanSize();
 
-    void onBind(VH viewHolder);
+    void onBind(RVViewHolder viewHolder);
 
-    void onRecycle(VH viewHolder);
+    void onDetachFromWindow(RVViewHolder viewHolder);
 
-    void onDetachFromWindow(VH viewHolder);
-
-    void onAttachToWindow(VH viewHolder);
+    void onAttachToWindow(RVViewHolder viewHolder);
 
     void registerCellObserver(CellObserver observer);
 

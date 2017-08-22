@@ -15,92 +15,92 @@ import android.widget.CompoundButton;
  * Created by zhangqiang on 17-6-30.
  */
 
-public interface RVViewHolder {
+public interface IViewHolder {
 
     <T extends View> T getView(int viewId);
 
     View getView();
 
-    RVViewHolder setText(int viewId, CharSequence charSequence) ;
+    IViewHolder setText(int viewId, CharSequence charSequence) ;
 
-    RVViewHolder setImageResource(int viewId, int imageResource);
+    IViewHolder setImageResource(int viewId, int imageResource);
 
-    RVViewHolder setImageBitmap(int viewId, Bitmap bitmap);
+    IViewHolder setImageBitmap(int viewId, Bitmap bitmap);
 
-    RVViewHolder setImageDrawable(int viewId, Drawable drawable);
+    IViewHolder setImageDrawable(int viewId, Drawable drawable);
 
-    RVViewHolder setBackgroundColor(int viewId, int color);
+    IViewHolder setBackgroundColor(int viewId, int color);
 
-    RVViewHolder setBackgroundRes(int viewId, int backgroundRes);
+    IViewHolder setBackgroundRes(int viewId, int backgroundRes);
 
-    RVViewHolder setTextColor(int viewId, int textColor);
+    IViewHolder setTextColor(int viewId, int textColor);
 
-    RVViewHolder setTextColorRes(int viewId, int textColorRes);
+    IViewHolder setTextColorRes(int viewId, int textColorRes);
 
-    RVViewHolder setAlpha(int viewId, float value);
+    IViewHolder setAlpha(int viewId, float value);
 
-    RVViewHolder setVisible(int viewId, boolean visible);
+    IViewHolder setVisible(int viewId, boolean visible);
 
-    RVViewHolder setVisibility(int viewId, int visible);
+    IViewHolder setVisibility(int viewId, int visible);
 
-    RVViewHolder addLinks(int viewId,int mask);
+    IViewHolder addLinks(int viewId, int mask);
 
-    RVViewHolder setTypeface(Typeface typeface, int... viewIds);
+    IViewHolder setTypeface(Typeface typeface, int... viewIds);
 
-    RVViewHolder setProgress(int viewId, int progress);
+    IViewHolder setProgress(int viewId, int progress);
 
-    RVViewHolder setProgress(int viewId, int progress, int max);
+    IViewHolder setProgress(int viewId, int progress, int max);
 
-    RVViewHolder setMax(int viewId, int max);
+    IViewHolder setMax(int viewId, int max);
 
-    RVViewHolder setRating(int viewId, float rating);
+    IViewHolder setRating(int viewId, float rating);
 
-    RVViewHolder setRating(int viewId, float rating, int max);
+    IViewHolder setRating(int viewId, float rating, int max);
 
-    RVViewHolder setTag(int viewId, Object tag) ;
+    IViewHolder setTag(int viewId, Object tag) ;
 
-    RVViewHolder setTag(int viewId, int key, Object tag) ;
+    IViewHolder setTag(int viewId, int key, Object tag) ;
 
-    RVViewHolder setChecked(int viewId, boolean checked);
+    IViewHolder setChecked(int viewId, boolean checked);
 
     /**
      * 关于事件的
      */
-    RVViewHolder setOnClickListener(int viewId, View.OnClickListener listener);
+    IViewHolder setOnClickListener(int viewId, View.OnClickListener listener);
 
-    RVViewHolder setOnTouchListener(int viewId, View.OnTouchListener listener);
+    IViewHolder setOnTouchListener(int viewId, View.OnTouchListener listener);
 
-    RVViewHolder setOnLongClickListener(int viewId, View.OnLongClickListener listener);
+    IViewHolder setOnLongClickListener(int viewId, View.OnLongClickListener listener);
 
-    RVViewHolder setAdapter(int viewId, Adapter adapter);
+    IViewHolder setAdapter(int viewId, Adapter adapter);
 
-    RVViewHolder setOnItemClickListener(int viewId, AdapterView.OnItemClickListener itemClickListener);
+    IViewHolder setOnItemClickListener(int viewId, AdapterView.OnItemClickListener itemClickListener);
 
-    RVViewHolder setCompoundDrawablePadding(int viewId, int pad);
+    IViewHolder setCompoundDrawablePadding(int viewId, int pad);
 
-    RVViewHolder setCompoundDrawablesWithIntrinsicBounds(int viewId, Drawable left, Drawable top, Drawable right, Drawable bottom);
+    IViewHolder setCompoundDrawablesWithIntrinsicBounds(int viewId, Drawable left, Drawable top, Drawable right, Drawable bottom);
 
-    RVViewHolder setOnCheckedChangeListener(int viewId, CompoundButton.OnCheckedChangeListener onCheckedChangeListener);
+    IViewHolder setOnCheckedChangeListener(int viewId, CompoundButton.OnCheckedChangeListener onCheckedChangeListener);
 
-    RVViewHolder setBackgroundResource(int viewId, int resId);
+    IViewHolder setBackgroundResource(int viewId, int resId);
 
-    RVViewHolder addTextChangedListener(int viewId, TextWatcher textWatcher);
+    IViewHolder addTextChangedListener(int viewId, TextWatcher textWatcher);
 
-    RVViewHolder setMovementMethod(int viewId, MovementMethod movement);
+    IViewHolder setMovementMethod(int viewId, MovementMethod movement);
 
-    RVViewHolder setEnable(int viewId, boolean enable);
+    IViewHolder setEnable(int viewId, boolean enable);
 
      int getVisibility(int viewId);
 
-    RVViewHolder setLayouParams(int viewId, ViewGroup.LayoutParams layoutParams) ;
+    IViewHolder setLayouParams(int viewId, ViewGroup.LayoutParams layoutParams) ;
 
-    RVViewHolder setOnItemLongClickListener(int viewId, AdapterView.OnItemLongClickListener onItemLongClickListener);
+    IViewHolder setOnItemLongClickListener(int viewId, AdapterView.OnItemLongClickListener onItemLongClickListener);
 
-    RVViewHolder removeAllViews(int viewId);
+    IViewHolder removeAllViews(int viewId);
 
-    RVViewHolder addView(int viewId, View childView);
+    IViewHolder addView(int viewId, View childView);
 
-    RVViewHolder setTextSize(int viewId, int unit, float textSize);
+    IViewHolder setTextSize(int viewId, int unit, float textSize);
 
-    RVViewHolder setTextSize(int viewId, float textSize);
+    IViewHolder setTextSize(int viewId, float textSize);
 }

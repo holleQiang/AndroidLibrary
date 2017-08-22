@@ -52,11 +52,11 @@ public class RVLoadMoreHelper {
 
             if (totalItemCount - lastVisibleItem == 1 && totalItemCount > visibleItemCount) {
 
-                View childView = recyclerView.getChildAt(visibleItemCount - 1);
-                RecyclerView.LayoutParams layoutParams = (RecyclerView.LayoutParams) childView.getLayoutParams();
-                if (childView.getBottom() + layoutParams.bottomMargin > recyclerView.getBottom() - recyclerView.getPaddingBottom()) {
-                    return;
-                }
+//                View childView = recyclerView.getChildAt(visibleItemCount - 1);
+//                RecyclerView.LayoutParams layoutParams = (RecyclerView.LayoutParams) childView.getLayoutParams();
+//                if (childView.getBottom() + layoutParams.bottomMargin > recyclerView.getBottom() - recyclerView.getPaddingBottom()) {
+//                    return;
+//                }
 
                 isLoadingMore = true;
                 if (loadMoreController != null) {

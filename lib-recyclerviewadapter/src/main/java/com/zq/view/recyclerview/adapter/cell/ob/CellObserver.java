@@ -8,12 +8,12 @@ import com.zq.view.recyclerview.adapter.cell.Cell;
  * Created by zhangqiang on 2017/8/14.
  */
 
-public interface CellObserver<VH extends RecyclerView.ViewHolder> {
+public interface CellObserver {
 
-    void onCellChange(Cell<VH> cell);
+    void onCellChange(Cell cell);
 
-    void onCellInsert(Cell<VH> cell);
+    void onCellInsert(Cell cell);
 
-    void onCellRemove(Cell<VH> cell);
+    void onCellRemove(Cell cell);
 
 }

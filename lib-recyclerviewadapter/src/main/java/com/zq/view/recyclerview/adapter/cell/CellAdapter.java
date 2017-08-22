@@ -4,12 +4,13 @@ import android.content.Context;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
+import android.util.Log;
 import android.util.SparseIntArray;
 import android.view.ViewGroup;
 
 import com.zq.view.recyclerview.adapter.BaseObjectRecyclerAdapter;
 import com.zq.view.recyclerview.adapter.cell.ob.CellObserver;
-import com.zq.view.recyclerview.viewholder.RecyclerViewHolder;
+import com.zq.view.recyclerview.viewholder.RVViewHolder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,52 +19,56 @@ import java.util.List;
  * Created by zhangqiang on 17-7-3.
  */
 
-public final class CellAdapter<C extends Cell<RecyclerViewHolder>> extends BaseObjectRecyclerAdapter<C, RecyclerViewHolder> {
+public final class CellAdapter extends BaseObjectRecyclerAdapter<Cell, RVViewHolder> {
 
     private SparseIntArray viewTypeIds = new SparseIntArray();
-    private List<C> headerCells = new ArrayList<>();
-    private List<C> footerCells = new ArrayList<>();
+    private List<Cell> headerCells = new ArrayList<>();
+    private List<Cell> footerCells = new ArrayList<>();
 
-    public CellAdapter(List<C> dataList, Context context) {
-        super(dataList, context);
+    public CellAdapter(Context context) {
+        super(context);
+    }
+
+    public CellAdapter(Context context, List<Cell> dataList) {
+        super(context, dataList);
     }
 
     @Override
-    public RecyclerViewHolder onCreateContentViewHolder(ViewGroup parent, int viewType) {
+    public RVViewHolder onCreateContentViewHolder(ViewGroup parent, int viewType) {
 
-        return RecyclerViewHolder.create(context, viewTypeIds.get(viewType), parent);
+        return RVViewHolder.create(context, viewTypeIds.get(viewType), parent);
     }
 
     @Override
-    public void onBindContentViewHolder(RecyclerViewHolder holder, int position) {
+    public void onBindContentViewHolder(RVViewHolder holder, int position) {
 
-        Cell<RecyclerViewHolder> cell = getDataAt(position);
+        Cell cell = getDataAt(position);
         cell.onBind(holder);
     }
 
     @Override
-    public RecyclerViewHolder onCreateHeaderViewHolder(ViewGroup parent, int viewType) {
+    public RVViewHolder onCreateHeaderViewHolder(ViewGroup parent, int viewType) {
 
-        return RecyclerViewHolder.create(context, headerCells.get(0).getLayoutId(), parent);
+        return RVViewHolder.create(context, headerCells.get(0).getLayoutId(), parent);
     }
 
     @Override
-    public void onBindHeaderViewHolder(RecyclerViewHolder holder, int position) {
+    public void onBindHeaderViewHolder(RVViewHolder holder, int position) {
 
-        Cell<RecyclerViewHolder> cell = headerCells.get(position);
+        Cell cell = headerCells.get(position);
         cell.onBind(holder);
     }
 
     @Override
-    public RecyclerViewHolder onCreateFooterViewHolder(ViewGroup parent, int viewType) {
+    public RVViewHolder onCreateFooterViewHolder(ViewGroup parent, int viewType) {
 
-        return RecyclerViewHolder.create(context, footerCells.get(0).getLayoutId(), parent);
+        return RVViewHolder.create(context, footerCells.get(0).getLayoutId(), parent);
     }
 
     @Override
-    public void onBindFooterViewHolder(RecyclerViewHolder holder, int position) {
+    public void onBindFooterViewHolder(RVViewHolder holder, int position) {
 
-        Cell<RecyclerViewHolder> cell = footerCells.get(position);
+        Cell cell = footerCells.get(position);
         cell.onBind(holder);
     }
 
@@ -72,7 +77,7 @@ public final class CellAdapter<C extends Cell<RecyclerViewHolder>> extends BaseO
      *
      * @param cell
      */
-    public void addHeaderCell(C cell) {
+    public void addHeaderCell(Cell cell) {
 
         final int headerCount = headerCells.size();
         headerCells.add(cell);
@@ -80,6 +85,19 @@ public final class CellAdapter<C extends Cell<RecyclerViewHolder>> extends BaseO
 
             notifyItemRangeInserted(headerCount, 1);
         }
+    }
+
+    /**
+     * 移除一个header
+     *
+     * @param cell
+     */
+    public void removeHeaderCell(Cell cell) {
+
+        if(cell == null){
+            return;
+        }
+        removeHeaderCellAt(headerCells.indexOf(cell));
     }
 
     /**
@@ -103,6 +121,11 @@ public final class CellAdapter<C extends Cell<RecyclerViewHolder>> extends BaseO
     public void removeHeaderCellAt(int position) {
 
         final int headerCount = headerCells.size();
+
+        if(position < 0 || position > headerCount - 1){
+            return;
+        }
+
         headerCells.remove(position);
         if (isHeaderEnable()) {
 
@@ -118,7 +141,7 @@ public final class CellAdapter<C extends Cell<RecyclerViewHolder>> extends BaseO
      *
      * @param cell
      */
-    public void addFooterCell(C cell) {
+    public void addFooterCell(Cell cell) {
 
         footerCells.add(cell);
         if (isFooterEnable()) {
@@ -150,6 +173,11 @@ public final class CellAdapter<C extends Cell<RecyclerViewHolder>> extends BaseO
     public void removeFooterCellAt(int position) {
 
         final int footerCount = footerCells.size();
+
+        if(position < 0 || position > footerCount - 1){
+            return;
+        }
+
         footerCells.remove(position);
         if (isFooterEnable()) {
 
@@ -160,6 +188,19 @@ public final class CellAdapter<C extends Cell<RecyclerViewHolder>> extends BaseO
                 notifyItemRangeChanged(startPosition, footerCount - 1 - position);
             }
         }
+    }
+
+    /**
+     * 清除指定Footer
+     *
+     * @param cell
+     */
+    public void removeFooterCell(Cell cell) {
+
+        if(cell == null){
+            return;
+        }
+        removeFooterCellAt(footerCells.indexOf(cell));
     }
 
 
@@ -176,7 +217,7 @@ public final class CellAdapter<C extends Cell<RecyclerViewHolder>> extends BaseO
     @Override
     public int getContentItemViewType(int position) {
 
-        Cell<RecyclerViewHolder> cell = getDataAt(position);
+        Cell cell = getDataAt(position);
         int layoutId = cell.getLayoutId();
         int viewType = viewTypeIds.indexOfValue(layoutId);
         if (viewType == -1) {
@@ -187,29 +228,6 @@ public final class CellAdapter<C extends Cell<RecyclerViewHolder>> extends BaseO
         return viewType;
     }
 
-    @Override
-    public void onViewRecycled(RecyclerViewHolder holder) {
-        super.onViewRecycled(holder);
-        int position = holder.getAdapterPosition();
-        if (position == RecyclerView.NO_POSITION) {
-            return;
-        }
-        if (isHeaderItem(position)) {
-
-            C cell = headerCells.get(position);
-            cell.onRecycle(holder);
-        } else if (isContentItem(position)) {
-
-            int validHeaderCount = isHeaderEnable() ? getHeaderItemCount() : 0;
-            C cell = getDataAt(position - validHeaderCount);
-            cell.onRecycle(holder);
-        } else if (isFooterItem(position)) {
-
-            int validHeaderCount = isHeaderEnable() ? getHeaderItemCount() : 0;
-            C cell = footerCells.get(position - validHeaderCount - getContentItemCount());
-            cell.onRecycle(holder);
-        }
-    }
 
     @Override
     public void onDetachedFromRecyclerView(RecyclerView recyclerView) {
@@ -217,7 +235,7 @@ public final class CellAdapter<C extends Cell<RecyclerViewHolder>> extends BaseO
     }
 
     @Override
-    public boolean onFailedToRecycleView(RecyclerViewHolder holder) {
+    public boolean onFailedToRecycleView(RVViewHolder holder) {
 
         return super.onFailedToRecycleView(holder);
     }
@@ -239,7 +257,7 @@ public final class CellAdapter<C extends Cell<RecyclerViewHolder>> extends BaseO
                     if (isContentItem(position)) {
 
                         final int validHeaderCount = isHeaderEnable() ? getHeaderItemCount() : 0;
-                        C cell = getDataAt(position - validHeaderCount);
+                        Cell cell = getDataAt(position - validHeaderCount);
                         int spanSize = cell.getSpanSize();
                         if(spanSize == Cell.FULL_SPAN){
                             spanSize = ((GridLayoutManager) layoutManager).getSpanCount();
@@ -257,7 +275,7 @@ public final class CellAdapter<C extends Cell<RecyclerViewHolder>> extends BaseO
     }
 
     @Override
-    public void onViewAttachedToWindow(RecyclerViewHolder holder) {
+    public void onViewAttachedToWindow(RVViewHolder holder) {
         super.onViewAttachedToWindow(holder);
 
         final int position = holder.getAdapterPosition();
@@ -268,7 +286,7 @@ public final class CellAdapter<C extends Cell<RecyclerViewHolder>> extends BaseO
         if (isContentItem(position)) {
 
             int validHeaderCount = isHeaderEnable() ? getHeaderItemCount() : 0;
-            C cell = getDataAt(position - validHeaderCount);
+            Cell cell = getDataAt(position - validHeaderCount);
             if(cell.getSpanSize() == Cell.FULL_SPAN){
 
                 ViewGroup.LayoutParams lp = holder.itemView.getLayoutParams();
@@ -284,26 +302,26 @@ public final class CellAdapter<C extends Cell<RecyclerViewHolder>> extends BaseO
 
         if (isHeaderItem(position)) {
 
-            C cell = headerCells.get(position);
+            Cell cell = headerCells.get(position);
             cell.onAttachToWindow(holder);
             cell.registerCellObserver(cellObserver);
         } else if (isContentItem(position)) {
 
             int validHeaderCount = isHeaderEnable() ? getHeaderItemCount() : 0;
-            C cell = getDataAt(position - validHeaderCount);
+            Cell cell = getDataAt(position - validHeaderCount);
             cell.onAttachToWindow(holder);
             cell.registerCellObserver(cellObserver);
         } else if (isFooterItem(position)) {
 
             int validHeaderCount = isHeaderEnable() ? getHeaderItemCount() : 0;
-            C cell = footerCells.get(position - validHeaderCount - getContentItemCount());
+            Cell cell = footerCells.get(position - validHeaderCount - getContentItemCount());
             cell.onAttachToWindow(holder);
             cell.registerCellObserver(cellObserver);
         }
     }
 
     @Override
-    public void onViewDetachedFromWindow(RecyclerViewHolder holder) {
+    public void onViewDetachedFromWindow(RVViewHolder holder) {
         super.onViewDetachedFromWindow(holder);
         int position = holder.getAdapterPosition();
         if (position == RecyclerView.NO_POSITION) {
@@ -311,17 +329,17 @@ public final class CellAdapter<C extends Cell<RecyclerViewHolder>> extends BaseO
         }
         if (isHeaderItem(position)) {
 
-            C cell = headerCells.get(position);
+            Cell cell = headerCells.get(position);
             cell.onDetachFromWindow(holder);
         } else if (isContentItem(position)) {
 
             int validHeaderCount = isHeaderEnable() ? getHeaderItemCount() : 0;
-            C cell = getDataAt(position - validHeaderCount);
+            Cell cell = getDataAt(position - validHeaderCount);
             cell.onDetachFromWindow(holder);
         } else if (isFooterItem(position)) {
 
             int validHeaderCount = isHeaderEnable() ? getHeaderItemCount() : 0;
-            C cell = footerCells.get(position - validHeaderCount - getContentItemCount());
+            Cell cell = footerCells.get(position - validHeaderCount - getContentItemCount());
             cell.onDetachFromWindow(holder);
             cell.unRegisterCellObserver(cellObserver);
         }
@@ -336,8 +354,7 @@ public final class CellAdapter<C extends Cell<RecyclerViewHolder>> extends BaseO
         return -1;
     }
 
-    public int findPositionOfCell(Cell<RecyclerViewHolder> cell) {
-
+    public int findPositionOfCell(Cell cell) {
 
         int cellPosition = findCellPositionFromHeader(cell);
         if (cellPosition == -1) {
@@ -358,53 +375,33 @@ public final class CellAdapter<C extends Cell<RecyclerViewHolder>> extends BaseO
         return cellPosition;
     }
 
-    private int findCellPositionFromHeader(Cell<RecyclerViewHolder> cell) {
+    private int findCellPositionFromHeader(Cell cell) {
 
-        if (!isHeaderEnable()) {
+        if (!isHeaderEnable() || cell == null) {
             return -1;
         }
 
-        final int headerCount = getHeaderItemCount();
-        for (int i = 0; i < headerCount; i++) {
-
-            Cell<RecyclerViewHolder> headerCell = headerCells.get(i);
-            if (headerCell.equals(cell)) {
-                return i;
-            }
-        }
-        return -1;
+        return headerCells.indexOf(cell);
     }
 
-    private int findCellPositionFromContent(Cell<RecyclerViewHolder> cell) {
+    private int findCellPositionFromContent(Cell cell) {
 
-        final int headerCount = getContentItemCount();
-        for (int i = 0; i < headerCount; i++) {
-
-            Cell<RecyclerViewHolder> headerCell = getDataAt(i);
-            if (headerCell.equals(cell)) {
-                return i;
-            }
-        }
-        return -1;
+        return getDataIndex(cell);
     }
 
-    private int findCellPositionFromFooter(Cell<RecyclerViewHolder> cell) {
+    private int findCellPositionFromFooter(Cell cell) {
 
-        final int headerCount = getFooterItemCount();
-        for (int i = 0; i < headerCount; i++) {
-
-            Cell<RecyclerViewHolder> headerCell = footerCells.get(i);
-            if (headerCell.equals(cell)) {
-                return i;
-            }
+        if (!isFooterEnable() || cell == null) {
+            return -1;
         }
-        return -1;
+
+        return footerCells.indexOf(cell);
     }
 
-    private CellObserver<RecyclerViewHolder> cellObserver = new CellObserver<RecyclerViewHolder>() {
+    private CellObserver cellObserver = new CellObserver() {
 
         @Override
-        public void onCellChange(Cell<RecyclerViewHolder> cell) {
+        public void onCellChange(Cell cell) {
 
             int position = findPositionOfCell(cell);
             if(position != -1){
@@ -413,13 +410,13 @@ public final class CellAdapter<C extends Cell<RecyclerViewHolder>> extends BaseO
         }
 
         @Override
-        public void onCellInsert(Cell<RecyclerViewHolder> cell) {
+        public void onCellInsert(Cell cell) {
 
             
         }
 
         @Override
-        public void onCellRemove(Cell<RecyclerViewHolder> cell) {
+        public void onCellRemove(Cell cell) {
 
         }
     };

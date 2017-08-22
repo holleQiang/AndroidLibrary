@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -15,8 +16,11 @@ public abstract class BaseObjectRecyclerAdapter<T,V extends RecyclerView.ViewHol
     private List<T> dataList;
     protected Context context;
 
-    public BaseObjectRecyclerAdapter(List<T> dataList, Context context) {
-        super();
+    public BaseObjectRecyclerAdapter(Context context) {
+        this(context,null);
+    }
+
+    public BaseObjectRecyclerAdapter(Context context,List<T> dataList) {
         this.dataList = (dataList == null ? new ArrayList<T>() : dataList);
         this.context = context;
     }
@@ -77,6 +81,10 @@ public abstract class BaseObjectRecyclerAdapter<T,V extends RecyclerView.ViewHol
      * @param position
      */
     public void removeDataAtIndex(int position){
+
+        if(position < 0 || position > getContentItemCount() - 1){
+            return;
+        }
 
         this.dataList.remove(position);
         int startPosition = getFixedPosition(position);
@@ -150,6 +158,36 @@ public abstract class BaseObjectRecyclerAdapter<T,V extends RecyclerView.ViewHol
     public void removeData(T data){
 
         removeDataAtIndex(getDataIndex(data));
+    }
+
+    /**
+     * 从指定位置移除指定数量的数据
+     * @param position
+     * @param count
+     */
+    public void removeDataFrom(int position,int count){
+
+        if(count <= 0 || position < 0 || position + count > getContentItemCount()){
+            return;
+        }
+
+        int index = -1;
+        Iterator<T> iterator = this.dataList.iterator();
+        while (iterator.hasNext()){
+
+            iterator.next();
+            index ++;
+
+            if(index >= position && index < position + count){
+                iterator.remove();
+            }
+            if(index == position + count){
+                break;
+            }
+        }
+        int startPosition = getFixedPosition(position);
+        notifyItemRangeRemoved(startPosition,count);
+        notifyItemRangeChangedIfNeed(position,startPosition);
     }
 
     public void removeAll(){
