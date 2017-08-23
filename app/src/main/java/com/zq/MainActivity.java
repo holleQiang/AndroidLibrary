@@ -38,83 +38,8 @@ public class MainActivity extends AppCompatActivity {
 
         for (int j = 0; j < 10; j++) {
 
-            cellAdapter.addDataAtFirst(new CollapsibleCell<String>(R.layout.item_parent, Cell.FULL_SPAN,"", collapsibleCells){
-
-
-                @Override
-                public List<Cell> initCollapsibleCells() {
-
-                    List<Cell> list = new ArrayList<>();
-                    for (int i = 0; i < 5; i++) {
-                        list.add(new CollapsibleCell<String>(R.layout.item_parent2, Cell.FULL_SPAN,"", collapsibleCells){
-
-
-                            @Override
-                            public List<Cell> initCollapsibleCells() {
-
-                                List<Cell> list = new ArrayList<>();
-                                for (int i = 0; i < 5; i++) {
-                                    list.add(new CollapsibleCell<String>(R.layout.item_parent3, Cell.FULL_SPAN,"", collapsibleCells){
-
-
-                                        @Override
-                                        public List<Cell> initCollapsibleCells() {
-
-                                            List<String> list = new ArrayList<>();
-                                            for (int i = 0; i < 5; i++) {
-                                                list.add("Item :" + i);
-                                            }
-
-                                            return MultiCell.convert2(R.layout.item_child, list, new DataBinder<String>() {
-                                                @Override
-                                                public void bindData(RVViewHolder viewHolder, String data) {
-                                                }
-                                            });
-                                        }
-
-                                        @Override
-                                        public void bindData(RVViewHolder viewHolder, String data) {
-
-                                            viewHolder.getView().setOnClickListener(new View.OnClickListener() {
-                                                @Override
-                                                public void onClick(View v) {
-
-                                                    if(isCollapsible()){
-
-                                                        expand(cellAdapter);
-                                                    }else{
-
-                                                        collapse(cellAdapter);
-                                                    }
-                                                }
-                                            });
-                                        }
-                                    });
-                                }
-                                return list;
-                            }
-
-                            @Override
-                            public void bindData(RVViewHolder viewHolder, String data) {
-
-                                viewHolder.getView().setOnClickListener(new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View v) {
-
-                                        if(isCollapsible()){
-
-                                            expand(cellAdapter);
-                                        }else{
-
-                                            collapse(cellAdapter);
-                                        }
-                                    }
-                                });
-                            }
-                        });
-                    }
-                    return list;
-                }
+            cellAdapter.addDataAtFirst(new CollapsibleCell<String>(R.layout.item_parent, Cell.FULL_SPAN,"",
+                    makeCollapsibleCellList(R.layout.item_parent2,makeCollapsibleCellList(R.layout.item_parent3,makeNormalCellList()))){
 
                 @Override
                 public void bindData(RVViewHolder viewHolder, String data) {
@@ -136,8 +61,52 @@ public class MainActivity extends AppCompatActivity {
             });
         }
 
-
         mRecyclerView.setLayoutManager(new GridLayoutManager(this,4));
         mRecyclerView.setAdapter(cellAdapter);
+    }
+
+
+
+    private List<Cell> makeCollapsibleCellList(int layoutId,List<Cell> cellList){
+
+
+        List<Cell> list = new ArrayList<>();
+        for (int i = 0; i < 5; i++) {
+            list.add(new CollapsibleCell<String>(layoutId, Cell.FULL_SPAN,"", cellList){
+
+                @Override
+                public void bindData(RVViewHolder viewHolder, String data) {
+
+                    viewHolder.getView().setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+
+                            if(isCollapsible()){
+
+                                expand(cellAdapter);
+                            }else{
+
+                                collapse(cellAdapter);
+                            }
+                        }
+                    });
+                }
+            });
+        }
+        return list;
+    }
+
+    private List<Cell> makeNormalCellList(){
+
+        List<String> list = new ArrayList<>();
+        for (int i = 0; i < 5; i++) {
+            list.add("Item :" + i);
+        }
+
+        return MultiCell.convert2(R.layout.item_child, list, new DataBinder<String>() {
+            @Override
+            public void bindData(RVViewHolder viewHolder, String data) {
+            }
+        });
     }
 }

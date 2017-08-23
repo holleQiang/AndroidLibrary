@@ -50,24 +50,24 @@ public class TDWheelView extends View {
 
     public TDWheelView(Context context) {
         super(context);
-        init(context, null);
+        init(context, null, R.style.TDWheelView);
     }
 
     public TDWheelView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
-        init(context, attrs);
+        init(context, attrs, R.style.TDWheelView);
     }
 
 
     public TDWheelView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        init(context, attrs);
+        init(context, attrs,defStyleAttr);
     }
 
-    private void init(Context context, AttributeSet attrs) {
+    private void init(Context context, AttributeSet attrs, int defStyleAttr) {
 
         if (attrs != null) {
-            TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.TDWheelView);
+            TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.TDWheelView,R.attr.TDWheelViewStyle,defStyleAttr);
 
             visibleItemCount = typedArray.getInt(R.styleable.TDWheelView_tdw_visibleItemCount, 11);
             lineSpacing = typedArray.getFloat(R.styleable.TDWheelView_tdw_lineSpacing, 1.2f);

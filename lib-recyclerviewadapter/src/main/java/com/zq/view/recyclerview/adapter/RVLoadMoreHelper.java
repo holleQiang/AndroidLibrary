@@ -6,6 +6,7 @@ import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.View;
 
 /**
+ * recyclerView 加载更多辅助类
  * Created by zhangqiang on 2017/8/17.
  */
 

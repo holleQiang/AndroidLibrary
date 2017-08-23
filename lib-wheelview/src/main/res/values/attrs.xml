@@ -24,4 +24,6 @@
         //中间两条线的宽度
         <attr name="tdw_lineWidth" format="dimension|reference"/>
     </declare-styleable>
+
+    <attr name="TDWheelViewStyle" format="reference"/>
 </resources>
