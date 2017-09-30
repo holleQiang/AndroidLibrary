@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <com.zq.widget.linechart.LineChartView2
+                android:id="@+id/line_chart_view2"
+                android:padding="10dp"
+                app:yAxisLineWidth="1dp"
+                app:yAxisLineColor="#ff0000"
+                app:xAxisLineWidth="1dp"
+                app:xAxisLineColor="#ff0000"
+                app:isYAxisInside="false"
+                app:yAxisTextSize="15sp"
+                app:xAxisSpacing="10dp"
+                app:xAxisValueLineVisible="true"
+                app:yAxisValueLineVisible="true"
+                app:yAxisSpacing="5dp"
+                app:yAxisTextColor="#00ff00"
+                android:layout_width="match_parent"
+                android:layout_height="300dp"/>
+
+            <com.zq.widget.AxisFrameView
+                android:id="@+id/axis_frame_view"
+                android:padding="10dp"
+                app:yAxisLineWidth="1dp"
+                app:yAxisLineColor="#ff0000"
+                app:xAxisLineWidth="1dp"
+                app:xAxisLineColor="#ffaa00"
+                app:isYAxisInside="true"
+                app:yAxisTextSize="15sp"
+                app:xAxisSpacing="10dp"
+                app:xAxisValueLineVisible="true"
+                app:yAxisValueLineVisible="true"
+                app:yAxisSpacing="5dp"
+                app:yAxisTextColor="#00ff00"
+                android:layout_width="match_parent"
+                android:layout_height="300dp" />
+
+
+
+        </LinearLayout>
+    </ScrollView>
+
+
+</LinearLayout>

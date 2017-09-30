@@ -21,9 +21,9 @@ import java.sql.SQLException;
  * Created by zhangqiang on 17-7-4.
  */
 
-public class MySQL<T extends SQLBean> extends AbstractSQL<T> {
+public class MySQL extends AbstractSQL {
 
-    private DaoFactory<T> daoFactory;
+    private DaoFactory daoFactory;
     private TableHandlerFactory tableHandlerFactory;
 
     static {
@@ -39,12 +39,12 @@ public class MySQL<T extends SQLBean> extends AbstractSQL<T> {
     }
 
     @Override
-    public TableHandler getTableHandler(Class<T> sqlBeanClass) {
+    public <T extends SQLBean> TableHandler getTableHandler(Class<T> sqlBeanClass) {
         return getTableHandler(sqlBeanClass, null);
     }
 
     @Override
-    public TableHandler getTableHandler(Class<T> sqlBeanClass, SQLBeanCreator<T> creator) {
+    public <T extends SQLBean> TableHandler getTableHandler(Class<T> sqlBeanClass, SQLBeanCreator<T> creator) {
 
         if (tableHandlerFactory == null) {
             tableHandlerFactory = new MySQLTableHandlerFactory(Pool.getInstance());
@@ -57,22 +57,23 @@ public class MySQL<T extends SQLBean> extends AbstractSQL<T> {
     }
 
     @Override
-    public Dao<T> getDao(Class<T> sqlBeanClass) {
+    public <T extends SQLBean> Dao<T> getDao(Class<T> sqlBeanClass) {
         return getDao(sqlBeanClass, null);
     }
 
     @Override
-    public Dao<T> getDao(Class<T> sqlBeanClass, SQLBeanCreator<T> creator) {
+    public <T extends SQLBean> Dao<T> getDao(Class<T> sqlBeanClass, SQLBeanCreator<T> creator) {
 
         if (creator == null) {
             creator = new DefaultSQLBeanCreator<>();
         }
 
         if (daoFactory == null) {
-            daoFactory = new MySQLDaoFactory<>(Pool.getInstance());
+            daoFactory = new MySQLDaoFactory(Pool.getInstance());
         }
         return daoFactory.getDao(sqlBeanClass, creator);
     }
+
 
     private static class Pool extends ConnectionPool {
 

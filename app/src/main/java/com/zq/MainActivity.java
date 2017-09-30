@@ -1,26 +1,25 @@
 package com.zq;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
-import com.zq.view.recyclerview.adapter.cell.Cell;
+import com.zq.histogram.HistogramActivity;
+import com.zq.linechart.LineChartActivity;
+import com.zq.view.recyclerview.adapter.OnItemClickListener;
 import com.zq.view.recyclerview.adapter.cell.CellAdapter;
 import com.zq.view.recyclerview.adapter.cell.DataBinder;
 import com.zq.view.recyclerview.adapter.cell.MultiCell;
-import com.zq.view.recyclerview.adapter.cell.collapse.CollapsibleCell;
 import com.zq.view.recyclerview.utils.RVUtil;
 import com.zq.view.recyclerview.viewholder.RVViewHolder;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements OnItemClickListener{
 
     @InjectView(R.id.m_recycler_view)
     RecyclerView mRecyclerView;
@@ -33,80 +32,33 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         ButterKnife.inject(this);
 
-        RVUtil.setChangeAnimationEnable(mRecyclerView,false);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        RVUtil.setChangeAnimationEnable(mRecyclerView, false);
         cellAdapter = new CellAdapter(this);
-
-        for (int j = 0; j < 10; j++) {
-
-            cellAdapter.addDataAtFirst(new CollapsibleCell<String>(R.layout.item_parent, Cell.FULL_SPAN,"",
-                    makeCollapsibleCellList(R.layout.item_parent2,makeCollapsibleCellList(R.layout.item_parent3,makeNormalCellList()))){
-
-                @Override
-                public void bindData(RVViewHolder viewHolder, String data) {
-
-                    viewHolder.getView().setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-
-                            if(isCollapsible()){
-
-                                expand(cellAdapter);
-                            }else{
-
-                                collapse(cellAdapter);
-                            }
-                        }
-                    });
-                }
-            });
-        }
-
-        mRecyclerView.setLayoutManager(new GridLayoutManager(this,4));
+        cellAdapter.addDataAtLast(MultiCell.convert(R.layout.item_text, "图表", dataBinder));
+        cellAdapter.addDataAtLast(MultiCell.convert(R.layout.item_text, "柱状图", dataBinder));
+        cellAdapter.setOnItemClickListener(this);
         mRecyclerView.setAdapter(cellAdapter);
     }
 
-
-
-    private List<Cell> makeCollapsibleCellList(int layoutId,List<Cell> cellList){
-
-
-        List<Cell> list = new ArrayList<>();
-        for (int i = 0; i < 5; i++) {
-            list.add(new CollapsibleCell<String>(layoutId, Cell.FULL_SPAN,"", cellList){
-
-                @Override
-                public void bindData(RVViewHolder viewHolder, String data) {
-
-                    viewHolder.getView().setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-
-                            if(isCollapsible()){
-
-                                expand(cellAdapter);
-                            }else{
-
-                                collapse(cellAdapter);
-                            }
-                        }
-                    });
-                }
-            });
+    private DataBinder<String> dataBinder = new DataBinder<String>() {
+        @Override
+        public void bindData(RVViewHolder viewHolder, String data) {
+            viewHolder.setText(R.id.textView, data);
         }
-        return list;
-    }
+    };
 
-    private List<Cell> makeNormalCellList(){
+    @Override
+    public void onItemClick(RecyclerView.ViewHolder holder, int position) {
 
-        List<String> list = new ArrayList<>();
-        for (int i = 0; i < 5; i++) {
-            list.add("Item :" + i);
+        MultiCell multiCell = (MultiCell) cellAdapter.getDataAt(position);
+        String fun = (String) multiCell.getData();
+        if(fun.equals("图表")){
+
+            startActivity(new Intent(MainActivity.this, LineChartActivity.class));
+        }else if("柱状图".equals(fun)){
+
+            startActivity(new Intent(MainActivity.this, HistogramActivity.class));
         }
-
-        return MultiCell.convert2(R.layout.item_child, list, new DataBinder<String>() {
-            @Override
-            public void bindData(RVViewHolder viewHolder, String data) {
-            }
-        });
     }
 }

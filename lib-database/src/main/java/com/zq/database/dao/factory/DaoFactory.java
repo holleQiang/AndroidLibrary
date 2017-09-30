@@ -9,8 +9,7 @@ import com.zq.database.dao.Dao;
  * Created by zhangqiang on 17-6-19.
  */
 
-public interface DaoFactory<T extends SQLBean> {
+public interface DaoFactory {
 
-     Dao<T> getDao(Class<T> sqlBeanClass, SQLBeanCreator<T> sqlBeanCreator);
-
+     <T extends SQLBean> Dao<T> getDao(Class<T> sqlBeanClass, SQLBeanCreator<T> sqlBeanCreator);
 }

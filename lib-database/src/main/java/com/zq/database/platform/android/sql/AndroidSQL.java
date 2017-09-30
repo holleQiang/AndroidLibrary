@@ -17,7 +17,7 @@ import com.zq.database.table.factory.TableHandlerFactory;
  * Created by zhangqiang on 17-6-21.
  */
 
-public class AndroidSQL<T extends SQLBean> extends AbstractSQL<T> {
+public class AndroidSQL extends AbstractSQL {
 
     private DaoFactory daoFactory;
     private TableHandlerFactory tableHandlerFactory;
@@ -35,12 +35,12 @@ public class AndroidSQL<T extends SQLBean> extends AbstractSQL<T> {
     }
 
     @Override
-    public TableHandler getTableHandler(Class<T> sqlBeanClass) {
+    public <T extends SQLBean> TableHandler getTableHandler(Class<T> sqlBeanClass) {
         return getTableHandler(sqlBeanClass,null);
     }
 
     @Override
-    public TableHandler getTableHandler(Class<T> sqlBeanClass, SQLBeanCreator<T> creator) {
+    public <T extends SQLBean> TableHandler getTableHandler(Class<T> sqlBeanClass, SQLBeanCreator<T> creator) {
 
         if(tableHandlerFactory == null){
             tableHandlerFactory = new AndroidTableHandlerFactory();
@@ -52,12 +52,12 @@ public class AndroidSQL<T extends SQLBean> extends AbstractSQL<T> {
     }
 
     @Override
-    public Dao<T> getDao(Class<T> sqlBeanClass) {
+    public <T extends SQLBean> Dao<T> getDao(Class<T> sqlBeanClass) {
         return getDao(sqlBeanClass,null);
     }
 
     @Override
-    public Dao<T> getDao(Class<T> sqlBeanClass, SQLBeanCreator<T> creator) {
+    public <T extends SQLBean> Dao<T> getDao(Class<T> sqlBeanClass, SQLBeanCreator<T> creator) {
 
         if(daoFactory == null){
             daoFactory = new AndroidDaoFactory(sqLiteOpenHelper);
@@ -67,4 +67,7 @@ public class AndroidSQL<T extends SQLBean> extends AbstractSQL<T> {
         }
         return daoFactory.getDao(sqlBeanClass, creator);
     }
+
+
+
 }

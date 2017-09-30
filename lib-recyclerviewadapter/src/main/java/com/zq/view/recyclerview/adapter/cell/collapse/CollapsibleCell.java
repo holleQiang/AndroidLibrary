@@ -6,6 +6,7 @@ import com.zq.view.recyclerview.adapter.cell.Cell;
 import com.zq.view.recyclerview.adapter.cell.CellAdapter;
 import com.zq.view.recyclerview.adapter.cell.DataBinder;
 import com.zq.view.recyclerview.adapter.cell.MultiCell;
+import com.zq.view.recyclerview.viewholder.RVViewHolder;
 
 import java.util.List;
 
@@ -14,7 +15,7 @@ import java.util.List;
  * Created by zhangqiang on 2017/8/21.
  */
 
-public abstract class CollapsibleCell<T> extends MultiCell<T> implements DataBinder<T>{
+public abstract class CollapsibleCell<T> extends MultiCell<T>{
 
     private boolean isCollapsible = true;
     private List<Cell> collapsibleCells;
@@ -27,16 +28,14 @@ public abstract class CollapsibleCell<T> extends MultiCell<T> implements DataBin
         super(layoutId, spanSize);
     }
 
-    public CollapsibleCell(@LayoutRes int layoutId, T data, List<Cell> collapsibleCells) {
+    public CollapsibleCell(@LayoutRes int layoutId, T data, DataBinder<T> dataBinder,List<Cell> collapsibleCells) {
         super(layoutId, data, null);
         this.collapsibleCells = collapsibleCells;
-        setDataBinder(this);
     }
 
-    public CollapsibleCell(@LayoutRes int layoutId, int spanSize, T data, List<Cell> collapsibleCells) {
+    public CollapsibleCell(@LayoutRes int layoutId, int spanSize, T data, DataBinder<T> dataBinder,List<Cell> collapsibleCells) {
         super(layoutId, spanSize, data, null);
         this.collapsibleCells = collapsibleCells;
-        setDataBinder(this);
     }
 
     /**

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <declare-styleable name="AxisFrameView">
+
+        <attr name="xAxisLineVisible" format="boolean|reference"/>
+        <attr name="xAxisLineColor" format="color|reference"/>
+        <attr name="xAxisLineWidth" format="dimension|reference"/>
+        <attr name="xAxisTextSize" format="dimension|reference"/>
+        <attr name="xAxisTextColor" format="color|reference"/>
+        <attr name="xAxisSpacing" format="dimension|reference"/>
+        <attr name="xAxisValueLineColor" format="color|reference"/>
+        <attr name="xAxisValueLineWidth" format="dimension|reference"/>
+        <attr name="xAxisValueLineVisible" format="boolean|reference"/>
+
+        <attr name="yAxisLineVisible" format="boolean|reference"/>
+        <attr name="yAxisLineColor" format="color|reference"/>
+        <attr name="yAxisLineWidth" format="dimension|reference"/>
+        <attr name="yAxisTextSize" format="dimension|reference"/>
+        <attr name="yAxisTextColor" format="color|reference"/>
+        <attr name="isYAxisInside" format="boolean|reference"/>
+        <attr name="yAxisSpacing" format="dimension|reference"/>
+        <attr name="yAxisValueLineColor" format="color|reference"/>
+        <attr name="yAxisValueLineWidth" format="dimension|reference"/>
+        <attr name="yAxisValueLineVisible" format="boolean|reference"/>
+
+    </declare-styleable>
+
+    <declare-styleable name="HistogramView">
+        <attr name="rectSpacing" format="dimension|reference"/>
+    </declare-styleable>
+</resources>

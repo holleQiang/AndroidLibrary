@@ -381,6 +381,16 @@ public class MySQLDaoIMPL<T extends SQLBean> extends AbstractDao<T> {
         return insert(columns, values);
     }
 
+    @Override
+    public void execute(String sql, String[] args) throws SQLException {
+
+        Connection connection = connectionPool.poll();
+        PreparedStatement statement = connection.prepareStatement(sql);
+        if(args != null){
+
+        }
+    }
+
 //    private static void fillParams(PreparedStatement preparedStatement,Object[] args){
 //
 //        if(args == null || args.length <= 0){
@@ -391,7 +401,8 @@ public class MySQLDaoIMPL<T extends SQLBean> extends AbstractDao<T> {
 //
 //            Object object = args[i];
 //            if(object == null){
-//                preparedStatement.set
+//
+//
 //            }
 //        }
 //    }

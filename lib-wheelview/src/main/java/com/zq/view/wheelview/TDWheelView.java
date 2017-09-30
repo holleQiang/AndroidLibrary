@@ -22,16 +22,19 @@ import android.widget.OverScroller;
 public class TDWheelView extends View {
 
     private int visibleItemCount = 11;
+    private double visibleRadian;
+    private float radiusScale = 1.2f;
     private float lineSpacing = 1.2f;
     private float textScale = 0.6f;
     private Adapter adapter;
-    private Paint textPaint, extraTextPaint, linePaint;
+    private Paint selectTextPaint,unSelectTextPaint, extraTextPaint, linePaint;
     private float itemHeight;
+    //切面高度
+    private float itemSectionHeight;
     private float radius;
     private float verticalOffset;
     private float topLine, bottomLine, centerLine;
     private int extraTextPadding = 50;
-    private float extraTextSize = 50;
     private int lineWidth, lineColor;
 
     private boolean isBeingDragged;
@@ -45,8 +48,10 @@ public class TDWheelView extends View {
     private float maxTextHeight;
     private int selectTextColor = Color.BLACK;
     private int unSelectTextColor = Color.GRAY;
-    private float textSize = 100;
+    private float selectTextSize = 100;
+    private float unSelectTextSize = 100;
     private OnItemSelectListener onItemSelectListener;
+    private float selectXOffset;
 
     public TDWheelView(Context context) {
         super(context);
@@ -75,19 +80,28 @@ public class TDWheelView extends View {
             extraTextPadding = typedArray.getDimensionPixelSize(R.styleable.TDWheelView_tdw_extraTextPadding, 20);
             selectTextColor = typedArray.getColor(R.styleable.TDWheelView_tdw_selectTextColor, Color.BLACK);
             unSelectTextColor = typedArray.getColor(R.styleable.TDWheelView_tdw_unSelectTextColor, Color.GRAY);
-            textSize = typedArray.getDimensionPixelSize(R.styleable.TDWheelView_tdw_textSize, 100);
-            extraTextSize = typedArray.getDimensionPixelSize(R.styleable.TDWheelView_tdw_extraTextSize, 80);
+            selectTextSize = typedArray.getDimensionPixelSize(R.styleable.TDWheelView_tdw_textSize, 100);
             lineWidth = typedArray.getDimensionPixelOffset(R.styleable.TDWheelView_tdw_lineWidth, 2);
+            unSelectTextSize = typedArray.getDimensionPixelSize(R.styleable.TDWheelView_tdw_unSelectTextSize,80);
             lineColor = typedArray.getColor(R.styleable.TDWheelView_tdw_lineColor, Color.BLACK);
+            selectXOffset = typedArray.getDimensionPixelSize(R.styleable.TDWheelView_tdw_selectXOffset,0);
+            radiusScale = typedArray.getFloat(R.styleable.TDWheelView_tdw_radiusScale,1.2f);
             typedArray.recycle();
         }
 
+        visibleRadian = 2 * Math.asin(1 / radiusScale);
 
-        textPaint = new Paint();
-        textPaint.setTextSize(textSize);
-        textPaint.setAntiAlias(true);
+        selectTextPaint = new Paint();
+        selectTextPaint.setTextSize(selectTextSize);
+        selectTextPaint.setAntiAlias(true);
+        selectTextPaint.setColor(selectTextColor);
+
+        unSelectTextPaint = new Paint();
+        unSelectTextPaint.setTextSize(unSelectTextSize);
+        unSelectTextPaint.setAntiAlias(true);
+        unSelectTextPaint.setColor(unSelectTextColor);
+
         extraTextPaint = new Paint();
-        extraTextPaint.setTextSize(extraTextSize);
         extraTextPaint.setAntiAlias(true);
 
         linePaint = new Paint();
@@ -121,41 +135,45 @@ public class TDWheelView extends View {
 
         for (int i = 0; i < count; i++) {
 
+            final float radianLength = itemHeight * (visibleItemCount - 1);
+            float offset = (float) ((radius * Math.PI - radianLength)/2) ;
 
-            float radian = (itemHeight * i + verticalOffset) / radius;
-
-            float itemTop = itemHeight * i + verticalOffset;
+            float itemTop = itemHeight * i + verticalOffset + offset - itemHeight/2;
             float itemBottom = itemTop + itemHeight;
-            float itemCenter = itemTop + itemHeight / 2;
-            float bottom = itemHeight * (visibleItemCount - 1);
-            float center = bottom / 2;
-            if (itemTop <= 0 || itemTop >= bottom) {
+            float itemCenter = (itemTop + itemBottom)/2;
+            float top = offset;
+            float bottom = top + radianLength;
+            float center = (top + bottom) / 2;
+            if (itemBottom < top || itemTop > bottom) {
                 continue;
             }
 
-            if (itemTop < 0 && itemBottom > 0) {
+            float radian = (itemHeight * i + verticalOffset + offset) / radius;
+
+            if (itemTop <= top && itemBottom > top) {
 
                 firstVisiblePosition = i;
             }
-            if (itemTop < bottom && itemBottom > bottom) {
+            if (itemTop < bottom && itemBottom >= bottom) {
 
                 lastVisiblePosition = i;
             }
 
-
             canvas.save();
 
-            float translationY = (float) (radius - radius * Math.cos(radian) - Math.sin(radian) * itemHeight / 2);
+            float debugRadian = ( offset) / radius;
+            float debugTranslationY = (float) (radius - radius * Math.cos(debugRadian));
+
+            float translationY = (float) (radius - radius * Math.cos(radian) - Math.sin(radian) * itemSectionHeight / 2);
+            translationY -= debugTranslationY;
 
             canvas.translate(centerX, translationY);
 
-            float scaleY = (float) Math.sin(radian);
-
             //根据偏移中心的比例计算缩放
-            float currentScale = textScale + (1 - textScale) * (1 - (Math.abs(center - itemCenter)) / center);
+            float currentScale = textScale + (1 - textScale) * (1 - (Math.abs(center - itemCenter)) / (center - top));
             canvas.scale(currentScale, currentScale);
 
-            float realItemHeight = itemHeight * scaleY;
+            float realItemHeight = (float) (Math.sin(radian) * itemSectionHeight);
 
             if (translationY < centerLine && translationY + realItemHeight > bottomLine
                     || translationY < topLine && translationY + realItemHeight > centerLine) {
@@ -163,65 +181,87 @@ public class TDWheelView extends View {
                 selectPosition = i;
             }
 
+            float scaleY = (float) Math.sin(radian);
             canvas.scale(1, scaleY);
 
             String text = adapter.getTextAt(i);
             String leftText = adapter.getLeftExtraText(i);
             String rightText = adapter.getRightExtraText(i);
-            float textWidth = textPaint.measureText(text);
 
-            float leftTextWidth = 0;
-            if (leftText != null) {
-                leftTextWidth = extraTextPaint.measureText(leftText);
-            }
-
-            float rightTextWidth = 0;
-            if (rightText != null) {
-                rightTextWidth = extraTextPaint.measureText(rightText);
-            }
 
             if (translationY < topLine && translationY + realItemHeight > topLine) {
 
                 canvas.save();
-                canvas.clipRect(getLeftClipText(textWidth, leftTextWidth), 0, getRightClipText(textWidth, rightTextWidth), topLine - translationY);
-                textPaint.setColor(unSelectTextColor);
                 extraTextPaint.setColor(unSelectTextColor);
-                drawText(canvas, leftTextWidth, leftText, textWidth, text, rightTextWidth, rightText);
+                extraTextPaint.setTextSize(unSelectTextSize);
+                float textWidth = unSelectTextPaint.measureText(text);
+                float leftTextWidth = measureLeftTextWidth(leftText);
+                float rightTextWidth = measureRightTextWidth(rightText);
+                canvas.clipRect(getLeftClipText(textWidth, leftTextWidth), 0, getRightClipText(textWidth, rightTextWidth), topLine - translationY);
+                drawText(canvas,unSelectTextPaint, leftTextWidth, leftText, textWidth, text, rightTextWidth, rightText);
                 canvas.restore();
 
+
                 canvas.save();
-                canvas.clipRect(getLeftClipText(textWidth, leftTextWidth), topLine - translationY, getRightClipText(textWidth, rightTextWidth), translationY + realItemHeight);
-                textPaint.setColor(selectTextColor);
+                if(selectXOffset != 0){
+                    canvas.translate(selectXOffset,0);
+                }
                 extraTextPaint.setColor(selectTextColor);
-                drawText(canvas, leftTextWidth, leftText, textWidth, text, rightTextWidth, rightText);
+                extraTextPaint.setTextSize(selectTextSize);
+                textWidth = selectTextPaint.measureText(text);
+                leftTextWidth = measureLeftTextWidth(leftText);
+                rightTextWidth = measureRightTextWidth(rightText);
+                canvas.clipRect(getLeftClipText(textWidth, leftTextWidth), topLine - translationY, getRightClipText(textWidth, rightTextWidth), translationY + realItemHeight);
+                drawText(canvas, selectTextPaint,leftTextWidth, leftText, textWidth, text, rightTextWidth, rightText);
                 canvas.restore();
 
             } else if (translationY < bottomLine && translationY + realItemHeight > bottomLine) {
 
 
                 canvas.save();
-                canvas.clipRect(getLeftClipText(textWidth, leftTextWidth), 0, getRightClipText(textWidth, rightTextWidth), bottomLine - translationY);
-                textPaint.setColor(selectTextColor);
+                if(selectXOffset != 0){
+                    canvas.translate(selectXOffset,0);
+                }
                 extraTextPaint.setColor(selectTextColor);
-                drawText(canvas, leftTextWidth, leftText, textWidth, text, rightTextWidth, rightText);
+                extraTextPaint.setTextSize(selectTextSize);
+                float textWidth = selectTextPaint.measureText(text);
+                float leftTextWidth = measureLeftTextWidth(leftText);
+                float rightTextWidth = measureRightTextWidth(rightText);
+                canvas.clipRect(getLeftClipText(textWidth, leftTextWidth), 0, getRightClipText(textWidth, rightTextWidth), bottomLine - translationY);
+
+                drawText(canvas,selectTextPaint, leftTextWidth, leftText, textWidth, text, rightTextWidth, rightText);
                 canvas.restore();
 
                 canvas.save();
-                canvas.clipRect(getLeftClipText(textWidth, leftTextWidth), bottomLine - translationY, getRightClipText(textWidth, rightTextWidth), translationY + realItemHeight);
-                textPaint.setColor(unSelectTextColor);
                 extraTextPaint.setColor(unSelectTextColor);
-                drawText(canvas, leftTextWidth, leftText, textWidth, text, rightTextWidth, rightText);
+                extraTextPaint.setTextSize(unSelectTextSize);
+                textWidth = unSelectTextPaint.measureText(text);
+                leftTextWidth = measureLeftTextWidth(leftText);
+                rightTextWidth = measureRightTextWidth(rightText);
+                canvas.clipRect(getLeftClipText(textWidth, leftTextWidth), bottomLine - translationY, getRightClipText(textWidth, rightTextWidth), translationY + realItemHeight);
+                drawText(canvas, unSelectTextPaint,leftTextWidth, leftText, textWidth, text, rightTextWidth, rightText);
                 canvas.restore();
             } else if (translationY >= topLine && translationY + realItemHeight <= bottomLine) {
 
-                textPaint.setColor(selectTextColor);
+                canvas.save();
+                if(selectXOffset != 0){
+                    canvas.translate(selectXOffset,0);
+                }
                 extraTextPaint.setColor(selectTextColor);
-                drawText(canvas, leftTextWidth, leftText, textWidth, text, rightTextWidth, rightText);
+                extraTextPaint.setTextSize(selectTextSize);
+                float textWidth = selectTextPaint.measureText(text);
+                float leftTextWidth = measureLeftTextWidth(leftText);
+                float rightTextWidth = measureRightTextWidth(rightText);
+                drawText(canvas,selectTextPaint, leftTextWidth, leftText, textWidth, text, rightTextWidth, rightText);
+                canvas.restore();
             } else {
 
-                textPaint.setColor(unSelectTextColor);
+                float textWidth = unSelectTextPaint.measureText(text);
                 extraTextPaint.setColor(unSelectTextColor);
-                drawText(canvas, leftTextWidth, leftText, textWidth, text, rightTextWidth, rightText);
+                extraTextPaint.setTextSize(unSelectTextSize);
+                float leftTextWidth = measureLeftTextWidth(leftText);
+                float rightTextWidth = measureRightTextWidth(rightText);
+                drawText(canvas,unSelectTextPaint, leftTextWidth, leftText, textWidth, text, rightTextWidth, rightText);
             }
 
             canvas.restore();
@@ -299,17 +339,16 @@ public class TDWheelView extends View {
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
 
-        radius = (h - getPaddingTop() - getPaddingBottom()) / 2;
+        int drawHeight = h - getPaddingTop() - getPaddingBottom();
+        radius = drawHeight * radiusScale  / 2;
 
-        itemHeight = (float) (radius * Math.PI / (visibleItemCount - 1));
+        itemHeight = (float) (radius * visibleRadian  / (visibleItemCount -1));
 
-        lineSpacing = itemHeight / maxTextHeight;
-
-        topLine = (float) (radius - Math.sin(itemHeight / radius) * radius / 2);
-
-        bottomLine = (float) (radius + Math.sin(itemHeight / radius) * radius / 2);
-
-        centerLine = radius;
+        centerLine = drawHeight/2f;
+        final float halfItemRadian = itemHeight/radius/2;
+        itemSectionHeight = (float) (Math.sin(halfItemRadian) * radius * 2);
+        topLine = centerLine - itemSectionHeight/2;
+        bottomLine = centerLine + itemSectionHeight/2;
 
         scrollToPosition(0);
     }
@@ -317,8 +356,9 @@ public class TDWheelView extends View {
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
 
-        maxTextHeight = Math.max(textPaint.descent() - textPaint.ascent(),
+        maxTextHeight = Math.max(selectTextPaint.descent() - selectTextPaint.ascent(),
                 extraTextPaint.descent() - extraTextPaint.ascent());
+        maxTextHeight = Math.max(unSelectTextPaint.descent() - unSelectTextPaint.ascent(),maxTextHeight);
 
         int heightMode = MeasureSpec.getMode(heightMeasureSpec);
 
@@ -331,11 +371,11 @@ public class TDWheelView extends View {
 
         itemHeight = maxTextHeight * lineSpacing;
 
-        float halfCircleLength = itemHeight * (visibleItemCount - 1);
+        float radianLength = itemHeight * (visibleItemCount - 1);
 
-        radius = (float) (halfCircleLength / Math.PI);
+        radius = (float) (radianLength / visibleRadian);
 
-        int calculateHeight = (int) (radius * 2 + getPaddingTop() + getPaddingBottom());
+        int calculateHeight = (int) (radius / radiusScale * 2 + getPaddingTop() + getPaddingBottom());
 
         if (heightMode == MeasureSpec.AT_MOST) {
 
@@ -370,7 +410,8 @@ public class TDWheelView extends View {
 
     public void scrollToPosition(int position) {
 
-        int dstY = (int) (-itemHeight * position + visibleItemCount / 2 * itemHeight);
+        float offset = (float) ((radius * Math.PI - itemHeight * (visibleItemCount - 1))/2);
+        int dstY = (int) (-itemHeight * position + visibleItemCount / 2 * itemHeight ) ;
         smoothScrollRunnable.scrollTo(dstY);
     }
 
@@ -530,7 +571,7 @@ public class TDWheelView extends View {
         this.onItemSelectListener = onItemSelectListener;
     }
 
-    private void drawText(Canvas canvas,
+    private void drawText(Canvas canvas,Paint textPaint,
                           float leftTextWidth, String leftText,
                           float textWidth, String text,
                           float rightTextWidth, String rightText) {
@@ -570,6 +611,26 @@ public class TDWheelView extends View {
             right += (extraTextPadding + rightTextWidth);
         }
         return right;
+    }
+
+    private float measureLeftTextWidth(String leftText){
+
+        float leftTextWidth = 0;
+        if (leftText != null) {
+            leftTextWidth = extraTextPaint.measureText(leftText);
+        }
+
+        return leftTextWidth;
+
+    }
+
+    private float measureRightTextWidth(String rightText){
+
+        float rightTextWidth = 0;
+        if (rightText != null) {
+            rightTextWidth = extraTextPaint.measureText(rightText);
+        }
+        return rightTextWidth;
     }
 
 }

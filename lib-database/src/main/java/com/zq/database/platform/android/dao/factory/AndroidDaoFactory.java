@@ -12,22 +12,18 @@ import com.zq.database.platform.android.dao.AndroidSQLiteDaoImpl;
  * Created by zhangqiang on 17-6-19.
  */
 
-public class AndroidDaoFactory<T extends SQLBean> implements DaoFactory<T> {
+public class AndroidDaoFactory implements DaoFactory {
 
     private SQLiteOpenHelper sqLiteOpenHelper;
-    private Dao<T> dao;
 
     public AndroidDaoFactory(SQLiteOpenHelper sqLiteOpenHelper) {
         this.sqLiteOpenHelper = sqLiteOpenHelper;
     }
 
     @Override
-    public Dao<T> getDao(Class<T> sqlBeanClass, SQLBeanCreator<T> sqlBeanCreator) {
+    public <T extends SQLBean> Dao<T> getDao(Class<T> sqlBeanClass, SQLBeanCreator<T> sqlBeanCreator) {
 
-        if(dao == null) {
-            dao = new AndroidSQLiteDaoImpl<>(sqlBeanClass, sqlBeanCreator, sqLiteOpenHelper);
-        }
-        return dao;
+        return new AndroidSQLiteDaoImpl<>(sqlBeanClass, sqlBeanCreator, sqLiteOpenHelper);
     }
 
 

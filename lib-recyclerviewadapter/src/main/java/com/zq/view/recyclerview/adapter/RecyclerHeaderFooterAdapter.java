@@ -53,7 +53,7 @@ public abstract class RecyclerHeaderFooterAdapter<VH extends RecyclerView.ViewHo
         } else {
 
             final int headerCount = isHeaderEnable() ? getHeaderItemCount() : 0;
-            onBindContentViewHolder(holder, position - headerCount);
+
             if (onItemClickListener != null) {
 
                 holder.itemView.setOnClickListener(new View.OnClickListener() {
@@ -75,6 +75,7 @@ public abstract class RecyclerHeaderFooterAdapter<VH extends RecyclerView.ViewHo
                     }
                 });
             }
+            onBindContentViewHolder(holder, position - headerCount);
         }
     }
 

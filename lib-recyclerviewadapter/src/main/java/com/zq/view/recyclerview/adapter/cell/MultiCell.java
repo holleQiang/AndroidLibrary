@@ -48,6 +48,14 @@ public class MultiCell<T> extends BaseCell {
         }
     }
 
+    @Override
+    public void onDetachFromWindow(RVViewHolder viewHolder) {
+        super.onDetachFromWindow(viewHolder);
+        if(dataBinder != null){
+            dataBinder.onUnBind(viewHolder);
+        }
+    }
+
     public void setData(T data) {
         this.data = data;
     }

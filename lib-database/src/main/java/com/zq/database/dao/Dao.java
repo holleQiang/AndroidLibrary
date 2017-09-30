@@ -2,6 +2,7 @@ package com.zq.database.dao;
 
 import com.zq.database.bean.SQLBean;
 
+import java.sql.SQLException;
 import java.util.List;
 
 /**
@@ -37,4 +38,6 @@ public interface Dao<T extends SQLBean>{
     boolean insert(List<T> dataList);
 
     long insert(T data);
+
+    void execute(String sql,String[] args) throws SQLException, android.database.SQLException;
 }

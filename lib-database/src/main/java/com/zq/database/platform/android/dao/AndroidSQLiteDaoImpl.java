@@ -2,6 +2,7 @@ package com.zq.database.platform.android.dao;
 
 import android.content.ContentValues;
 import android.database.Cursor;
+import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
@@ -178,6 +179,14 @@ public class AndroidSQLiteDaoImpl<T extends SQLBean> extends AbstractDao<T> impl
             return -1;
         }
         return insert(null,contentValues);
+    }
+
+    @Override
+    public void execute(String sql, String[] args) throws SQLException{
+
+
+        SQLiteDatabase db = sqLiteOpenHelper.getWritableDatabase();
+        db.execSQL(sql,args);
     }
 
     @Override

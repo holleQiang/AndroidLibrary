@@ -9,20 +9,24 @@
         <attr name="tdw_lineSpacing" format="float|reference"/>
         //可见的条目数量
         <attr name="tdw_visibleItemCount" format="integer|reference"/>
+        //可见的角度
+        <attr name="tdw_radiusScale" format="float|reference"/>
         //附加的文字距离中心文字的距离
         <attr name="tdw_extraTextPadding" format="dimension|reference"/>
-        //附加文字的大小
-        <attr name="tdw_extraTextSize" format="dimension|reference"/>
         //文字被选中的颜色
         <attr name="tdw_selectTextColor" format="color|reference"/>
         //文字未被选中的颜色
         <attr name="tdw_unSelectTextColor" format="color|reference"/>
         //文字大小
         <attr name="tdw_textSize" format="dimension|reference"/>
+        //未选中文字大小
+        <attr name="tdw_unSelectTextSize" format="dimension|reference"/>
         //中间两条线的颜色
         <attr name="tdw_lineColor" format="color|reference"/>
         //中间两条线的宽度
         <attr name="tdw_lineWidth" format="dimension|reference"/>
+        //被选中项X偏移量
+        <attr name="tdw_selectXOffset" format="dimension|reference"/>
     </declare-styleable>
 
     <attr name="TDWheelViewStyle" format="reference"/>

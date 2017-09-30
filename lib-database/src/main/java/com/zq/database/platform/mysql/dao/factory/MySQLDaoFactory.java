@@ -15,23 +15,18 @@ import java.util.Map;
  * Created by zhangqiang on 17-7-4.
  */
 
-public class MySQLDaoFactory<T extends SQLBean> implements DaoFactory<T> {
+public class MySQLDaoFactory implements DaoFactory {
 
     private ConnectionPool connectionPool;
-    private Dao<T> dao;
 
     public MySQLDaoFactory(ConnectionPool connectionPool) {
         this.connectionPool = connectionPool;
     }
 
     @Override
-    public  Dao<T> getDao(Class<T> sqlBeanClass, SQLBeanCreator<T> sqlBeanCreator) {
+    public  <T extends SQLBean> Dao<T> getDao(Class<T> sqlBeanClass, SQLBeanCreator<T> sqlBeanCreator) {
 
-        if(dao == null){
-
-            dao = new MySQLDaoIMPL<>(sqlBeanClass,sqlBeanCreator,connectionPool);
-        }
-        return dao;
+        return new MySQLDaoIMPL<>(sqlBeanClass,sqlBeanCreator,connectionPool);
     }
 
 }

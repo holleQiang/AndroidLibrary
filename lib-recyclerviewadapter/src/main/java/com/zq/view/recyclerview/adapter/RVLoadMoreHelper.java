@@ -1,5 +1,6 @@
 package com.zq.view.recyclerview.adapter;
 
+import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
@@ -61,7 +62,13 @@ public class RVLoadMoreHelper {
 
                 isLoadingMore = true;
                 if (loadMoreController != null) {
-                    loadMoreController.shouldShowLoadMoreView();
+
+                    ViewCompat.postOnAnimation(recyclerView, new Runnable() {
+                        @Override
+                        public void run() {
+                            loadMoreController.shouldShowLoadMoreView();
+                        }
+                    });
                 }
             }
         }

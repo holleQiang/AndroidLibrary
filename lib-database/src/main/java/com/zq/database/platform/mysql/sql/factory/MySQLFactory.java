@@ -10,7 +10,7 @@ import com.zq.database.sql.factory.SQLFactory;
  * Created by zhangqiang on 17-7-4.
  */
 
-public class MySQLFactory<T extends SQLBean> implements SQLFactory<T> {
+public class MySQLFactory implements SQLFactory {
 
     private SQL sql;
     private String url;
@@ -24,7 +24,7 @@ public class MySQLFactory<T extends SQLBean> implements SQLFactory<T> {
     }
 
     @Override
-    public SQL<T> getSQL() {
+    public SQL getSQL() {
 
         if(sql == null){
             sql = new MySQL(url,userName,password);

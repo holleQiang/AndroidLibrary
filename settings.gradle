@@ -1,1 +1,1 @@
-include ':app', ':lib-recyclerviewadapter', ':lib-wheelview', ':lib-database'
+include ':app', ':lib-recyclerviewadapter', ':lib-wheelview', ':lib-database', ':lib-blur', ':lib-linechartview'
