@@ -14,7 +14,7 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <com.zq.widget.linechart.LineChartView2
+            <com.zq.widget.linechart.LineChartView
                 android:id="@+id/line_chart_view2"
                 android:padding="10dp"
                 app:yAxisLineWidth="1dp"

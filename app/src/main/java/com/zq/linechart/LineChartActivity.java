@@ -8,7 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import com.zq.R;
 import com.zq.widget.AxisFrameView;
 import com.zq.widget.linechart.line.Line;
-import com.zq.widget.linechart.LineChartView2;
+import com.zq.widget.linechart.LineChartView;
 import com.zq.widget.linechart.point.Point;
 import com.zq.widget.linechart.point.PointImpl;
 import com.zq.widget.axis.XAxis;
@@ -29,7 +29,7 @@ public class LineChartActivity extends AppCompatActivity {
     @InjectView(R.id.axis_frame_view)
     AxisFrameView axisFrameView;
     @InjectView(R.id.line_chart_view2)
-    LineChartView2 lineChartView2;
+    LineChartView lineChartView2;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <declare-styleable name="LrcView">
+        <attr name="playingTextColor" format="color|reference" />
+        <attr name="normalTextColor" format="color|reference" />
+
+        <attr name="playingTextSize" format="dimension|reference" />
+        <attr name="normalTextSize" format="dimension|reference" />
+        <attr name="resetDelayTime" format="integer|reference"/>
+        <attr name="resetAfterDrag" format="boolean|reference"/>
+        <attr name="lineSpacing" format="reference|dimension"/>
+    </declare-styleable>
+</resources>

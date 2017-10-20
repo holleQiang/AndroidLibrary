@@ -26,16 +26,23 @@ public abstract class RecyclerHeaderFooterAdapter<VH extends RecyclerView.ViewHo
     @Override
     public final VH onCreateViewHolder(ViewGroup parent, int viewType) {
 
+        VH viewHolder = null;
         if (viewType == ITEM_TYPE_HEADER) {
 
-            return onCreateHeaderViewHolder(parent, viewType);
+            viewHolder = onCreateHeaderViewHolder(parent, viewType);
         } else if (viewType == ITEM_TYPE_FOOTER) {
 
-            return onCreateFooterViewHolder(parent, viewType);
+            viewHolder = onCreateFooterViewHolder(parent, viewType);
         } else {
 
-            return onCreateContentViewHolder(parent, viewType - ITEM_TYPE_HEADER - ITEM_TYPE_FOOTER);
+            viewHolder = onCreateContentViewHolder(parent, viewType - ITEM_TYPE_HEADER - ITEM_TYPE_FOOTER);
         }
+        onViewHolderCreated(viewHolder);
+        return viewHolder;
+    }
+
+    protected void onViewHolderCreated(VH viewHolder){
+
     }
 
     @Override

@@ -13,7 +13,7 @@ import com.zq.view.recyclerview.adapter.cell.CellAdapter;
 
 public class StickyItemDecoration extends RecyclerView.ItemDecoration {
 
-    private CellAdapter cellAdapter;
+    StickyAdapter stickyAdapter;
 
     @Override
     public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
@@ -24,14 +24,18 @@ public class StickyItemDecoration extends RecyclerView.ItemDecoration {
             return;
         }
 
-        boolean isContent = cellAdapter.isContentItem(position);
-        if(!isContent){
-            return;
-        }
     }
 
     @Override
     public void onDrawOver(Canvas c, RecyclerView parent, RecyclerView.State state) {
         super.onDrawOver(c, parent, state);
+    }
+
+    public StickyAdapter getStickyAdapter() {
+        return stickyAdapter;
+    }
+
+    public void setStickyAdapter(StickyAdapter stickyAdapter) {
+        this.stickyAdapter = stickyAdapter;
     }
 }

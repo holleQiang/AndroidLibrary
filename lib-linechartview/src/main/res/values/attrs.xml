@@ -29,4 +29,10 @@
     <declare-styleable name="HistogramView">
         <attr name="rectSpacing" format="dimension|reference"/>
     </declare-styleable>
+
+    <declare-styleable name="RingChartView">
+        <attr name="ringWidth" format="dimension|reference"/>
+        <attr name="ringTextSize" format="dimension|reference"/>
+        <attr name="ringTextVisible" format="boolean|reference"/>
+    </declare-styleable>
 </resources>

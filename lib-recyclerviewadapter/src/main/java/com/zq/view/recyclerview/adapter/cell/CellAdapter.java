@@ -6,9 +6,11 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.Log;
 import android.util.SparseIntArray;
+import android.view.View;
 import android.view.ViewGroup;
 
 import com.zq.view.recyclerview.adapter.BaseObjectRecyclerAdapter;
+import com.zq.view.recyclerview.adapter.R;
 import com.zq.view.recyclerview.adapter.cell.ob.CellObserver;
 import com.zq.view.recyclerview.viewholder.RVViewHolder;
 
@@ -36,41 +38,62 @@ public final class CellAdapter extends BaseObjectRecyclerAdapter<Cell, RVViewHol
     @Override
     public RVViewHolder onCreateContentViewHolder(ViewGroup parent, int viewType) {
 
-        return RVViewHolder.create(context, viewTypeIds.get(viewType), parent);
+        final int layoutId = viewTypeIds.get(viewType);
+        RVViewHolder viewHolder = RVViewHolder.create(context, viewTypeIds.get(viewType), parent);
+
+        final int contentSize = getDataList().size();
+        for (int i = 0; i < contentSize; i++) {
+
+            Cell cell = getDataAt(i);
+            if(cell.getLayoutId() == layoutId){
+                cell.onViewCreated(viewHolder);
+                break;
+            }
+        }
+        return viewHolder;
     }
 
     @Override
     public void onBindContentViewHolder(RVViewHolder holder, int position) {
 
         Cell cell = getDataAt(position);
-        cell.onBind(holder);
+        cell.onBindData(holder);
     }
 
     @Override
     public RVViewHolder onCreateHeaderViewHolder(ViewGroup parent, int viewType) {
 
-        return RVViewHolder.create(context, headerCells.get(0).getLayoutId(), parent);
+        Cell headerCell = headerCells.get(0);
+        int layoutId = headerCell.getLayoutId();
+        RVViewHolder viewHolder = RVViewHolder.create(context, layoutId, parent);
+        headerCell.onViewCreated(viewHolder);
+        return viewHolder;
     }
 
     @Override
     public void onBindHeaderViewHolder(RVViewHolder holder, int position) {
 
         Cell cell = headerCells.get(position);
-        cell.onBind(holder);
+        cell.onBindData(holder);
     }
 
     @Override
     public RVViewHolder onCreateFooterViewHolder(ViewGroup parent, int viewType) {
 
-        return RVViewHolder.create(context, footerCells.get(0).getLayoutId(), parent);
+        Cell footerCell = footerCells.get(0);
+        int layoutId = footerCell.getLayoutId();
+        RVViewHolder viewHolder = RVViewHolder.create(context, layoutId, parent);
+        footerCell.onViewCreated(viewHolder);
+        return viewHolder;
     }
 
     @Override
     public void onBindFooterViewHolder(RVViewHolder holder, int position) {
 
         Cell cell = footerCells.get(position);
-        cell.onBind(holder);
+        cell.onBindData(holder);
     }
+
 
     /**
      * 添加一个header
@@ -228,12 +251,6 @@ public final class CellAdapter extends BaseObjectRecyclerAdapter<Cell, RVViewHol
         return viewType;
     }
 
-
-    @Override
-    public void onDetachedFromRecyclerView(RecyclerView recyclerView) {
-        super.onDetachedFromRecyclerView(recyclerView);
-    }
-
     @Override
     public boolean onFailedToRecycleView(RVViewHolder holder) {
 
@@ -243,6 +260,9 @@ public final class CellAdapter extends BaseObjectRecyclerAdapter<Cell, RVViewHol
     @Override
     public void onAttachedToRecyclerView(final RecyclerView recyclerView) {
         super.onAttachedToRecyclerView(recyclerView);
+
+        recyclerView.removeOnAttachStateChangeListener(attachStateChangeListener);
+        recyclerView.addOnAttachStateChangeListener(attachStateChangeListener);
 
         final RecyclerView.LayoutManager layoutManager = recyclerView.getLayoutManager();
         if (layoutManager instanceof GridLayoutManager) {
@@ -275,8 +295,23 @@ public final class CellAdapter extends BaseObjectRecyclerAdapter<Cell, RVViewHol
     }
 
     @Override
+    public void onDetachedFromRecyclerView(RecyclerView recyclerView) {
+        super.onDetachedFromRecyclerView(recyclerView);
+        recyclerView.removeOnAttachStateChangeListener(attachStateChangeListener);
+
+        final int childCount = recyclerView.getChildCount();
+        for (int i = 0; i < childCount; i++) {
+
+            View view  = recyclerView.getChildAt(i);
+            RVViewHolder viewHolder = (RVViewHolder) recyclerView.getChildViewHolder(view);
+            notifyViewDetachedFromWindow(viewHolder);
+        }
+    }
+
+    @Override
     public void onViewAttachedToWindow(RVViewHolder holder) {
         super.onViewAttachedToWindow(holder);
+        notifyViewAttachedToWindow(holder);
 
         final int position = holder.getAdapterPosition();
         if (position == RecyclerView.NO_POSITION) {
@@ -299,50 +334,12 @@ public final class CellAdapter extends BaseObjectRecyclerAdapter<Cell, RVViewHol
                 }
             }
         }
-
-        if (isHeaderItem(position)) {
-
-            Cell cell = headerCells.get(position);
-            cell.onAttachToWindow(holder);
-            cell.registerCellObserver(cellObserver);
-        } else if (isContentItem(position)) {
-
-            int validHeaderCount = isHeaderEnable() ? getHeaderItemCount() : 0;
-            Cell cell = getDataAt(position - validHeaderCount);
-            cell.onAttachToWindow(holder);
-            cell.registerCellObserver(cellObserver);
-        } else if (isFooterItem(position)) {
-
-            int validHeaderCount = isHeaderEnable() ? getHeaderItemCount() : 0;
-            Cell cell = footerCells.get(position - validHeaderCount - getContentItemCount());
-            cell.onAttachToWindow(holder);
-            cell.registerCellObserver(cellObserver);
-        }
     }
 
     @Override
     public void onViewDetachedFromWindow(RVViewHolder holder) {
         super.onViewDetachedFromWindow(holder);
-        int position = holder.getAdapterPosition();
-        if (position == RecyclerView.NO_POSITION) {
-            return;
-        }
-        if (isHeaderItem(position)) {
-
-            Cell cell = headerCells.get(position);
-            cell.onDetachFromWindow(holder);
-        } else if (isContentItem(position)) {
-
-            int validHeaderCount = isHeaderEnable() ? getHeaderItemCount() : 0;
-            Cell cell = getDataAt(position - validHeaderCount);
-            cell.onDetachFromWindow(holder);
-        } else if (isFooterItem(position)) {
-
-            int validHeaderCount = isHeaderEnable() ? getHeaderItemCount() : 0;
-            Cell cell = footerCells.get(position - validHeaderCount - getContentItemCount());
-            cell.onDetachFromWindow(holder);
-            cell.unRegisterCellObserver(cellObserver);
-        }
+        notifyViewDetachedFromWindow(holder);
     }
 
     public int getViewTypeOfCell(Cell cell) {
@@ -420,4 +417,67 @@ public final class CellAdapter extends BaseObjectRecyclerAdapter<Cell, RVViewHol
 
         }
     };
+
+    private void notifyViewAttachedToWindow(RVViewHolder holder){
+
+        Cell cell = findCellAtAdapterPosition(holder.getAdapterPosition());
+        if(cell != null){
+            cell.onViewAttachedToWindow(holder);
+            cell.registerCellObserver(cellObserver);
+            holder.getView().setTag(R.integer.tag_key_cell,cell);
+        }
+    }
+
+    private void notifyViewDetachedFromWindow(RVViewHolder holder){
+
+        Cell cell = (Cell) holder.getView().getTag(R.integer.tag_key_cell);
+        if(cell != null){
+            cell.onViewDetachedFromWindow(holder);
+            cell.unRegisterCellObserver(cellObserver);
+        }
+    }
+
+    //recycler view 是否attach listener
+    private View.OnAttachStateChangeListener attachStateChangeListener = new View.OnAttachStateChangeListener() {
+        @Override
+        public void onViewAttachedToWindow(View v) {
+
+        }
+
+        @Override
+        public void onViewDetachedFromWindow(View v) {
+
+            RecyclerView recyclerView = (RecyclerView) v;
+            final int childCount = recyclerView.getChildCount();
+            for (int i = 0; i < childCount; i++) {
+
+                View view  = recyclerView.getChildAt(i);
+                RVViewHolder viewHolder = (RVViewHolder) recyclerView.getChildViewHolder(view);
+                notifyViewDetachedFromWindow(viewHolder);
+            }
+        }
+
+
+    };
+
+    public Cell findCellAtAdapterPosition(int position){
+
+        if(position == RecyclerView.NO_POSITION){
+            return null;
+        }
+
+        if (isHeaderItem(position)) {
+
+            return headerCells.get(position);
+        } else if (isContentItem(position)) {
+
+            int validHeaderCount = isHeaderEnable() ? getHeaderItemCount() : 0;
+            return getDataAt(position - validHeaderCount);
+        } else if (isFooterItem(position)) {
+
+            int validHeaderCount = isHeaderEnable() ? getHeaderItemCount() : 0;
+            return footerCells.get(position - validHeaderCount - getContentItemCount());
+        }
+        return null;
+    }
 }

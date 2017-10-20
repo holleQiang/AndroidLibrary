@@ -19,13 +19,17 @@ public interface Cell{
 
     int getSpanSize();
 
-    void onBind(RVViewHolder viewHolder);
+    void onBindData(RVViewHolder viewHolder);
 
-    void onDetachFromWindow(RVViewHolder viewHolder);
+    void onViewDetachedFromWindow(RVViewHolder viewHolder);
 
-    void onAttachToWindow(RVViewHolder viewHolder);
+    void onViewAttachedToWindow(RVViewHolder viewHolder);
+
+    RVViewHolder getAttachedViewHolder();
 
     void registerCellObserver(CellObserver observer);
 
     void unRegisterCellObserver(CellObserver observer);
+
+    void onViewCreated(RVViewHolder viewHolder);
 }

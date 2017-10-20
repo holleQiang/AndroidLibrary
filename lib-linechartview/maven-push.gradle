@@ -1,0 +1,30 @@
+apply plugin: 'maven'
+
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            repository(url: "http://47.91.230.246:8081/nexus/content/repositories/releases/") {
+                authentication(userName: "admin", password: "zhang@123")
+            }
+
+            snapshotRepository(
+                    url: "http://47.91.230.246:8081/nexus/content/repositories/snapshots") {
+                authentication(userName: "admin", password: "zhang@123")
+            }
+
+            pom.groupId = 'com.zq.widget'
+            pom.artifactId = 'linechart'
+            pom.version = '0.0.2'
+
+            pom.project {
+
+                licenses {
+                    license {
+                        name 'The Apache Software License, Version 2.0'
+                        url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                    }
+                }
+            }
+        }
+    }
+}

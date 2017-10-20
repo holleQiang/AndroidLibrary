@@ -13,7 +13,7 @@ import java.util.List;
 
 public abstract class BaseObjectRecyclerAdapter<T,V extends RecyclerView.ViewHolder> extends RecyclerHeaderFooterAdapter<V> {
 
-    private List<T> dataList;
+    private final List<T> dataList = new ArrayList<>();
     protected Context context;
 
     public BaseObjectRecyclerAdapter(Context context) {
@@ -21,7 +21,9 @@ public abstract class BaseObjectRecyclerAdapter<T,V extends RecyclerView.ViewHol
     }
 
     public BaseObjectRecyclerAdapter(Context context,List<T> dataList) {
-        this.dataList = (dataList == null ? new ArrayList<T>() : dataList);
+        if(dataList != null){
+            this.dataList.addAll(dataList);
+        }
         this.context = context;
     }
 
@@ -190,6 +192,9 @@ public abstract class BaseObjectRecyclerAdapter<T,V extends RecyclerView.ViewHol
         notifyItemRangeChangedIfNeed(position,startPosition);
     }
 
+    /**
+     * 移除所有数据
+     */
     public void removeAll(){
 
         this.dataList.clear();
@@ -201,10 +206,6 @@ public abstract class BaseObjectRecyclerAdapter<T,V extends RecyclerView.ViewHol
      * @param dataList
      */
     public void setDataList(List<T> dataList){
-
-        if(this.dataList == null){
-            this.dataList = new ArrayList<T>();
-        }
 
         this.dataList.clear();
         if(dataList != null){
@@ -232,6 +233,10 @@ public abstract class BaseObjectRecyclerAdapter<T,V extends RecyclerView.ViewHol
     }
 
 
+    /**
+     * 移除一组数据
+     * @param dataList
+     */
     public void removeDataList(List<T> dataList) {
 
         if(dataList != null && !dataList.isEmpty()){
@@ -240,6 +245,10 @@ public abstract class BaseObjectRecyclerAdapter<T,V extends RecyclerView.ViewHol
         }
     }
 
+    /**
+     * 获取数据源
+     * @return
+     */
     public ArrayList<T> getArrayDataList() {
 
         if(dataList instanceof ArrayList){
@@ -248,7 +257,11 @@ public abstract class BaseObjectRecyclerAdapter<T,V extends RecyclerView.ViewHol
         return dataList == null ? new ArrayList<T>() : new ArrayList<>(dataList);
     }
 
-
+    /**
+     * 获取adapter position
+     * @param position content position
+     * @return
+     */
     private int getFixedPosition(int position){
 
         return (isHeaderEnable() ? getHeaderItemCount() : 0) + position;

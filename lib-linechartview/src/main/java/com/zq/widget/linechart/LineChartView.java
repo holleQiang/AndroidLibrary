@@ -18,7 +18,7 @@ import java.util.List;
  * Created by zhangqiang on 2017/9/29.
  */
 
-public class LineChartView2 extends AxisFrameView implements LineChart {
+public class LineChartView extends AxisFrameView implements LineChart {
 
     private List<Line> lineList;
     private Paint paint;
@@ -28,11 +28,11 @@ public class LineChartView2 extends AxisFrameView implements LineChart {
     private float lastMotionX, lastMotionY;
     private int mTouchSlop;
 
-    public LineChartView2(Context context, @Nullable AttributeSet attrs) {
+    public LineChartView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public LineChartView2(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    public LineChartView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
 

@@ -41,18 +41,10 @@ public class MultiCell<T> extends BaseCell {
     }
 
     @Override
-    public final void onBind(RVViewHolder viewHolder) {
+    public final void onBindData(RVViewHolder viewHolder) {
 
         if(dataBinder != null){
             dataBinder.bindData(viewHolder,data);
-        }
-    }
-
-    @Override
-    public void onDetachFromWindow(RVViewHolder viewHolder) {
-        super.onDetachFromWindow(viewHolder);
-        if(dataBinder != null){
-            dataBinder.onUnBind(viewHolder);
         }
     }
 
