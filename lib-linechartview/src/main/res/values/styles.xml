@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="TDWheelView">
+
+        <item name="tdw_textScale">1</item>
+        <item name="tdw_lineSpacing">1.5</item>
+        <item name="tdw_visibleItemCount">9</item>
+        <item name="tdw_extraTextPadding">10dp</item>
+        <item name="tdw_selectTextColor">#ff000000</item>
+        <item name="tdw_unSelectTextColor">#ffa0a0a0</item>
+        <item name="tdw_unSelectTextSize">22sp</item>
+        <item name="tdw_textSize">24sp</item>
+        <item name="tdw_lineWidth">1px</item>
+        <item name="tdw_selectXOffset">-10dp</item>
+    </style>
+</resources>

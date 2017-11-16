@@ -1,38 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <declare-styleable name="AxisFrameView">
+    <declare-styleable name="TDWheelView">
 
-        <attr name="xAxisLineVisible" format="boolean|reference"/>
-        <attr name="xAxisLineColor" format="color|reference"/>
-        <attr name="xAxisLineWidth" format="dimension|reference"/>
-        <attr name="xAxisTextSize" format="dimension|reference"/>
-        <attr name="xAxisTextColor" format="color|reference"/>
-        <attr name="xAxisSpacing" format="dimension|reference"/>
-        <attr name="xAxisValueLineColor" format="color|reference"/>
-        <attr name="xAxisValueLineWidth" format="dimension|reference"/>
-        <attr name="xAxisValueLineVisible" format="boolean|reference"/>
-
-        <attr name="yAxisLineVisible" format="boolean|reference"/>
-        <attr name="yAxisLineColor" format="color|reference"/>
-        <attr name="yAxisLineWidth" format="dimension|reference"/>
-        <attr name="yAxisTextSize" format="dimension|reference"/>
-        <attr name="yAxisTextColor" format="color|reference"/>
-        <attr name="isYAxisInside" format="boolean|reference"/>
-        <attr name="yAxisSpacing" format="dimension|reference"/>
-        <attr name="yAxisValueLineColor" format="color|reference"/>
-        <attr name="yAxisValueLineWidth" format="dimension|reference"/>
-        <attr name="yAxisValueLineVisible" format="boolean|reference"/>
-
+        //文字缩放比
+        <attr name="tdw_textScale" format="float|reference"/>
+        //行间距
+        <attr name="tdw_lineSpacing" format="float|reference"/>
+        //可见的条目数量
+        <attr name="tdw_visibleItemCount" format="integer|reference"/>
+        //附加的文字距离中心文字的距离
+        <attr name="tdw_extraTextPadding" format="dimension|reference"/>
+        //文字被选中的颜色
+        <attr name="tdw_selectTextColor" format="color|reference"/>
+        //文字未被选中的颜色
+        <attr name="tdw_unSelectTextColor" format="color|reference"/>
+        //文字大小
+        <attr name="tdw_textSize" format="dimension|reference"/>
+        //未选中文字大小
+        <attr name="tdw_unSelectTextSize" format="dimension|reference"/>
+        //中间两条线的颜色
+        <attr name="tdw_lineColor" format="color|reference"/>
+        //中间两条线的宽度
+        <attr name="tdw_lineWidth" format="dimension|reference"/>
+        //被选中项X偏移量
+        <attr name="tdw_selectXOffset" format="dimension|reference"/>
     </declare-styleable>
 
-    <declare-styleable name="HistogramView">
-        <attr name="rectSpacing" format="dimension|reference"/>
-    </declare-styleable>
-
-    <declare-styleable name="RingChartView">
-        <attr name="ringWidth" format="dimension|reference"/>
-        <attr name="ringTextSize" format="dimension|reference"/>
-        <attr name="ringTextVisible" format="boolean|reference"/>
-    </declare-styleable>
+    <attr name="TDWheelViewStyle" format="reference"/>
 </resources>
