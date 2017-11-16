@@ -4,8 +4,14 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/AndroidLibrary.iml" filepath="$PROJECT_DIR$/AndroidLibrary.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/lib-blur/lib-blur.iml" filepath="$PROJECT_DIR$/lib-blur/lib-blur.iml" />
       <module fileurl="file://$PROJECT_DIR$/lib-database/lib-database.iml" filepath="$PROJECT_DIR$/lib-database/lib-database.iml" />
+      <module fileurl="file://$PROJECT_DIR$/lib-gesturepassword/lib-gesturepassword.iml" filepath="$PROJECT_DIR$/lib-gesturepassword/lib-gesturepassword.iml" />
+      <module fileurl="file://$PROJECT_DIR$/lib-htmltext/lib-htmltext.iml" filepath="$PROJECT_DIR$/lib-htmltext/lib-htmltext.iml" />
+      <module fileurl="file://$PROJECT_DIR$/lib-linechartview/lib-linechartview.iml" filepath="$PROJECT_DIR$/lib-linechartview/lib-linechartview.iml" />
+      <module fileurl="file://$PROJECT_DIR$/lib-lrcview/lib-lrcview.iml" filepath="$PROJECT_DIR$/lib-lrcview/lib-lrcview.iml" />
       <module fileurl="file://$PROJECT_DIR$/lib-recyclerviewadapter/lib-recyclerviewadapter.iml" filepath="$PROJECT_DIR$/lib-recyclerviewadapter/lib-recyclerviewadapter.iml" />
+      <module fileurl="file://$PROJECT_DIR$/lib-smartnumber/lib-smartnumber.iml" filepath="$PROJECT_DIR$/lib-smartnumber/lib-smartnumber.iml" />
       <module fileurl="file://$PROJECT_DIR$/lib-wheelview/lib-wheelview.iml" filepath="$PROJECT_DIR$/lib-wheelview/lib-wheelview.iml" />
     </modules>
   </component>

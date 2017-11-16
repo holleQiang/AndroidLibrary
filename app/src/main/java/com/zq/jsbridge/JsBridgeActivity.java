@@ -9,12 +9,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.github.lzyzsd.jsbridge.BridgeHandler;
-import com.github.lzyzsd.jsbridge.BridgeWebView;
 import com.github.lzyzsd.jsbridge.CallBackFunction;
 import com.zq.R;
 
+import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
 import butterknife.OnClick;
 
 /**
@@ -23,20 +22,21 @@ import butterknife.OnClick;
 
 public class JsBridgeActivity extends AppCompatActivity {
 
-    @InjectView(R.id.web_view)
+
+    @BindView(R.id.web_view)
     MyWebView webView;
-    @InjectView(R.id.button)
-    Button button;
-    @InjectView(R.id.text_view)
-    TextView textView;
-    @InjectView(R.id.refresh)
+    @BindView(R.id.refresh)
     Button refresh;
+    @BindView(R.id.button)
+    Button button;
+    @BindView(R.id.text_view)
+    TextView textView;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_js_bridge);
-        ButterKnife.inject(this);
+        ButterKnife.bind(this);
         webView.registerHandler("AppHandler", new BridgeHandler() {
             @Override
             public void handler(String data, CallBackFunction function) {
@@ -61,11 +61,9 @@ public class JsBridgeActivity extends AppCompatActivity {
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.refresh:
-
                 webView.reload();
                 break;
             case R.id.button:
-
                 webView.send("你收到了吗？", new CallBackFunction() {
                     @Override
                     public void onCallBack(String data) {

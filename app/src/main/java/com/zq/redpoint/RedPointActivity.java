@@ -8,15 +8,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.zq.R;
 import com.zq.utils.RedDotUtil;
 import com.zq.utils.ViewUtil;
 import com.zq.widget.smartnumber.SmartNumberView;
 
+import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
 import butterknife.OnClick;
 
 /**
@@ -25,41 +24,24 @@ import butterknife.OnClick;
 
 public class RedPointActivity extends AppCompatActivity {
 
-    @InjectView(R.id.target_view)
-    ImageView targetView;
-    @InjectView(R.id.add)
-    Button add;
-    @InjectView(R.id.reduce)
-    Button reduce;
 
     int count = 0;
+    @BindView(R.id.target_view)
+    ImageView targetView;
+    @BindView(R.id.add)
+    Button add;
+    @BindView(R.id.reduce)
+    Button reduce;
+    @BindView(R.id.clear)
+    Button clear;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_red_point);
-        ButterKnife.inject(this);
+        ButterKnife.bind(this);
     }
 
-    @OnClick({R.id.add, R.id.reduce,R.id.clear})
-    public void onViewClicked(View view) {
-        switch (view.getId()) {
-            case R.id.add:
-
-                count++;
-                RedDotUtil.attachToView(targetView, count,adapter);
-                break;
-            case R.id.reduce:
-
-                count--;
-                RedDotUtil.attachToView(targetView, count,adapter);
-                break;
-            case R.id.clear:
-
-                RedDotUtil.clear(targetView);
-                break;
-        }
-    }
 
     private RedDotUtil.NumberViewAdapter<SmartNumberView> adapter = new RedDotUtil.NumberViewAdapter<SmartNumberView>() {
 
@@ -71,7 +53,7 @@ public class RedPointActivity extends AppCompatActivity {
 
             int horizontalPadding = (int) (density * 6 + 0.5f);
             int verticalPadding = (int) (density * 2 + 0.5f);
-            smartNumberView.setTextSize(ViewUtil.dp2px(RedPointActivity.this,12));
+            smartNumberView.setTextSize(ViewUtil.dp2px(RedPointActivity.this, 12));
             smartNumberView.setTextColor(Color.WHITE);
             smartNumberView.setPadding(horizontalPadding, verticalPadding, horizontalPadding, verticalPadding);
             smartNumberView.setBackgroundResource(R.drawable.bg_red_point);
@@ -96,4 +78,24 @@ public class RedPointActivity extends AppCompatActivity {
             view.setNumber(number);
         }
     };
+
+    @OnClick({R.id.add, R.id.reduce, R.id.clear})
+    public void onViewClicked(View view) {
+        switch (view.getId()) {
+            case R.id.add:
+
+                count++;
+                RedDotUtil.attachToView(targetView, count, adapter);
+                break;
+            case R.id.reduce:
+
+                count--;
+                RedDotUtil.attachToView(targetView, count, adapter);
+                break;
+            case R.id.clear:
+
+                RedDotUtil.clear(targetView);
+                break;
+        }
+    }
 }

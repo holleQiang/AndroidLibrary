@@ -1,6 +1,7 @@
 package com.zq.view.recyclerview.adapter.cell;
 
 import android.content.Context;
+import android.support.annotation.LayoutRes;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
@@ -372,6 +373,42 @@ public final class CellAdapter extends BaseObjectRecyclerAdapter<Cell, RVViewHol
         return cellPosition;
     }
 
+    /**
+     * 查找指定id的第一个出现的位置
+     * @param layoutId 布局id
+     * @return 位置 -1表示未找到
+     */
+    public int findFirstPositionOfView(@LayoutRes int layoutId){
+
+        int headerCount = getHeaderItemCount();
+        for (int i = 0; i < headerCount; i++) {
+
+            Cell cell = headerCells.get(i);
+            if(cell.getLayoutId() == layoutId){
+                return i;
+            }
+        }
+
+        int contentCount = getContentItemCount();
+        for (int i = 0; i < contentCount; i++) {
+
+            Cell cell = getDataAt(i);
+            if(cell.getLayoutId() == layoutId){
+                return headerCount + i;
+            }
+        }
+
+        int footerCount = getFooterItemCount();
+        for (int i = 0; i < footerCount; i++) {
+
+            Cell cell = footerCells.get(i);
+            if(cell.getLayoutId() == layoutId){
+                return headerCount + contentCount + i;
+            }
+        }
+       return -1;
+    }
+
     private int findCellPositionFromHeader(Cell cell) {
 
         if (!isHeaderEnable() || cell == null) {
@@ -422,6 +459,11 @@ public final class CellAdapter extends BaseObjectRecyclerAdapter<Cell, RVViewHol
 
         Cell cell = findCellAtAdapterPosition(holder.getAdapterPosition());
         if(cell != null){
+
+            final RVViewHolder oldViewHolder = cell.getAttachedViewHolder();
+            if(oldViewHolder != null && oldViewHolder != holder){
+                cell.onViewDetachedFromWindow(oldViewHolder);
+            }
             cell.onViewAttachedToWindow(holder);
             cell.registerCellObserver(cellObserver);
             holder.getView().setTag(R.integer.tag_key_cell,cell);
@@ -431,9 +473,16 @@ public final class CellAdapter extends BaseObjectRecyclerAdapter<Cell, RVViewHol
     private void notifyViewDetachedFromWindow(RVViewHolder holder){
 
         Cell cell = (Cell) holder.getView().getTag(R.integer.tag_key_cell);
+        holder.getView().setTag(R.integer.tag_key_cell,null);
         if(cell != null){
-            cell.onViewDetachedFromWindow(holder);
-            cell.unRegisterCellObserver(cellObserver);
+
+            final RVViewHolder oldViewHolder = cell.getAttachedViewHolder();
+
+            if(holder.equals(oldViewHolder)){
+                //防止notifyDataChange 造成先attach 然后调用detach的问题
+                cell.onViewDetachedFromWindow(holder);
+                cell.unRegisterCellObserver(cellObserver);
+            }
         }
     }
 
@@ -477,6 +526,23 @@ public final class CellAdapter extends BaseObjectRecyclerAdapter<Cell, RVViewHol
 
             int validHeaderCount = isHeaderEnable() ? getHeaderItemCount() : 0;
             return footerCells.get(position - validHeaderCount - getContentItemCount());
+        }
+        return null;
+    }
+
+    /**
+     * 寻找指定类型的第一个cell
+     * @param cellClass cell 的类型
+     * @return
+     */
+    public <T extends Cell> T findCell(Class<T> cellClass){
+
+        List<Cell> cellList = getDataList();
+        for (Cell cell: cellList) {
+
+            if(cellClass.isAssignableFrom(cell.getClass())){
+                return (T) cell;
+            }
         }
         return null;
     }

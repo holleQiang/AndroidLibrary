@@ -8,25 +8,25 @@ import java.util.List;
 
 public class YAxis {
 
-    private int minValue;
+    private long minValue;
 
-    private int maxValue;
+    private long maxValue;
 
     private List<Item> items;
 
-    public int getMinValue() {
+    public long getMinValue() {
         return minValue;
     }
 
-    public void setMinValue(int minValue) {
+    public void setMinValue(long minValue) {
         this.minValue = minValue;
     }
 
-    public int getMaxValue() {
+    public long getMaxValue() {
         return maxValue;
     }
 
-    public void setMaxValue(int maxValue) {
+    public void setMaxValue(long maxValue) {
         this.maxValue = maxValue;
     }
 
@@ -38,17 +38,17 @@ public class YAxis {
         this.items = items;
     }
 
-    public static class Item{
+    public static class Item {
 
-        private int value;
+        private long value;
 
         private String drawText;
 
-        public int getValue() {
+        public long getValue() {
             return value;
         }
 
-        public void setValue(int value) {
+        public void setValue(long value) {
             this.value = value;
         }
 

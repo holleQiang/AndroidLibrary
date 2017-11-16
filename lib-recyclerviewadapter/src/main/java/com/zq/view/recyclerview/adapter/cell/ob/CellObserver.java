@@ -1,7 +1,5 @@
 package com.zq.view.recyclerview.adapter.cell.ob;
 
-import android.support.v7.widget.RecyclerView;
-
 import com.zq.view.recyclerview.adapter.cell.Cell;
 
 /**

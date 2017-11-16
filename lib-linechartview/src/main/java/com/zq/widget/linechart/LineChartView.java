@@ -77,14 +77,6 @@ public class LineChartView extends AxisFrameView implements LineChart {
     }
 
     @Override
-    protected void onAttachedToWindow() {
-        super.onAttachedToWindow();
-        if (lineAnimator != null && !lineAnimator.isRunning()) {
-            lineAnimator.start();
-        }
-    }
-
-    @Override
     public boolean onTouchEvent(MotionEvent event) {
 
 
@@ -173,5 +165,6 @@ public class LineChartView extends AxisFrameView implements LineChart {
 
     public void setLineList(List<Line> lineList) {
         this.lineList = lineList;
+        postInvalidate();
     }
 }

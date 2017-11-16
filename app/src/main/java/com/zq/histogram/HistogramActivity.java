@@ -13,8 +13,8 @@ import com.zq.widget.histogram.rect.Rect;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
 
 /**
  * Created by zhangqiang on 2017/9/30.
@@ -22,14 +22,15 @@ import butterknife.InjectView;
 
 public class HistogramActivity extends AppCompatActivity {
 
-    @InjectView(R.id.histogram_view)
+
+    @BindView(R.id.histogram_view)
     HistogramView histogramView;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_histogram);
-        ButterKnife.inject(this);
+        ButterKnife.bind(this);
 
         histogramView.setXAxis(makeXAxis());
         histogramView.setYAxis(makeYAxis());

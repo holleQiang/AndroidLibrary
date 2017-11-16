@@ -27,6 +27,10 @@
         <activity android:name=".behavior.BehaviorActivity" />
         <activity android:name=".gesturepassword.GesturePasswordActivity" />
         <activity android:name=".ringchart.RingChartActivity" />
+        <activity android:name=".assets.AssetsTestActivity" />
+        <activity android:name=".rotateanim.RotateViewActivity" />
+        <activity android:name=".pageradapter.FragmentPagerAdapterTestActivity" />
+        <activity android:name=".htmltext.HtmlTextActivity" />
     </application>
 
 </manifest>

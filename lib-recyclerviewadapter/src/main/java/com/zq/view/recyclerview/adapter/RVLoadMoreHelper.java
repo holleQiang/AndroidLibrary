@@ -18,8 +18,7 @@ public class RVLoadMoreHelper {
     private LoadMoreController loadMoreController;
 
     public RVLoadMoreHelper(RecyclerView recyclerView, LoadMoreController loadMoreController) {
-
-        recyclerView.addOnScrollListener(internalScrollerListener);
+        recyclerView.addOnScrollListener(new InternalScrollerListener());
         this.loadMoreController = loadMoreController;
     }
 
@@ -31,7 +30,10 @@ public class RVLoadMoreHelper {
         isLoadMoreEnable = loadMoreEnable;
     }
 
-    private RecyclerView.OnScrollListener internalScrollerListener = new RecyclerView.OnScrollListener() {
+
+    private class InternalScrollerListener extends RecyclerView.OnScrollListener {
+
+        private int mLastPosition;
 
         @Override
         public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
@@ -42,7 +44,7 @@ public class RVLoadMoreHelper {
         public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
             super.onScrolled(recyclerView, dx, dy);
 
-            if (isLoadingMore || !isLoadMoreEnable || dy <= 0) {
+            if (isLoadingMore || !isLoadMoreEnable || dy <= 0 || loadMoreController == null) {
                 return;
             }
 
@@ -52,27 +54,20 @@ public class RVLoadMoreHelper {
             int totalItemCount = layoutManager.getItemCount();
             int visibleItemCount = layoutManager.getChildCount();
 
-            if (totalItemCount - lastVisibleItem == 1 && totalItemCount > visibleItemCount) {
+            if (mLastPosition != lastVisibleItem && totalItemCount - lastVisibleItem == 1 && totalItemCount > visibleItemCount) {
 
 //                View childView = recyclerView.getChildAt(visibleItemCount - 1);
 //                RecyclerView.LayoutParams layoutParams = (RecyclerView.LayoutParams) childView.getLayoutParams();
 //                if (childView.getBottom() + layoutParams.bottomMargin > recyclerView.getBottom() - recyclerView.getPaddingBottom()) {
 //                    return;
 //                }
-
                 isLoadingMore = true;
-                if (loadMoreController != null) {
-
-                    ViewCompat.postOnAnimation(recyclerView, new Runnable() {
-                        @Override
-                        public void run() {
-                            loadMoreController.shouldShowLoadMoreView();
-                        }
-                    });
-                }
+                recyclerView.removeCallbacks(loadMoreRunnable);
+                ViewCompat.postOnAnimation(recyclerView, loadMoreRunnable);
             }
+            mLastPosition = lastVisibleItem;
         }
-    };
+    }
 
     private int findLastVisibleItem(RecyclerView.LayoutManager layoutManager) {
 
@@ -117,4 +112,14 @@ public class RVLoadMoreHelper {
             loadMoreController.shouldHideLoadMoreView();
         }
     }
+
+    private Runnable loadMoreRunnable = new Runnable() {
+        @Override
+        public void run() {
+
+            if (loadMoreController != null) {
+                loadMoreController.shouldShowLoadMoreView();
+            }
+        }
+    };
 }

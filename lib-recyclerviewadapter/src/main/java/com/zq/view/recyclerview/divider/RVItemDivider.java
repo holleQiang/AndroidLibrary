@@ -63,10 +63,10 @@ public class RVItemDivider extends RecyclerView.ItemDecoration {
         } else if (layoutManager instanceof LinearLayoutManager) {
 
             LinearLayoutManager linearLayoutManager = (LinearLayoutManager) layoutManager;
-            int position = linearLayoutManager.getPosition(view);
-            if (position == layoutManager.getItemCount() - 1) {
-                return;
-            }
+//            int position = linearLayoutManager.getPosition(view);
+//            if (position == layoutManager.getItemCount() - 1) {
+//                return;
+//            }
             int orientation = linearLayoutManager.getOrientation();
             if (orientation == LinearLayoutManager.HORIZONTAL) {
 
@@ -152,9 +152,9 @@ public class RVItemDivider extends RecyclerView.ItemDecoration {
             final int childCount = parent.getChildCount();
             for (int i = 0; i < childCount; i++) {
 
-                if(i == childCount - 1){
-                    return;
-                }
+//                if(i == childCount - 1){
+//                    return;
+//                }
                 View childView = parent.getChildAt(i);
                 RecyclerView.LayoutParams lp = (RecyclerView.LayoutParams) childView.getLayoutParams();
 

@@ -157,7 +157,6 @@ public class AxisFrameView extends View implements AxisFrame{
             return;
         }
         final int itemSize = xItemList.size();
-        final float minXAxisSize = getXAxisSizeAt(0);
         final float maxXAxisSize = getWidth() - getPaddingRight();
         for (int i = 0; i < itemSize; i++) {
 
@@ -166,7 +165,7 @@ public class AxisFrameView extends View implements AxisFrame{
 
             float textWidth = xAxisTextPaint.measureText(drawText);
             float centerX = getXAxisSizeAt(xItem.getValue());
-            float x = Math.max(minXAxisSize, centerX - textWidth / 2);
+            float x = Math.max(yAxisTranslation, centerX - textWidth / 2);
             if (centerX + textWidth / 2 > maxXAxisSize) {
                 x = maxXAxisSize - textWidth;
             }
@@ -255,6 +254,15 @@ public class AxisFrameView extends View implements AxisFrame{
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
 
+        calculateParams(w, h);
+    }
+
+    private void calculateParams(int w, int h){
+
+        if(w <= 0 || h <= 0){
+            return;
+        }
+
         maxXAxisTextHeight = getMaxXAxisHeight();
         maxYAxisTextWidth = getMaxYAxisWidth();
 
@@ -283,7 +291,6 @@ public class AxisFrameView extends View implements AxisFrame{
                 getWidth() - getPaddingRight(),
                 (int)getxAxisTranslation());
     }
-
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
@@ -344,21 +351,6 @@ public class AxisFrameView extends View implements AxisFrame{
         return (1 - (yValue - yAxis.getMinValue()) / (yAxis.getMaxValue() - yAxis.getMinValue())) * yAxisLength + getPaddingTop();
     }
 
-    public int getxAxisSpacing() {
-        return xAxisSpacing;
-    }
-
-    public void setxAxisSpacing(int xAxisSpacing) {
-        this.xAxisSpacing = xAxisSpacing;
-    }
-
-    public int getyAxisSpacing() {
-        return yAxisSpacing;
-    }
-
-    public void setyAxisSpacing(int yAxisSpacing) {
-        this.yAxisSpacing = yAxisSpacing;
-    }
 
     public XAxis getXAxis() {
         return xAxis;
@@ -366,6 +358,7 @@ public class AxisFrameView extends View implements AxisFrame{
 
     public void setXAxis(XAxis xAxis) {
         this.xAxis = xAxis;
+        calculateParams(getWidth(),getHeight());
         invalidate();
     }
 
@@ -375,6 +368,7 @@ public class AxisFrameView extends View implements AxisFrame{
 
     public void setYAxis(YAxis yAxis) {
         this.yAxis = yAxis;
+        calculateParams(getWidth(),getHeight());
         invalidate();
     }
 

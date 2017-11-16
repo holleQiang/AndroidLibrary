@@ -9,8 +9,8 @@ import android.widget.Toast;
 import com.zq.R;
 import com.zq.widget.gesturepassword.GesturePasswordView;
 
+import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
 
 /**
  * Created by zhangqiang on 2017/10/18.
@@ -18,18 +18,19 @@ import butterknife.InjectView;
 
 public class GesturePasswordActivity extends AppCompatActivity {
 
-    @InjectView(R.id.gesture_password_view)
+
+    @BindView(R.id.gesture_password_view)
     GesturePasswordView gesturePasswordView;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_gesture_password);
-        ButterKnife.inject(this);
+        ButterKnife.bind(this);
         gesturePasswordView.setOnGetPasswordListener(new GesturePasswordView.OnGetPasswordListener() {
             @Override
             public void onGetPassword(int selectCount, String password) {
-                Toast.makeText(GesturePasswordActivity.this,password , Toast.LENGTH_SHORT).show();
+                Toast.makeText(GesturePasswordActivity.this, password, Toast.LENGTH_SHORT).show();
 
                 ViewCompat.postOnAnimationDelayed(gesturePasswordView, new Runnable() {
                     @Override
@@ -37,7 +38,7 @@ public class GesturePasswordActivity extends AppCompatActivity {
 
                         gesturePasswordView.clearSelections();
                     }
-                },2000);
+                }, 2000);
             }
 
         });

@@ -1,10 +1,10 @@
 package com.zq.view.recyclerview.hscroll;
 
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
-import com.zq.view.recyclerview.adapter.cell.BaseCell;
+import com.zq.view.recyclerview.adapter.cell.Cell;
+import com.zq.view.recyclerview.hscroll.controller.HorizontalScrollController;
 import com.zq.view.recyclerview.viewholder.RVViewHolder;
 
 /**
@@ -12,11 +12,11 @@ import com.zq.view.recyclerview.viewholder.RVViewHolder;
  * Created by zhangqiang on 2017/10/20.
  */
 
-class RecyclerViewScrollListener implements BaseCell.OnAttachStateChangeListener {
+class RecyclerViewScrollListener<Anchor extends View,Target extends View> implements Cell.OnAttachStateChangeListener {
 
-    private ScrollableRecyclerViewGetter<RVViewHolder> recyclerViewGetter;
+    private HorizontalScrollController<Anchor,Target> recyclerViewGetter;
 
-    RecyclerViewScrollListener(ScrollableRecyclerViewGetter<RVViewHolder> recyclerViewGetter) {
+    RecyclerViewScrollListener(HorizontalScrollController<Anchor,Target> recyclerViewGetter) {
         this.recyclerViewGetter = recyclerViewGetter;
     }
 
@@ -28,30 +28,26 @@ class RecyclerViewScrollListener implements BaseCell.OnAttachStateChangeListener
     @Override
     public void onViewAttachedToWindow(RVViewHolder viewHolder) {
 
-        RecyclerView recyclerView = recyclerViewGetter.getScrollableRecyclerView(viewHolder);
-        if(recyclerView == null){
+        Target targetView = recyclerViewGetter.getTargetView(viewHolder);
+        if(targetView == null){
             return;
         }
 
         RecyclerView parentView = (RecyclerView) viewHolder.getView().getParent();
-        int position = 0;
-        int offset = 0;
+        if(parentView == null){
+            return;
+        }
+
         final int childCount = parentView.getChildCount();
         for (int i = 0; i < childCount; i++) {
 
             RVViewHolder childViewHolder = (RVViewHolder) parentView.getChildViewHolder(parentView.getChildAt(i));
 
-            RecyclerView childRecyclerView = recyclerViewGetter.getScrollableRecyclerView(childViewHolder);
-            if (childRecyclerView != null && childViewHolder != viewHolder) {
-                LinearLayoutManager layoutManager = (LinearLayoutManager) childRecyclerView.getLayoutManager();
-                position = layoutManager.findFirstVisibleItemPosition();
-                View firstChild = childRecyclerView.getChildAt(0);
-                offset = firstChild.getLeft();
+            Anchor anchorView = recyclerViewGetter.getAnchorView(childViewHolder);
+            if (anchorView != null && childViewHolder != viewHolder && recyclerViewGetter.shouldSyncVerticalScroll(anchorView,targetView)) {
+                recyclerViewGetter.syncVerticalScroll(anchorView,targetView);
                 break;
             }
         }
-
-        LinearLayoutManager layoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
-        layoutManager.scrollToPositionWithOffset(position, offset);
     }
 }

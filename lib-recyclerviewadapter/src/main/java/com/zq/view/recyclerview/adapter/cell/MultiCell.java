@@ -11,7 +11,7 @@ import java.util.List;
  * Created by zhangqiang on 2017/8/9.
  */
 
-public class MultiCell<T> extends BaseCell {
+public class MultiCell<T> extends Cell {
 
     private T data;
     private DataBinder<T> dataBinder;

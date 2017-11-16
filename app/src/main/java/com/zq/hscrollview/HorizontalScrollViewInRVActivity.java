@@ -22,8 +22,8 @@ import com.zq.view.recyclerview.viewholder.RVViewHolder;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
 
 /**
  * Created by zhangqiang on 2017/10/9.
@@ -31,17 +31,17 @@ import butterknife.InjectView;
 
 public class HorizontalScrollViewInRVActivity extends AppCompatActivity {
 
-    @InjectView(R.id.recycler_view)
-    RecyclerView totalRecyclerView;
 
     CellAdapter cellAdapter = new CellAdapter(this);
     RecyclerView.RecycledViewPool viewPool;
+    @BindView(R.id.recycler_view)
+    RecyclerView totalRecyclerView;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_hscrollview_in_rv);
-        ButterKnife.inject(this);
+        ButterKnife.bind(this);
 
 
         for (int i = 0; i < 150; i++) {
@@ -96,7 +96,7 @@ public class HorizontalScrollViewInRVActivity extends AppCompatActivity {
             @Nullable
             @Override
             public RecyclerView getScrollableRecyclerView(RVViewHolder viewHolder) {
-                if(viewHolder.getAdapterPosition() % 2==0){
+                if (viewHolder.getAdapterPosition() % 2 == 0) {
                     return null;
                 }
                 return viewHolder.getView(R.id.recycler_view);
@@ -106,7 +106,6 @@ public class HorizontalScrollViewInRVActivity extends AppCompatActivity {
 
 
     CellAdapter horizontalAdapter = new CellAdapter(this);
-
 
 
     private static class Data {

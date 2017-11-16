@@ -14,8 +14,8 @@ import com.zq.widget.ringchart.RingChartView;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
 
 /**
  * Created by zhangqiang on 2017/10/18.
@@ -23,16 +23,17 @@ import butterknife.InjectView;
 
 public class RingChartActivity extends AppCompatActivity {
 
-    @InjectView(R.id.ring_chart_view)
+
+    @BindView(R.id.ring_chart_view)
     RingChartView ringChartView;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ring_chart);
-        ButterKnife.inject(this);
+        ButterKnife.bind(this);
 
-        new Handler(){
+        new Handler() {
 
             @Override
             public void handleMessage(Message msg) {
@@ -45,13 +46,13 @@ public class RingChartActivity extends AppCompatActivity {
                     arcItem.setWeight((int) (Math.random() * 100) + 1);
                     arcItem.setText("index:" + i);
                     arcItem.setTextColor(Color.WHITE);
-                    arcItem.setColor(Color.argb(255,(int)(255 * Math.random()),(int)(255 * Math.random()),(int)(255 * Math.random())));
+                    arcItem.setColor(Color.argb(255, (int) (255 * Math.random()), (int) (255 * Math.random()), (int) (255 * Math.random())));
                     arcItemList.add(arcItem);
                 }
                 ringChartView.setArcItemList(arcItemList);
 
-                if(!isFinishing()){
-                    sendEmptyMessageDelayed(0,2000);
+                if (!isFinishing()) {
+                    sendEmptyMessageDelayed(0, 2000);
                 }
             }
         }.sendEmptyMessage(0);

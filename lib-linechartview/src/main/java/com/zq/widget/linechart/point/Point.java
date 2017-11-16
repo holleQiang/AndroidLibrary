@@ -11,9 +11,9 @@ import com.zq.widget.linechart.LineChart;
 
 public class Point {
 
-    private int xValue;
+    private long xValue;
 
-    private int yValue;
+    private long yValue;
 
     private boolean selected;
 
@@ -22,19 +22,20 @@ public class Point {
 
     }
 
-    public int getxValue() {
+    public long getxValue() {
+
         return xValue;
     }
 
-    public void setxValue(int xValue) {
+    public void setxValue(long xValue) {
         this.xValue = xValue;
     }
 
-    public int getyValue() {
+    public long getyValue() {
         return yValue;
     }
 
-    public void setyValue(int yValue) {
+    public void setyValue(long yValue) {
         this.yValue = yValue;
     }
 

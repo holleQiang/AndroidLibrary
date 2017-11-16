@@ -3,10 +3,9 @@ package com.zq.view.recyclerview.hscroll;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 
-import com.zq.view.recyclerview.adapter.cell.BaseCell;
 import com.zq.view.recyclerview.adapter.cell.Cell;
 import com.zq.view.recyclerview.adapter.cell.CellAdapter;
-import com.zq.view.recyclerview.viewholder.RVViewHolder;
+import com.zq.view.recyclerview.hscroll.controller.HorizontalScrollController;
 
 import java.util.List;
 
@@ -18,8 +17,8 @@ import java.util.List;
 public class ScrollableRecyclerViewHelper {
 
     private RecyclerView recyclerView;
-    private BaseCell.OnAttachStateChangeListener stateChangeListener;
-    private DraggedHorizontalOnItemTouchListener onItemTouchListener;
+    private Cell.OnAttachStateChangeListener stateChangeListener;
+    private DragHorizontalOnItemTouchListener onItemTouchListener;
     private RecyclerView.AdapterDataObserver dataObserver = new RecyclerView.AdapterDataObserver() {
         @Override
         public void onChanged() {
@@ -61,10 +60,10 @@ public class ScrollableRecyclerViewHelper {
      * @param recyclerView 父recyclerView
      * @param recyclerViewGetter 子recyclerView获取接口
      */
-    public ScrollableRecyclerViewHelper(@NonNull RecyclerView recyclerView, @NonNull ScrollableRecyclerViewGetter<RVViewHolder> recyclerViewGetter) {
+    public ScrollableRecyclerViewHelper(@NonNull RecyclerView recyclerView, @NonNull HorizontalScrollController recyclerViewGetter) {
         this.recyclerView = recyclerView;
         stateChangeListener = new RecyclerViewScrollListener(recyclerViewGetter);
-        onItemTouchListener = new DraggedHorizontalOnItemTouchListener(recyclerView,recyclerViewGetter);
+        onItemTouchListener = new DragHorizontalOnItemTouchListener(recyclerView,recyclerViewGetter);
 
         CellAdapter cellAdapter = (CellAdapter) recyclerView.getAdapter();
         if(cellAdapter == null){
@@ -90,7 +89,7 @@ public class ScrollableRecyclerViewHelper {
         for (Cell cell:
              cellList) {
 
-            BaseCell baseCell = (BaseCell) cell;
+            Cell baseCell = (Cell) cell;
             baseCell.addOnAttachStateChangeListener(stateChangeListener);
         }
     }
@@ -111,7 +110,7 @@ public class ScrollableRecyclerViewHelper {
         for (Cell cell:
                 cellList) {
 
-            BaseCell baseCell = (BaseCell) cell;
+            Cell baseCell = (Cell) cell;
             baseCell.removeOnAttachStateChangeListener(stateChangeListener);
         }
     }

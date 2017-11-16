@@ -14,7 +14,7 @@ uploadArchives {
 
             pom.groupId = 'com.zq.widget'
             pom.artifactId = 'linechart'
-            pom.version = '0.0.2'
+            pom.version = '0.0.6'
 
             pom.project {
 

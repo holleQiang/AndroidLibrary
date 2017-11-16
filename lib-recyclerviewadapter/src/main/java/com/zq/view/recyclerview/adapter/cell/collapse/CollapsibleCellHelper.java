@@ -1,6 +1,5 @@
 package com.zq.view.recyclerview.adapter.cell.collapse;
 
-import com.zq.view.recyclerview.adapter.cell.BaseCell;
 import com.zq.view.recyclerview.adapter.cell.Cell;
 import com.zq.view.recyclerview.adapter.cell.CellAdapter;
 

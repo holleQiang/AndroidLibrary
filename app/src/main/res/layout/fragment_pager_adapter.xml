@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:orientation="horizontal"
+        android:layout_height="wrap_content">
+
+        <Button
+            android:id="@+id/delete_pre"
+            android:layout_width="wrap_content"
+            android:text="移除前一个"
+            android:layout_height="wrap_content" />
+
+        <Button
+            android:id="@+id/delete_curr"
+            android:layout_width="wrap_content"
+            android:text="移除当前"
+            android:layout_height="wrap_content" />
+
+        <Button
+            android:id="@+id/delete_suf"
+            android:layout_width="wrap_content"
+            android:text="移除下一个"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/m_view_pager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+
+</LinearLayout>

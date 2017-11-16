@@ -7,18 +7,18 @@ import android.support.v7.app.AppCompatActivity;
 
 import com.zq.R;
 import com.zq.widget.AxisFrameView;
-import com.zq.widget.linechart.line.Line;
-import com.zq.widget.linechart.LineChartView;
-import com.zq.widget.linechart.point.Point;
-import com.zq.widget.linechart.point.PointImpl;
 import com.zq.widget.axis.XAxis;
 import com.zq.widget.axis.YAxis;
+import com.zq.widget.linechart.LineChartView;
+import com.zq.widget.linechart.line.Line;
+import com.zq.widget.linechart.point.Point;
+import com.zq.widget.linechart.point.PointImpl;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
 
 /**
  * Created by zhangqiang on 2017/9/25.
@@ -26,22 +26,22 @@ import butterknife.InjectView;
 
 public class LineChartActivity extends AppCompatActivity {
 
-    @InjectView(R.id.axis_frame_view)
-    AxisFrameView axisFrameView;
-    @InjectView(R.id.line_chart_view2)
+    @BindView(R.id.line_chart_view2)
     LineChartView lineChartView2;
+    @BindView(R.id.axis_frame_view)
+    AxisFrameView axisFrameView;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_line_chart);
-        ButterKnife.inject(this);
+        ButterKnife.bind(this);
 
 
         List<Line> lineList = new ArrayList<>();
 //        lineList.add(makeLine(Color.RED,10,false,0,0));
-        lineList.add(makeLine(Color.MAGENTA,1,true,Color.parseColor("#2031b14d"),Color.parseColor("#9032b14d")));
-        lineList.add(makeLine(Color.GREEN,5,true,Color.parseColor("#201b1b1b"),Color.parseColor("#901b1b1b")));
+        lineList.add(makeLine(Color.MAGENTA, 1, true, Color.parseColor("#2031b14d"), Color.parseColor("#9032b14d")));
+        lineList.add(makeLine(Color.GREEN, 5, true, Color.parseColor("#201b1b1b"), Color.parseColor("#901b1b1b")));
 //        lineList.add(makeLine());
 //        lineList.add(makeLine());
 //        lineList.add(makeLine());
@@ -114,7 +114,7 @@ public class LineChartActivity extends AppCompatActivity {
         return yAxis;
     }
 
-    private Line makeLine(int lineColor,int lineWidth,boolean fillAreaVisible,int fillStartColor,int fillEndColor) {
+    private Line makeLine(int lineColor, int lineWidth, boolean fillAreaVisible, int fillStartColor, int fillEndColor) {
 
         Line line = new Line();
         line.setLineColor(lineColor);

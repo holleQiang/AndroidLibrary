@@ -13,8 +13,8 @@ import com.zq.widget.lrc.LrcView;
 
 import java.io.IOException;
 
+import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
 
 /**
  * Created by zhangqiang on 2017/9/30.
@@ -23,23 +23,22 @@ import butterknife.InjectView;
 public class LrcActivity extends AppCompatActivity {
 
 
-    @InjectView(R.id.lrc_view)
+    @BindView(R.id.lrc_view)
     LrcView lrcView;
-
     private boolean isStop;
-    int i = 3 * 60*1000;
-    Handler handler = new Handler(){
+    int i = 3 * 60 * 1000;
+    Handler handler = new Handler() {
 
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
 
-            if(isStop){
+            if (isStop) {
                 return;
             }
             lrcView.setPlayingTime(i);
-            sendEmptyMessageDelayed(0,500);
-            i += 1000 ;
+            sendEmptyMessageDelayed(0, 500);
+            i += 1000;
         }
     };
 
@@ -47,10 +46,10 @@ public class LrcActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_lrc);
-        ButterKnife.inject(this);
+        ButterKnife.bind(this);
 
         try {
-            Lrc lrc = LrcHelper.parseLrc(getAssets().open("2744281.lrc"),"utf-8");
+            Lrc lrc = LrcHelper.parseLrc(getAssets().open("2744281.lrc"), "utf-8");
             lrcView.setLrc(lrc);
         } catch (IOException e) {
             e.printStackTrace();

@@ -6,7 +6,6 @@ import com.zq.view.recyclerview.adapter.cell.Cell;
 import com.zq.view.recyclerview.adapter.cell.CellAdapter;
 import com.zq.view.recyclerview.adapter.cell.DataBinder;
 import com.zq.view.recyclerview.adapter.cell.MultiCell;
-import com.zq.view.recyclerview.viewholder.RVViewHolder;
 
 import java.util.List;
 
