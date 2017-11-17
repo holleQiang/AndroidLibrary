@@ -4,9 +4,11 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
 
 import com.zq.behavior.BehaviorActivity;
 import com.zq.gesturepassword.GesturePasswordActivity;
@@ -27,6 +29,7 @@ import com.zq.view.recyclerview.adapter.cell.CellAdapter;
 import com.zq.view.recyclerview.adapter.cell.DataBinder;
 import com.zq.view.recyclerview.adapter.cell.MultiCell;
 import com.zq.view.recyclerview.divider.RVItemDivider;
+import com.zq.view.recyclerview.item.HorizontalSlidLayout;
 import com.zq.view.recyclerview.utils.RVUtil;
 import com.zq.view.recyclerview.viewholder.RVViewHolder;
 
@@ -73,6 +76,33 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
         public void bindData(RVViewHolder viewHolder, String data) {
 //            viewHolder.setText(R.id.textView, viewHolder.getAdapterPosition() + "、" + data);
             viewHolder.setText(R.id.textView, data);
+            HorizontalSlidLayout slidLayout = viewHolder.getView(R.id.m_horizontal_slid);
+            slidLayout.reset();
+            viewHolder.setOnClickListener(R.id.left_view, new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    Toast.makeText(MainActivity.this, "left", Toast.LENGTH_SHORT).show();
+                }
+            });
+            viewHolder.setOnClickListener(R.id.right_view, new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Toast.makeText(MainActivity.this, "right", Toast.LENGTH_SHORT).show();
+                }
+            });
+            viewHolder.setOnClickListener(R.id.view_center, new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Toast.makeText(MainActivity.this, "view_center", Toast.LENGTH_SHORT).show();
+                }
+            });
+            viewHolder.setOnClickListener(R.id.m_horizontal_slid, new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Toast.makeText(MainActivity.this, "Slid", Toast.LENGTH_SHORT).show();
+                }
+            });
         }
     };
 

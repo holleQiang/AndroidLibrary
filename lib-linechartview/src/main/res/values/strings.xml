@@ -1,6 +1,3 @@
 <resources>
-    <string name="app_name">WheelView</string>
-    <string name="year">年</string>
-    <string name="month">月</string>
-    <string name="day">日</string>
+    <string name="app_name">My Library</string>
 </resources>

@@ -4,7 +4,9 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.DashPathEffect;
 import android.graphics.Paint;
+import android.graphics.PathEffect;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.support.annotation.Nullable;
@@ -44,6 +46,7 @@ public class AxisFrameView extends View implements AxisFrame{
     private float maxYAxisTextWidth;
     private boolean xAxisValueLineVisible, yAxisValueLineVisible;
     private Rect contentRectF = new Rect();
+    private int yAxisValueLineStyle;
 
     public AxisFrameView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
@@ -58,10 +61,10 @@ public class AxisFrameView extends View implements AxisFrame{
 
     protected void init(Context context, AttributeSet attrs) {
 
+        float density = context.getResources().getDisplayMetrics().density;
+
         TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.AxisFrameView);
         if (typedArray != null) {
-
-            float density = context.getResources().getDisplayMetrics().density;
 
             isYAxisInside = typedArray.getBoolean(R.styleable.AxisFrameView_isYAxisInside, false);
             xAxisLineWidth = typedArray.getDimensionPixelSize(R.styleable.AxisFrameView_xAxisLineWidth, 1);
@@ -82,6 +85,7 @@ public class AxisFrameView extends View implements AxisFrame{
             yAxisValueLineWidth = typedArray.getDimensionPixelSize(R.styleable.AxisFrameView_yAxisValueLineWidth, 1);
             xAxisValueLineVisible = typedArray.getBoolean(R.styleable.AxisFrameView_xAxisValueLineVisible, false);
             yAxisValueLineVisible = typedArray.getBoolean(R.styleable.AxisFrameView_yAxisValueLineVisible, false);
+            yAxisValueLineStyle = typedArray.getInt(R.styleable.AxisFrameView_yAxisValueLineStyle,0);
             typedArray.recycle();
         }
 
@@ -115,6 +119,13 @@ public class AxisFrameView extends View implements AxisFrame{
         yAxisLinePaint.setColor(yAxisLineColor);
         yAxisLinePaint.setStrokeWidth(yAxisLineWidth);
 
+        if(yAxisValueLineStyle == 1){
+            PathEffect yAxisValueLinePathEffect = new DashPathEffect(new float[]{density * 5, density * 1}, 0);
+            yAxisValueLinePaint.setPathEffect(yAxisValueLinePathEffect);
+        }
+
+        //关闭硬件加速
+        setLayerType(View.LAYER_TYPE_SOFTWARE, null);
     }
 
     @Override
@@ -122,6 +133,7 @@ public class AxisFrameView extends View implements AxisFrame{
         super.onDraw(canvas);
 
         drawXAxis(canvas);
+
 
         drawYAxis(canvas);
 
@@ -233,13 +245,14 @@ public class AxisFrameView extends View implements AxisFrame{
                 baseLine = bottomLine - yAxisTextPaint.descent();
             }
 
-            float x = getPaddingLeft() + (maxYAxisTextWidth - textWidth) / 2;
+//            float x = getPaddingLeft() + (maxYAxisTextWidth - textWidth) / 2;
+            float x = getPaddingLeft();
             if (isYAxisInside) {
                 x += yAxisSpacing;
             }
 
-            if (yAxisValueLineVisible && y < xAxisTranslation && y >= 0) {
-                canvas.drawLine(yAxisTranslation, y, getWidth() - getPaddingRight(), y, xAxisValueLinePaint);
+            if (yAxisValueLineVisible && y <= xAxisTranslation && y >= 0) {
+                canvas.drawLine(yAxisTranslation, y, getWidth() - getPaddingRight(), y, yAxisValueLinePaint);
             }
 
             canvas.drawText(drawText, x, baseLine, yAxisTextPaint);
@@ -392,4 +405,5 @@ public class AxisFrameView extends View implements AxisFrame{
     public float getyAxisLength() {
         return yAxisLength;
     }
+
 }

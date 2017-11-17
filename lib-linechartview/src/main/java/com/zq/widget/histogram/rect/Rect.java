@@ -12,10 +12,16 @@ import com.zq.widget.histogram.Histogram;
 
 public class Rect {
 
-    private int xValue;
-    private int yValue;
+    private long xValue;
+    private long yValue;
+    private int topColor, bottomColor;
 
     private boolean isSelected;
+
+    public Rect(int topColor, int bottomColor) {
+        this.topColor = topColor;
+        this.bottomColor = bottomColor;
+    }
 
     public void onDraw(Canvas canvas, Paint paint, float x, float y, Histogram histogram) {
 
@@ -31,12 +37,12 @@ public class Rect {
         }
         if(getyValue() > 0){
 
-            paint.setColor(Color.RED);
+            paint.setColor(topColor);
             bottom = histogram.getYAxisSizeAt(0);
             top = histogram.getYAxisSizeAt(getyValue());
         }else{
 
-            paint.setColor(Color.GREEN);
+            paint.setColor(bottomColor);
             top = histogram.getYAxisSizeAt(0);
             bottom = histogram.getYAxisSizeAt(getyValue());
         }
@@ -47,19 +53,19 @@ public class Rect {
         canvas.drawRect(left, top, right, bottom, paint);
     }
 
-    public int getxValue() {
+    public long getxValue() {
         return xValue;
     }
 
-    public void setxValue(int xValue) {
+    public void setxValue(long xValue) {
         this.xValue = xValue;
     }
 
-    public int getyValue() {
+    public long getyValue() {
         return yValue;
     }
 
-    public void setyValue(int yValue) {
+    public void setyValue(long yValue) {
         this.yValue = yValue;
     }
 

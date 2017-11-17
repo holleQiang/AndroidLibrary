@@ -1,5 +1,6 @@
 package com.zq.histogram;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -52,7 +53,7 @@ public class HistogramActivity extends AppCompatActivity {
 
     private Rect makeRect(int x) {
 
-        Rect rect = new Rect();
+        Rect rect = new Rect(Color.BLACK,Color.RED);
         rect.setxValue(x);
         rect.setyValue(getRandomY());
         return rect;

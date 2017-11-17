@@ -34,16 +34,11 @@ public class Line {
 
     private int lastLineChartWidth, lastLineChartHeight;
 
-    private int fillStartColor = Color.parseColor("#10ff0000");
-    private int fillEndColor = Color.parseColor("#90ff0000");
+    private int fillStartColor = Color.parseColor("#33ff4a43");
+    private int fillEndColor = Color.parseColor("#33ff4a43");
+    private Path fillAreaPath = new Path();
 
     public void onDraw(Canvas canvas, Paint paint, LineChart lineChart) {
-
-        paint.reset();
-        paint.setStyle(Paint.Style.STROKE);
-        paint.setAntiAlias(true);
-        paint.setColor(getLineColor());
-        paint.setStrokeWidth(getLineWidth());
 
         List<Point> pointList = getPointList();
 
@@ -90,13 +85,12 @@ public class Line {
             lastPoint = point;
         }
 
-        canvas.drawPath(linePath, paint);
-
         if (fillAreaVisible) {
-
-            linePath.lineTo(currentX, lineChart.getxAxisTranslation());
-            linePath.lineTo(firstX, lineChart.getxAxisTranslation());
-            linePath.close();
+            fillAreaPath.reset();
+            fillAreaPath.addPath(linePath);
+            fillAreaPath.lineTo(currentX, lineChart.getxAxisTranslation());
+            fillAreaPath.lineTo(firstX, lineChart.getxAxisTranslation());
+            fillAreaPath.close();
 
             if (fillShader == null || isLineChartSizeChanged(lineChart)) {
 
@@ -112,9 +106,16 @@ public class Line {
             }
             paint.reset();
             paint.setShader(fillShader);
-            canvas.drawPath(linePath, paint);
+            canvas.drawPath(fillAreaPath, paint);
         }
 
+        paint.reset();
+        paint.setStyle(Paint.Style.STROKE);
+        paint.setAntiAlias(true);
+        paint.setStrokeJoin(Paint.Join.ROUND);
+        paint.setColor(getLineColor());
+        paint.setStrokeWidth(getLineWidth());
+        canvas.drawPath(linePath, paint);
 
         for (int j = 0; j < drawPointCount; j++) {
 

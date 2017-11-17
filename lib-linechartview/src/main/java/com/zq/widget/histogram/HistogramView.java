@@ -14,31 +14,39 @@ import com.zq.widget.AxisFrameView;
 import com.zq.widget.R;
 import com.zq.widget.histogram.rect.Rect;
 
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 /**
  * Created by zhangqiang on 2017/9/30.
  */
 
-public class HistogramView extends AxisFrameView implements Histogram{
+public class HistogramView extends AxisFrameView implements Histogram {
 
     private List<Rect> rectList;
     private int rectSpacing;
     private float rectWidth;
+    private int maxRectWidth;
+    private int maxRectSize;
     private Paint paint;
     private boolean isBeingDragged;
     private float lastMotionX, lastMotionY;
     private int mTouchSlop;
+    private boolean touchable;
 
     @Override
     protected void init(Context context, AttributeSet attrs) {
         super.init(context, attrs);
 
-        if(attrs != null){
+        if (attrs != null) {
 
             float density = context.getResources().getDisplayMetrics().density;
             TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.HistogramView);
-            rectSpacing = typedArray.getDimensionPixelSize(R.styleable.HistogramView_rectSpacing, (int) (density * 5 + 0.5f));
+            rectSpacing = typedArray.getDimensionPixelSize(R.styleable.HistogramView_rectSpacing, (int) (density * 1 + 0.5f));
+            maxRectWidth = typedArray.getDimensionPixelOffset(R.styleable.HistogramView_maxRectWidth, (int) (5 * density + 0.5f));
+            maxRectSize = typedArray.getInt(R.styleable.HistogramView_maxRectSize, 30);
             typedArray.recycle();
         }
 
@@ -57,17 +65,17 @@ public class HistogramView extends AxisFrameView implements Histogram{
     @Override
     protected void onDrawContent(Canvas canvas, float xAxisLength, float yAxisLength) {
         super.onDrawContent(canvas, xAxisLength, yAxisLength);
-        if(rectList == null || rectList.isEmpty()){
+        if (rectList == null || rectList.isEmpty()) {
             return;
         }
-        for (Rect rect:
-             rectList) {
+        for (Rect rect :
+                rectList) {
 
             float x = getXAxisSizeAt(rect.getxValue());
             float y = getYAxisSizeAt(rect.getyValue());
             int saveCount = canvas.save();
-            canvas.clipRect(x - rectWidth/2 - rectSpacing,getPaddingTop(),x + rectWidth/2 + rectSpacing,getxAxisTranslation());
-            rect.onDraw(canvas,paint,x,y,this);
+            canvas.clipRect(x - rectWidth / 2 - rectSpacing, getPaddingTop(), x + rectWidth / 2 + rectSpacing, getxAxisTranslation());
+            rect.onDraw(canvas, paint, x, y, this);
             canvas.restoreToCount(saveCount);
         }
     }
@@ -76,18 +84,27 @@ public class HistogramView extends AxisFrameView implements Histogram{
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
 
-        if(rectList == null || rectList.isEmpty()){
+        computeRectWidth();
+    }
+
+    private void computeRectWidth() {
+
+        if (rectList == null || rectList.isEmpty()) {
             return;
         }
-        final int count = rectList.size();
-        Rect firstRect = rectList.get(0);
-        Rect lastRect = rectList.get(count - 1);
-        rectWidth = (getXAxisSizeAt(lastRect.getxValue()) - getXAxisSizeAt(firstRect.getxValue()) - (count - 1) * rectSpacing)/(count-1);
+        android.graphics.Rect contentRegion = getContentRegion();
+        int contentWidth = contentRegion.width();
+        rectWidth = (contentWidth - rectSpacing * (maxRectSize - 1)) / maxRectSize;
+        rectWidth = Math.min(maxRectWidth, rectWidth);
     }
+
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
 
+        if(!touchable){
+            return super.onTouchEvent(event);
+        }
 
         float currX = event.getX();
         float currY = event.getY();
@@ -127,7 +144,7 @@ public class HistogramView extends AxisFrameView implements Histogram{
 
         getParent().requestDisallowInterceptTouchEvent(isBeingDragged);
 
-        return true;
+        return super.onTouchEvent(event);
     }
 
     private void onDragStart(float currentX) {
@@ -155,21 +172,13 @@ public class HistogramView extends AxisFrameView implements Histogram{
         for (Rect rect : rectList) {
 
             float x = getXAxisSizeAt(rect.getxValue());
-            if(currentX > x - rectWidth/2 && currentX < x + rectWidth/2){
+            if (currentX > x - rectWidth / 2 && currentX < x + rectWidth / 2) {
                 rect.setSelected(true);
-            }else{
+            } else {
                 rect.setSelected(false);
             }
         }
         invalidate();
-    }
-
-    public float getRectWidth() {
-        return rectWidth;
-    }
-
-    public void setRectWidth(float rectWidth) {
-        this.rectWidth = rectWidth;
     }
 
     public List<Rect> getRectList() {
@@ -178,6 +187,12 @@ public class HistogramView extends AxisFrameView implements Histogram{
 
     public void setRectList(List<Rect> rectList) {
         this.rectList = rectList;
+        invalidate();
+    }
+
+    @Override
+    public float getRectWidth() {
+        return rectWidth;
     }
 
     public int getRectSpacing() {
@@ -186,5 +201,27 @@ public class HistogramView extends AxisFrameView implements Histogram{
 
     public void setRectSpacing(int rectSpacing) {
         this.rectSpacing = rectSpacing;
+        computeRectWidth();
+        invalidate();
+    }
+
+    public int getMaxRectWidth() {
+        return maxRectWidth;
+    }
+
+    public void setMaxRectWidth(int maxRectWidth) {
+        this.maxRectWidth = maxRectWidth;
+        computeRectWidth();
+        invalidate();
+    }
+
+    public int getMaxRectSize() {
+        return maxRectSize;
+    }
+
+    public void setMaxRectSize(int maxRectSize) {
+        this.maxRectSize = maxRectSize;
+        computeRectWidth();
+        invalidate();
     }
 }

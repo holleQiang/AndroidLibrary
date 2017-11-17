@@ -22,11 +22,12 @@ public class LineChartView extends AxisFrameView implements LineChart {
 
     private List<Line> lineList;
     private Paint paint;
-    private float lineAnimateValue;
+    private float lineAnimateValue = 1;
     private ValueAnimator lineAnimator;
     private boolean isBeingDragged;
     private float lastMotionX, lastMotionY;
     private int mTouchSlop;
+    private boolean touchable;
 
     public LineChartView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
@@ -52,7 +53,6 @@ public class LineChartView extends AxisFrameView implements LineChart {
                 invalidate();
             }
         });
-        lineAnimator.start();
 
         mTouchSlop = ViewConfiguration.get(context).getScaledTouchSlop();
     }
@@ -79,6 +79,9 @@ public class LineChartView extends AxisFrameView implements LineChart {
     @Override
     public boolean onTouchEvent(MotionEvent event) {
 
+        if(!touchable){
+            return super.onTouchEvent(event);
+        }
 
         float currX = event.getX();
         float currY = event.getY();
@@ -117,7 +120,7 @@ public class LineChartView extends AxisFrameView implements LineChart {
 
         getParent().requestDisallowInterceptTouchEvent(isBeingDragged);
 
-        return true;
+        return super.onTouchEvent(event);
     }
 
     private void onDragStopped() {
