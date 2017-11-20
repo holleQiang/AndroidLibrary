@@ -1,5 +1,6 @@
 package com.zq.view.recyclerview.item;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.util.AttributeSet;
@@ -9,8 +10,8 @@ import android.view.VelocityTracker;
 import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.OverScroller;
-import android.widget.ScrollView;
 
 import com.zq.view.recyclerview.adapter.R;
 
@@ -21,6 +22,13 @@ import com.zq.view.recyclerview.adapter.R;
 
 public class HorizontalSlidLayout extends ViewGroup {
 
+    public static final int STATE_IDLE = 0;
+
+    public static final int STATE_DRAGGING = 1;
+
+    public static final int STATE_SETTLING = 2;
+
+    private int mState = STATE_IDLE;
     private int mTouchSlop;
     private int leftScrollRange, rightScrollRange;
     private int leftInitX, rightInitX;
@@ -28,6 +36,9 @@ public class HorizontalSlidLayout extends ViewGroup {
     private int maximumFlingVelocity, minimumFlingVelocity;
     private VelocityTracker mVelocityTracker;
     private static final int LOCATION_INVALID = -1;
+    private View mCenterView, mLeftView, mRightView;
+    private int mCurrentLocation = LOCATION_INVALID;
+    private OnSlidListener onSlidListener;
 
     public HorizontalSlidLayout(Context context) {
         super(context);
@@ -51,6 +62,27 @@ public class HorizontalSlidLayout extends ViewGroup {
         maximumFlingVelocity = ViewConfiguration.get(context).getScaledMaximumFlingVelocity();
         minimumFlingVelocity = ViewConfiguration.get(context).getScaledMinimumFlingVelocity() * 3;
         mOverScroller = new OverScroller(context);
+    }
+
+    @Override
+    protected void onFinishInflate() {
+        super.onFinishInflate();
+        final int childCount = getChildCount();
+        for (int i = 0; i < childCount; i++) {
+
+            View childView = getChildAt(i);
+            LayoutParams layoutParams = (LayoutParams) childView.getLayoutParams();
+            if (layoutParams.location == LayoutParams.LOCATION_CENTER) {
+                mCenterView = childView;
+            } else if (layoutParams.location == LayoutParams.LOCATION_RIGHT) {
+                mRightView = childView;
+            } else if (layoutParams.location == LayoutParams.LOCATION_LEFT) {
+                mLeftView = childView;
+            }
+        }
+        if (mCenterView == null) {
+            throw new NullPointerException("center view can not be null");
+        }
     }
 
     @Override
@@ -94,7 +126,6 @@ public class HorizontalSlidLayout extends ViewGroup {
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
 
         final int childCount = getChildCount();
         int maxChildHeight = Integer.MIN_VALUE;
@@ -114,7 +145,7 @@ public class HorizontalSlidLayout extends ViewGroup {
 
         int realHeight = maxChildHeight + getPaddingTop() + getPaddingBottom();
         int realWidth = centerChildWidth + getPaddingLeft() + getPaddingBottom();
-        setMeasuredDimension(realWidth, realHeight);
+        setMeasuredDimension(resolveSize(realWidth,widthMeasureSpec), resolveSize(realHeight,heightMeasureSpec));
 
         for (int i = 0; i < childCount; i++) {
 
@@ -190,6 +221,7 @@ public class HorizontalSlidLayout extends ViewGroup {
                 startX = getScrollX();
                 mLastX = ev.getX();
                 mLastY = ev.getY();
+                setState(STATE_IDLE);
                 break;
             case MotionEvent.ACTION_MOVE:
 
@@ -227,6 +259,7 @@ public class HorizontalSlidLayout extends ViewGroup {
         }
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     public boolean onTouchEvent(MotionEvent event) {
 
@@ -257,6 +290,7 @@ public class HorizontalSlidLayout extends ViewGroup {
                     } else {
                         deltaX += mTouchSlop;
                     }
+                    setState(STATE_DRAGGING);
                 }
                 if (isDraggedHorizontal) {
 
@@ -265,6 +299,8 @@ public class HorizontalSlidLayout extends ViewGroup {
                     final int nextScrollX = (int) (scrollX + deltaX);
 
                     scrollTo(getFixedScrollX(nextScrollX, startX), 0);
+
+                    dispatchLocationChange();
                 }
                 break;
             case MotionEvent.ACTION_UP:
@@ -278,9 +314,9 @@ public class HorizontalSlidLayout extends ViewGroup {
     }
 
 
-    private void onRelease(){
+    private void onRelease() {
 
-        if (isDraggedHorizontal && !isOutOfRange(getScrollX(), startX)) {
+        if (isDraggedHorizontal) {
             isDraggedHorizontal = false;
 
             int xVelocity = 0;
@@ -289,45 +325,40 @@ public class HorizontalSlidLayout extends ViewGroup {
                 xVelocity = (int) mVelocityTracker.getXVelocity();
             }
 
-            if (Math.abs(xVelocity) > minimumFlingVelocity) {
+            if (Math.abs(xVelocity) > minimumFlingVelocity && getTargetLocation(true) != LOCATION_INVALID) {
 
-                if (getTargetLocation() != LOCATION_INVALID) {
-                    fling(-xVelocity);
-                }
+                fling(-xVelocity);
+            } else if (needScrollToPosition(startX, getScrollX())) {
+
+                smoothScrollToTargetLocation();
             } else {
-
-                if (needScrollToPosition(startX, getScrollX())) {
-                    smoothScrollToTargetLocation();
-                }
-
-//                        smoothScrollToTargetLocation();
+                setState(STATE_IDLE);
             }
+        } else {
+            setState(STATE_IDLE);
         }
         clear();
     }
 
     private boolean needScrollToPosition(int startX, int currentX) {
 
-        Log.i("Test", "======isInCenterRange======" + isInCenterRange(startX) + startX);
-
         if (isInLeftExtraRange(startX) && isInLeftExtraRange(currentX) ||
                 isInRightExtraRange(startX) && isInRightExtraRange(currentX)) {
-            //如果位置没有发生变化，不需要滚动到指定位置
+
             return false;
         }
 
-        if (isInLeftExtraRange(startX) && !isInLeftExtraRange(currentX)  ||
-                isInRightExtraRange(startX) && !isInRightExtraRange(currentX) ) {
-            //如果位置没有发生变化，不需要滚动到指定位置
-            return false;
+        if (isInLeftExtraRange(startX) && !isInLeftExtraRange(currentX) ||
+                isInRightExtraRange(startX) && !isInRightExtraRange(currentX)) {
+
+            return true;
         }
 
-        if (!isInLeftExtraRange(startX) && isInLeftExtraRange(currentX)  ||
-                !isInRightExtraRange(startX) && isInRightExtraRange(currentX) ) {
-            //如果位置没有发生变化，不需要滚动到指定位置
+        if (!isInLeftExtraRange(startX) && isInLeftExtraRange(currentX) ||
+                !isInRightExtraRange(startX) && isInRightExtraRange(currentX)) {
+
             return false;
         }
-
         return true;
     }
 
@@ -339,11 +370,6 @@ public class HorizontalSlidLayout extends ViewGroup {
     private boolean isInRightExtraRange(int scrollX) {
 
         return scrollX >= rightInitX && scrollX <= rightScrollRange;
-    }
-
-    private boolean isInCenterRange(int scrollX) {
-
-        return scrollX == 0;
     }
 
 
@@ -376,6 +402,7 @@ public class HorizontalSlidLayout extends ViewGroup {
         }
     }
 
+
     private boolean isOutOfRange(int scrollX, int startX) {
 
         return scrollX < leftScrollRange ||
@@ -385,6 +412,7 @@ public class HorizontalSlidLayout extends ViewGroup {
 
     public void smoothScrollTo(int targetX) {
 
+        setState(STATE_SETTLING);
         final int scrollX = getScrollX();
         final int deltaX = targetX - getScrollX();
         mOverScroller.startScroll(scrollX, getScrollY(), deltaX, 0, Math.min(300, Math.abs(deltaX)));
@@ -408,6 +436,7 @@ public class HorizontalSlidLayout extends ViewGroup {
 
     public void fling(int xVelocity) {
 
+        setState(STATE_SETTLING);
         final int startX = getScrollX();
         mOverScroller.fling(startX, 0, xVelocity, 0, leftScrollRange, rightScrollRange, 0, 0);
         postInvalidate();
@@ -436,10 +465,10 @@ public class HorizontalSlidLayout extends ViewGroup {
      *
      * @return
      */
-    private int getTargetLocation() {
+    private int getTargetLocation(boolean considerEdge) {
 
         int scrollX = getScrollX();
-        if (scrollX == leftInitX || scrollX == 0 || scrollX == rightInitX) {
+        if (considerEdge && (scrollX == leftInitX || scrollX == 0 || scrollX == rightInitX)) {
             return LOCATION_INVALID;
         }
         if (scrollX >= leftScrollRange && scrollX < leftInitX / 2) {
@@ -464,7 +493,7 @@ public class HorizontalSlidLayout extends ViewGroup {
             return;
         }
 
-        int location = getTargetLocation();
+        int location = getTargetLocation(true);
         if (location == LayoutParams.LOCATION_LEFT) {
             smoothScrollToLeft();
         } else if (location == LayoutParams.LOCATION_RIGHT) {
@@ -483,6 +512,8 @@ public class HorizontalSlidLayout extends ViewGroup {
             int fixedScrollX = getFixedScrollX(scrollX, startX);
             scrollTo(fixedScrollX, mOverScroller.getCurrY());
 
+            dispatchLocationChange();
+
             if (fixedScrollX != scrollX) {
                 mOverScroller.abortAnimation();
                 if (needScrollToPosition(startX, fixedScrollX)) {
@@ -491,13 +522,73 @@ public class HorizontalSlidLayout extends ViewGroup {
                 return;
             }
             postInvalidate();
+
         } else {
 
             //fling 停止后再滚动到指定view
-//            Log.i("Test","==========" + mOverScroller.getCurrX() + "============" + getScrollX());
             if (needScrollToPosition(getScrollX(), getScrollX())) {
                 smoothScrollToTargetLocation();
             }
+            if (mOverScroller.isFinished()) {
+                setState(STATE_IDLE);
+            }
+            dispatchLocationChange();
         }
+    }
+
+    public interface OnSlidListener {
+
+        void onStateChange(int state);
+
+        void onViewSelect(int location);
+
+        void onViewTransfer(View view,float translate);
+    }
+
+    public int getState() {
+        return mState;
+    }
+
+    private void setState(int mState) {
+
+        if (this.mState != mState) {
+            this.mState = mState;
+            if (onSlidListener != null) {
+                onSlidListener.onStateChange(mState);
+            }
+        }
+    }
+
+    private void dispatchLocationChange() {
+
+        if (onSlidListener == null) {
+            return;
+        }
+        final float scrollX = getScrollX();
+
+        if (scrollX < 0) {
+            float centerViewRate = scrollX / leftInitX; //0 -- 1
+            float leftViewRate = -1 + Math.max(scrollX, leftInitX) / leftInitX;// -1 -- 0
+            onSlidListener.onViewTransfer(mLeftView,leftViewRate);
+            onSlidListener.onViewTransfer(mCenterView,centerViewRate);
+        } else if (scrollX > 0) {
+
+            float centerViewRate = - scrollX / rightInitX; // 0 -- -1
+            float rightViewRate = 1 - Math.min(scrollX, rightInitX) / rightInitX; // 1 -- 0
+            onSlidListener.onViewTransfer(mRightView,rightViewRate);
+            onSlidListener.onViewTransfer(mCenterView,centerViewRate);
+        }else{
+            onSlidListener.onViewTransfer(mCenterView,0);
+        }
+
+        int location = getTargetLocation(false);
+        if (mCurrentLocation != location) {
+            mCurrentLocation = location;
+            onSlidListener.onViewSelect(location);
+        }
+    }
+
+    public void setOnSlidListener(OnSlidListener onSlidListener) {
+        this.onSlidListener = onSlidListener;
     }
 }

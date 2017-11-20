@@ -27,6 +27,6 @@ android {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
-    implementation 'com.android.support:appcompat-v7:25.+'
+    implementation "com.android.support:appcompat-v7:${rootProject.ext.appcompat_support_version}"
     testImplementation 'junit:junit:4.12'
 }

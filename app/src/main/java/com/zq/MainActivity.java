@@ -2,6 +2,7 @@ package com.zq;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -78,6 +79,32 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
             viewHolder.setText(R.id.textView, data);
             HorizontalSlidLayout slidLayout = viewHolder.getView(R.id.m_horizontal_slid);
             slidLayout.reset();
+            slidLayout.setOnSlidListener(new HorizontalSlidLayout.OnSlidListener() {
+                @Override
+                public void onStateChange(int state) {
+
+                }
+
+                @Override
+                public void onViewSelect(int location) {
+
+                    Log.i("Test","===============" + location);
+                }
+
+                @Override
+                public void onViewTransfer(View view, float translate) {
+
+                    float alpha = 0f;
+                    if(0 <= translate && translate <= 1){
+
+                        alpha = 1 - translate;
+                    }else if(-1 <= translate && translate <= 0){
+
+                        alpha = translate + 1;
+                    }
+                    view.setAlpha(alpha);
+                }
+            });
             viewHolder.setOnClickListener(R.id.left_view, new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -95,12 +122,6 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
                 @Override
                 public void onClick(View v) {
                     Toast.makeText(MainActivity.this, "view_center", Toast.LENGTH_SHORT).show();
-                }
-            });
-            viewHolder.setOnClickListener(R.id.m_horizontal_slid, new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Toast.makeText(MainActivity.this, "Slid", Toast.LENGTH_SHORT).show();
                 }
             });
         }
