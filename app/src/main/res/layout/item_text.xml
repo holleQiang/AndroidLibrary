@@ -6,10 +6,6 @@
     android:orientation="vertical">
 
 
-    <com.zq.view.recyclerview.item.HorizontalSlidLayout
-        android:id="@+id/m_horizontal_slid"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
 
         <RelativeLayout
             android:id="@+id/view_center"
@@ -30,22 +26,6 @@
 
         </RelativeLayout>
 
-        <TextView
-            android:id="@+id/right_view"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:background="#00ff00"
-            android:text="@string/appbar_scrolling_view_behavior"
-            app:location="right" />
-
-        <TextView
-            android:id="@+id/left_view"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:background="#ff0000"
-            android:text="@string/appbar_scrolling_view_behavior"
-            app:location="left" />
-    </com.zq.view.recyclerview.item.HorizontalSlidLayout>
 
 
 </com.zq.widget.SquareFrameLayout>

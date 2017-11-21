@@ -1,12 +1,12 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 25
-    buildToolsVersion '26.0.2'
+    compileSdkVersion rootProject.ext.compileSdkVersion
+    buildToolsVersion rootProject.ext.buildToolsVersion
     defaultConfig {
         applicationId "com.zq"
         minSdkVersion 15
-        targetSdkVersion 25
+        targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
@@ -36,4 +36,5 @@ dependencies {
     compile "com.android.support:design:${rootProject.ext.appcompat_support_version}"
     compile project(':lib-gesturepassword')
     compile project(':lib-smartnumber')
+    implementation project(':lib-flowlayout')
 }

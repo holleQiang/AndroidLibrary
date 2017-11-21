@@ -6,6 +6,7 @@
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/lib-blur/lib-blur.iml" filepath="$PROJECT_DIR$/lib-blur/lib-blur.iml" />
       <module fileurl="file://$PROJECT_DIR$/lib-database/lib-database.iml" filepath="$PROJECT_DIR$/lib-database/lib-database.iml" />
+      <module fileurl="file://$PROJECT_DIR$/lib-flowlayout/lib-flowlayout.iml" filepath="$PROJECT_DIR$/lib-flowlayout/lib-flowlayout.iml" />
       <module fileurl="file://$PROJECT_DIR$/lib-gesturepassword/lib-gesturepassword.iml" filepath="$PROJECT_DIR$/lib-gesturepassword/lib-gesturepassword.iml" />
       <module fileurl="file://$PROJECT_DIR$/lib-htmltext/lib-htmltext.iml" filepath="$PROJECT_DIR$/lib-htmltext/lib-htmltext.iml" />
       <module fileurl="file://$PROJECT_DIR$/lib-linechartview/lib-linechartview.iml" filepath="$PROJECT_DIR$/lib-linechartview/lib-linechartview.iml" />

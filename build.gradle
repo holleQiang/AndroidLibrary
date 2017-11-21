@@ -20,6 +20,10 @@ allprojects {
     ext{
 
         appcompat_support_version = '25.3.1'
+        compileSdkVersion = 25
+        buildToolsVersion = '26.0.2'
+        targetSdkVersion = 25
+
     }
 }
 

@@ -31,6 +31,7 @@
         <activity android:name=".rotateanim.RotateViewActivity" />
         <activity android:name=".pageradapter.FragmentPagerAdapterTestActivity" />
         <activity android:name=".htmltext.HtmlTextActivity" />
+        <activity android:name=".flowlayout.FlowLayoutActivity" />
     </application>
 
 </manifest>

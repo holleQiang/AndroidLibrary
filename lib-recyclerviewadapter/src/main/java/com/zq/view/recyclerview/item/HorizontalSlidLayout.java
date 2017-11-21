@@ -4,13 +4,11 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
 import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.OverScroller;
 
 import com.zq.view.recyclerview.adapter.R;
@@ -309,6 +307,10 @@ public class HorizontalSlidLayout extends ViewGroup {
                 onRelease();
                 break;
         }
+//        if(!isDraggedHorizontal && !super.onTouchEvent(event)){
+//            ViewGroup viewGroup = (ViewGroup) getParent();
+//            viewGroup.onTouchEvent(event);
+//        }
         getParent().requestDisallowInterceptTouchEvent(isDraggedHorizontal);
         return true;
     }

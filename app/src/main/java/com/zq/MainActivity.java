@@ -2,16 +2,12 @@ package com.zq;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
-import android.view.View;
-import android.widget.Toast;
 
 import com.zq.behavior.BehaviorActivity;
+import com.zq.flowlayout.FlowLayoutActivity;
 import com.zq.gesturepassword.GesturePasswordActivity;
 import com.zq.histogram.HistogramActivity;
 import com.zq.hscrollview.HorizontalScrollViewInRVActivity;
@@ -25,12 +21,10 @@ import com.zq.ringchart.RingChartActivity;
 import com.zq.rotateanim.RotateViewActivity;
 import com.zq.utils.ViewUtil;
 import com.zq.view.recyclerview.adapter.OnItemClickListener;
-import com.zq.view.recyclerview.adapter.cell.Cell;
 import com.zq.view.recyclerview.adapter.cell.CellAdapter;
 import com.zq.view.recyclerview.adapter.cell.DataBinder;
 import com.zq.view.recyclerview.adapter.cell.MultiCell;
 import com.zq.view.recyclerview.divider.RVItemDivider;
-import com.zq.view.recyclerview.item.HorizontalSlidLayout;
 import com.zq.view.recyclerview.utils.RVUtil;
 import com.zq.view.recyclerview.viewholder.RVViewHolder;
 
@@ -67,6 +61,7 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
         cellAdapter.addDataAtLast(MultiCell.convert(R.layout.item_text, "View翻转", dataBinder));
         cellAdapter.addDataAtLast(MultiCell.convert(R.layout.item_text, "ViewPager测试", dataBinder));
         cellAdapter.addDataAtLast(MultiCell.convert(R.layout.item_text, "htmlText", dataBinder));
+        cellAdapter.addDataAtLast(MultiCell.convert(R.layout.item_text, "FlowLayout", dataBinder));
         cellAdapter.setOnItemClickListener(this);
         mRecyclerView.setAdapter(cellAdapter);
         mRecyclerView.addItemDecoration(new RVItemDivider(getResources().getColor(R.color.colorPrimary), ViewUtil.dp2px(this, 5)));
@@ -77,7 +72,7 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
         public void bindData(RVViewHolder viewHolder, String data) {
 //            viewHolder.setText(R.id.textView, viewHolder.getAdapterPosition() + "、" + data);
             viewHolder.setText(R.id.textView, data);
-            HorizontalSlidLayout slidLayout = viewHolder.getView(R.id.m_horizontal_slid);
+            /*HorizontalSlidLayout slidLayout = viewHolder.getView(R.id.m_horizontal_slid);
             slidLayout.reset();
             slidLayout.setOnSlidListener(new HorizontalSlidLayout.OnSlidListener() {
                 @Override
@@ -104,26 +99,7 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
                     }
                     view.setAlpha(alpha);
                 }
-            });
-            viewHolder.setOnClickListener(R.id.left_view, new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-
-                    Toast.makeText(MainActivity.this, "left", Toast.LENGTH_SHORT).show();
-                }
-            });
-            viewHolder.setOnClickListener(R.id.right_view, new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Toast.makeText(MainActivity.this, "right", Toast.LENGTH_SHORT).show();
-                }
-            });
-            viewHolder.setOnClickListener(R.id.view_center, new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Toast.makeText(MainActivity.this, "view_center", Toast.LENGTH_SHORT).show();
-                }
-            });
+            });*/
         }
     };
 
@@ -164,6 +140,8 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
             startActivity(new Intent(MainActivity.this, FragmentPagerAdapterTestActivity.class));
         }else if ("htmlText".equals(fun)) {
             startActivity(new Intent(MainActivity.this, HtmlTextActivity.class));
+        }else if("FlowLayout".equals(fun)){
+            startActivity(FlowLayoutActivity.newIntent(MainActivity.this));
         }
     }
 }

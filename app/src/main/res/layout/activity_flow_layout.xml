@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.zq.widget.flowyout.FlowLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:lineGravity="right"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical">
+
+    <TextView
+        style="@style/AppTheme.FlowItem"
+        android:layout_width="wrap_content"
+        app:gravity="bottom"
+        android:layout_height="wrap_content"
+        android:text="abc" />
+
+    <TextView
+        style="@style/AppTheme.FlowItem"
+        android:layout_width="wrap_content"
+        app:gravity="center_vertical"
+        android:layout_height="wrap_content"
+        android:text="abcabc" />
+
+    <TextView
+        style="@style/AppTheme.FlowItem"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:text="abcabcabcabcabcabcabcabcabcabcabcabc" />
+
+    <TextView
+        style="@style/AppTheme.FlowItem"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="abcabcabcabc" />
+
+    <TextView
+        style="@style/AppTheme.FlowItem"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="abcabcabcabcabc" />
+
+    <TextView
+        style="@style/AppTheme.FlowItem"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="abcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabc" />
+
+    <RatingBar
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <LinearLayout
+        style="@style/AppTheme.FlowItem"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="abcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabc" />
+    </LinearLayout>
+
+</com.zq.widget.flowyout.FlowLayout>
