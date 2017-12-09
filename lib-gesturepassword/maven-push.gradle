@@ -14,7 +14,7 @@ uploadArchives {
 
             pom.groupId = 'com.zq.widget.gesturepassword'
             pom.artifactId = 'gesturepassword'
-            pom.version = '0.0.1'
+            pom.version = '0.0.7'
 
             pom.project {
 

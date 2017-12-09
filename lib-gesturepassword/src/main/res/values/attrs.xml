@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <declare-styleable name="GesturePasswordView">
+
+        <attr name="lineWidth" format="dimension"/>
+        <attr name="lineColor" format="color"/>
+        <attr name="circleColor" format="color"/>
+        <attr name="selectCircleColor" format="color"/>
+        <attr name="circleRadius" format="dimension"/>
+
+        <attr name="LargeCircleColor" format="color"/>
+        <attr name="LargeCircleRadius" format="dimension"/>
+        <attr name="rowCount" format="integer"/>
+        <attr name="columnCount" format="integer"/>
+    </declare-styleable>
+
+    <attr name="GesturePasswordViewStyle"/>
+</resources>

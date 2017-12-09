@@ -1,5 +1,6 @@
 apply plugin: 'maven'
 
+
 uploadArchives {
     repositories {
         mavenDeployer {
@@ -12,9 +13,9 @@ uploadArchives {
                 authentication(userName: "admin", password: "zhang@123")
             }
 
-            pom.groupId = 'com.zq.widget.flowlayout'
-            pom.artifactId = 'flowlayout'
-            pom.version = '0.0.9'
+            pom.groupId = 'com.zq.widget'
+            pom.artifactId = 'sidebar'
+            pom.version = '0.0.4'
 
             pom.project {
 

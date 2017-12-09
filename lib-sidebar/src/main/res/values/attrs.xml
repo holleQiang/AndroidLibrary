@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <declare-styleable name="Sidebar">
+        <attr name="letters" format="reference"/>
+        <attr name="android:textSize" />
+        <attr name="android:textColor"/>
+        <attr name="letterSpacing" format="dimension"/>
+        <attr name="android:orientation"/>
+        <attr name="selectLetterColor" format="color"/>
+    </declare-styleable>
+</resources>

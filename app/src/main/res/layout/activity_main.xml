@@ -3,13 +3,35 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     tools:context="com.zq.MainActivity">
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/m_recycler_view"
+    <android.support.v7.widget.Toolbar
+        android:background="@color/colorPrimary"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        />
+        android:layout_height="wrap_content">
+    </android.support.v7.widget.Toolbar>
+
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/m_recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            />
+
+        <com.zq.widget.sidebar.Sidebar
+            android:layout_width="wrap_content"
+            android:layout_gravity="end|center_vertical"
+            app:letters="@array/sideBarLetters"
+            app:letterSpacing="0dp"
+            android:textSize="20sp"
+            android:orientation="vertical"
+            android:layout_height="wrap_content" />
+    </FrameLayout>
 
 </LinearLayout>

@@ -1,15 +1,17 @@
-apply plugin: 'com.android.application'
+apply plugin: 'com.android.library'
 
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
     buildToolsVersion rootProject.ext.buildToolsVersion
+
     defaultConfig {
-        applicationId "com.zq"
         minSdkVersion 15
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
         versionName "1.0"
+
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
     }
     buildTypes {
         release {
@@ -20,22 +22,11 @@ android {
 }
 
 dependencies {
-    compile fileTree(include: ['*.jar'], dir: 'libs')
+    compile fileTree(dir: 'libs', include: ['*.jar'])
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
     compile "com.android.support:appcompat-v7:${rootProject.ext.appcompat_support_version}"
     testCompile 'junit:junit:4.12'
-    compile project(':lib-recyclerviewadapter')
-    compile 'com.jakewharton:butterknife:8.6.0'
-    annotationProcessor 'com.jakewharton:butterknife-compiler:8.6.0'
-    compile project(':lib-wheelview')
-    compile project(':lib-linechartview')
-    compile project(':lib-lrcview')
-    compile 'com.github.lzyzsd:jsbridge:1.0.4'
-    compile "com.android.support:design:${rootProject.ext.appcompat_support_version}"
-    compile project(':lib-gesturepassword')
-    compile project(':lib-smartnumber')
-    implementation project(':lib-flowlayout')
-    implementation project(':lib-sidebar')
 }
+apply from: './maven-push.gradle'

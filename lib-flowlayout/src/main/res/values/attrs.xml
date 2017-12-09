@@ -8,10 +8,11 @@
             <enum name="center_horizontal" value="1"/>
             <enum name="right" value="2"/>
         </attr>
+        <attr name="maxLines" format="integer|reference"/>
     </declare-styleable>
 
     <declare-styleable name="FlowLayout_Layout">
-        <attr name="gravity" format="enum|reference">
+        <attr name="gravityInLine" format="enum|reference">
             <enum value="0" name="top"/>
             <enum value="1" name="center_vertical"/>
             <enum value="2" name="bottom"/>

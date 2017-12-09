@@ -49,23 +49,38 @@ public class HorizontalScrollViewInRVActivity extends AppCompatActivity {
 
             Data data = new Data();
             data.setColumnIndex(i);
-            horizontalAdapter.addDataAtLast(MultiCell.convert(R.layout.item_text2, data, new DataBinder<Data>() {
-                @Override
-                public void bindData(final RVViewHolder viewHolder, Data data) {
-                    if (data.getColumnIndex() % 2 == 0) {
-                        viewHolder.setBackgroundResource(R.id.textView, R.drawable.click_selector);
-                    } else {
+            if (i % 2 == 0) {
+                horizontalAdapter.addDataAtLast(MultiCell.convert(R.layout.item_text2, data, new DataBinder<Data>() {
+                    @Override
+                    public void bindData(final RVViewHolder viewHolder, Data data) {
+
                         viewHolder.setBackgroundResource(R.id.textView, R.color.colorPrimary);
+                        viewHolder.setText(R.id.textView, "" + data.getColumnIndex());
+                        viewHolder.setOnClickListener(R.id.textView, new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                Toast.makeText(HorizontalScrollViewInRVActivity.this, "click : " + viewHolder.getAdapterPosition(), Toast.LENGTH_SHORT).show();
+                            }
+                        });
                     }
-                    viewHolder.setText(R.id.textView, "" + data.getColumnIndex());
-                    viewHolder.setOnClickListener(R.id.textView, new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            Toast.makeText(HorizontalScrollViewInRVActivity.this, "click : " + viewHolder.getAdapterPosition(), Toast.LENGTH_SHORT).show();
-                        }
-                    });
-                }
-            }));
+                }));
+            } else {
+                horizontalAdapter.addDataAtLast(MultiCell.convert(R.layout.item_text3, data, new DataBinder<Data>() {
+                    @Override
+                    public void bindData(final RVViewHolder viewHolder, Data data) {
+
+                        viewHolder.setBackgroundResource(R.id.textView, R.drawable.click_selector);
+                        viewHolder.setText(R.id.textView, "" + data.getColumnIndex());
+                        viewHolder.setOnClickListener(R.id.textView, new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                Toast.makeText(HorizontalScrollViewInRVActivity.this, "click : " + viewHolder.getAdapterPosition(), Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    }
+                }));
+            }
+
         }
 
 
@@ -93,7 +108,7 @@ public class HorizontalScrollViewInRVActivity extends AppCompatActivity {
         }
         cellAdapter.setDataList(cellList);
         totalRecyclerView.setAdapter(cellAdapter);
-        new ScrollableRecyclerViewHelper(totalRecyclerView, new RecyclerViewHScrollIdController(R.id.recycler_view,R.id.recycler_view)).attachToTarget();
+        new ScrollableRecyclerViewHelper(totalRecyclerView, new RecyclerViewHScrollIdController(R.id.recycler_view, R.id.recycler_view)).attachToTarget();
     }
 
 
