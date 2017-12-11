@@ -19,6 +19,7 @@ import com.zq.pageradapter.FragmentPagerAdapterTestActivity;
 import com.zq.redpoint.RedPointActivity;
 import com.zq.ringchart.RingChartActivity;
 import com.zq.rotateanim.RotateViewActivity;
+import com.zq.snaphelper.SnapHelperSampleActivity;
 import com.zq.utils.ViewUtil;
 import com.zq.view.recyclerview.adapter.OnItemClickListener;
 import com.zq.view.recyclerview.adapter.cell.CellAdapter;
@@ -62,6 +63,7 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
         cellAdapter.addDataAtLast(MultiCell.convert(R.layout.item_text, "ViewPager测试", dataBinder));
         cellAdapter.addDataAtLast(MultiCell.convert(R.layout.item_text, "htmlText", dataBinder));
         cellAdapter.addDataAtLast(MultiCell.convert(R.layout.item_text, "FlowLayout", dataBinder));
+        cellAdapter.addDataAtLast(MultiCell.convert(R.layout.item_text, "SnapHelper", dataBinder));
         cellAdapter.setOnItemClickListener(this);
         mRecyclerView.setAdapter(cellAdapter);
         mRecyclerView.addItemDecoration(new RVItemDivider(getResources().getColor(R.color.colorPrimary), ViewUtil.dp2px(this, 5)));
@@ -142,6 +144,8 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
             startActivity(new Intent(MainActivity.this, HtmlTextActivity.class));
         }else if("FlowLayout".equals(fun)){
             startActivity(FlowLayoutActivity.newIntent(MainActivity.this));
+        }else if("SnapHelper".equals(fun)){
+            startActivity(new Intent(MainActivity.this, SnapHelperSampleActivity.class));
         }
     }
 }

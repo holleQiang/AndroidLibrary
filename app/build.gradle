@@ -38,4 +38,5 @@ dependencies {
     compile project(':lib-smartnumber')
     implementation project(':lib-flowlayout')
     implementation project(':lib-sidebar')
+    compile 'com.github.bumptech.glide:glide:4.0.0'
 }

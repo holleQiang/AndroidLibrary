@@ -9,6 +9,7 @@ import android.view.VelocityTracker;
 import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.OverScroller;
 
 import com.zq.view.recyclerview.adapter.R;
@@ -128,11 +129,13 @@ public class HorizontalSlidLayout extends ViewGroup {
         final int childCount = getChildCount();
         int maxChildHeight = Integer.MIN_VALUE;
         int centerChildWidth = 0;
+        int childMeasureState = 0;
         for (int i = 0; i < childCount; i++) {
 
             View childView = getChildAt(i);
             measureChildWithMargins(childView, widthMeasureSpec, 0, heightMeasureSpec, 0);
             LayoutParams layoutParams = (LayoutParams) childView.getLayoutParams();
+            childMeasureState = combineMeasuredStates(childMeasureState,childView.getMeasuredState());
             int mHeight = childView.getMeasuredHeight();
             int mWidth = childView.getMeasuredWidth();
             maxChildHeight = Math.max(maxChildHeight, mHeight + layoutParams.topMargin + layoutParams.bottomMargin);
@@ -143,7 +146,8 @@ public class HorizontalSlidLayout extends ViewGroup {
 
         int realHeight = maxChildHeight + getPaddingTop() + getPaddingBottom();
         int realWidth = centerChildWidth + getPaddingLeft() + getPaddingBottom();
-        setMeasuredDimension(resolveSize(realWidth,widthMeasureSpec), resolveSize(realHeight,heightMeasureSpec));
+        setMeasuredDimension(resolveSizeAndState(realWidth,widthMeasureSpec,childMeasureState),
+                resolveSizeAndState(realHeight,heightMeasureSpec,childMeasureState << MEASURED_HEIGHT_STATE_SHIFT));
 
         for (int i = 0; i < childCount; i++) {
 
@@ -307,10 +311,6 @@ public class HorizontalSlidLayout extends ViewGroup {
                 onRelease();
                 break;
         }
-//        if(!isDraggedHorizontal && !super.onTouchEvent(event)){
-//            ViewGroup viewGroup = (ViewGroup) getParent();
-//            viewGroup.onTouchEvent(event);
-//        }
         getParent().requestDisallowInterceptTouchEvent(isDraggedHorizontal);
         return true;
     }
@@ -544,7 +544,7 @@ public class HorizontalSlidLayout extends ViewGroup {
 
         void onViewSelect(int location);
 
-        void onViewTransfer(View view,float translate);
+        void onViewTransfer(View view, float translate);
     }
 
     public int getState() {
