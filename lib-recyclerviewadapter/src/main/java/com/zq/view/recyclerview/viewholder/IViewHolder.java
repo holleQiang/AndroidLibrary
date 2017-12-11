@@ -3,6 +3,7 @@ package com.zq.view.recyclerview.viewholder;
 import android.graphics.Bitmap;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
+import android.support.annotation.StringRes;
 import android.text.TextWatcher;
 import android.text.method.MovementMethod;
 import android.view.View;
@@ -103,4 +104,6 @@ public interface IViewHolder {
     IViewHolder setTextSize(int viewId, int unit, float textSize);
 
     IViewHolder setTextSize(int viewId, float textSize);
+
+    IViewHolder setText(int viewId, @StringRes int textRes);
 }

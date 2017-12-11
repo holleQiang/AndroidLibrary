@@ -138,6 +138,15 @@ public final class CellAdapter extends BaseObjectRecyclerAdapter<Cell, RVViewHol
     }
 
     /**
+     * 获取header cell
+     * @param index 索引
+     * @return
+     */
+    public Cell getHeaderCellAt(int index){
+        return headerCells.get(index);
+    }
+
+    /**
      * 移除指定Header
      *
      * @param position
@@ -227,6 +236,14 @@ public final class CellAdapter extends BaseObjectRecyclerAdapter<Cell, RVViewHol
         removeFooterCellAt(footerCells.indexOf(cell));
     }
 
+    /**
+     * 获取footer cell
+     * @param index 索引
+     * @return
+     */
+    public Cell getFooterCellAt(int index){
+        return footerCells.get(index);
+    }
 
     @Override
     public int getHeaderItemCount() {
@@ -275,10 +292,11 @@ public final class CellAdapter extends BaseObjectRecyclerAdapter<Cell, RVViewHol
                 @Override
                 public int getSpanSize(int position) {
 
-                    if (isContentItem(position)) {
+                    final int fixedPosition = fixLoopPosition(position);
+                    if (isContentItem(fixedPosition)) {
 
                         final int validHeaderCount = isHeaderEnable() ? getHeaderItemCount() : 0;
-                        Cell cell = getDataAt(position - validHeaderCount);
+                        Cell cell = getDataAt(fixedPosition - validHeaderCount);
                         int spanSize = cell.getSpanSize();
                         if(spanSize == Cell.FULL_SPAN){
                             spanSize = ((GridLayoutManager) layoutManager).getSpanCount();
@@ -314,7 +332,8 @@ public final class CellAdapter extends BaseObjectRecyclerAdapter<Cell, RVViewHol
         super.onViewAttachedToWindow(holder);
         notifyViewAttachedToWindow(holder);
 
-        final int position = holder.getAdapterPosition();
+        int position = holder.getAdapterPosition();
+        position = fixLoopPosition(position);
         if (position == RecyclerView.NO_POSITION) {
             return;
         }
@@ -457,7 +476,9 @@ public final class CellAdapter extends BaseObjectRecyclerAdapter<Cell, RVViewHol
 
     private void notifyViewAttachedToWindow(RVViewHolder holder){
 
-        Cell cell = findCellAtAdapterPosition(holder.getAdapterPosition());
+        int position = holder.getAdapterPosition();
+        position = fixLoopPosition(position);
+        Cell cell = findCellAtAdapterPosition(position);
         if(cell != null){
 
             final RVViewHolder oldViewHolder = cell.getAttachedViewHolder();

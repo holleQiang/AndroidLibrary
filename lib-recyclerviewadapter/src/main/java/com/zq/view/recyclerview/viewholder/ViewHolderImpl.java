@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
+import android.support.annotation.StringRes;
 import android.text.TextWatcher;
 import android.text.method.MovementMethod;
 import android.text.util.Linkify;
@@ -360,6 +361,14 @@ public class ViewHolderImpl implements IViewHolder {
 
         TextView textView = getView(viewId);
         textView.setTextSize(TypedValue.COMPLEX_UNIT_SP,textSize);
+        return this;
+    }
+
+    @Override
+    public IViewHolder setText(int viewId, @StringRes int text) {
+
+        TextView textView = getView(viewId);
+        textView.setText(text);
         return this;
     }
 

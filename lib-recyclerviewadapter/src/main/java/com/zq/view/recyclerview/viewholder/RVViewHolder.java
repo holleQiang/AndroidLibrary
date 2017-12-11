@@ -32,6 +32,10 @@ public class RVViewHolder extends RecyclerView.ViewHolder implements IViewHolder
         return recyclerViewHolder;
     }
 
+    public static RVViewHolder create(View itemView) {
+        return new RVViewHolder(itemView);
+    }
+
     private RVViewHolder(View itemView) {
         super(itemView);
         setViewHolderDelegate(new ViewHolderImpl(itemView));
@@ -253,6 +257,11 @@ public class RVViewHolder extends RecyclerView.ViewHolder implements IViewHolder
     @Override
     public IViewHolder setTextSize(int viewId, float textSize) {
         return getViewHolderDelegate().setTextSize(viewId, textSize);
+    }
+
+    @Override
+    public IViewHolder setText(int viewId, int textRes) {
+        return getViewHolderDelegate().setText(viewId, textRes);
     }
 
     public IViewHolder getViewHolderDelegate() {

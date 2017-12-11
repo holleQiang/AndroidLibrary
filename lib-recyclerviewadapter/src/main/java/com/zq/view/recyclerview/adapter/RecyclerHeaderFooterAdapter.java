@@ -1,5 +1,6 @@
 package com.zq.view.recyclerview.adapter;
 
+import android.support.annotation.Nullable;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
@@ -19,14 +20,18 @@ public abstract class RecyclerHeaderFooterAdapter<VH extends RecyclerView.ViewHo
     private boolean footerEnable;
     private boolean singleLineHeaderEnable;
     private boolean singleLineFooterEnable;
+    private boolean loopEnable;
 
     private OnItemClickListener onItemClickListener;
     private OnItemLongLickListener onItemLongLickListener;
+    @Nullable
+    private RecyclerView attachedRecyclerView;
+    private int lastRawItemCount;
 
     @Override
     public final VH onCreateViewHolder(ViewGroup parent, int viewType) {
 
-        VH viewHolder = null;
+        final VH viewHolder;
         if (viewType == ITEM_TYPE_HEADER) {
 
             viewHolder = onCreateHeaderViewHolder(parent, viewType);
@@ -41,12 +46,14 @@ public abstract class RecyclerHeaderFooterAdapter<VH extends RecyclerView.ViewHo
         return viewHolder;
     }
 
-    protected void onViewHolderCreated(VH viewHolder){
+    protected void onViewHolderCreated(VH viewHolder) {
 
     }
 
     @Override
-    public final void onBindViewHolder(final VH holder,  int position) {
+    public final void onBindViewHolder(final VH holder, int position) {
+
+        position = fixLoopPosition(position);
 
         int viewType = holder.getItemViewType();
         if (viewType == ITEM_TYPE_HEADER) {
@@ -87,28 +94,26 @@ public abstract class RecyclerHeaderFooterAdapter<VH extends RecyclerView.ViewHo
     }
 
 
-
-
     @Override
     public final int getItemCount() {
 
-        int itemCount = 0;
-
-        if (isHeaderEnable()) {
-            itemCount += getHeaderItemCount();
+        int itemCount;
+        if (loopEnable) {
+            itemCount =  Integer.MAX_VALUE;
+        }else{
+            itemCount = getRawItemCount();
         }
-
-        if (isFooterEnable()) {
-            itemCount += getFooterItemCount();
+        if(lastRawItemCount != itemCount){
+            fixFirstLoopInvalid();
+            lastRawItemCount = itemCount;
         }
-
-        itemCount += getContentItemCount();
-
         return itemCount;
     }
 
     @Override
     public final int getItemViewType(int position) {
+
+        position = fixLoopPosition(position);
 
         final int validHeaderCount = isHeaderEnable() ? getHeaderItemCount() : 0;
 
@@ -170,15 +175,15 @@ public abstract class RecyclerHeaderFooterAdapter<VH extends RecyclerView.ViewHo
         if (!isHeaderEnable() && headerEnable) {
 
             final int headerCount = getHeaderItemCount();
-            notifyItemRangeInserted(0,headerCount);
-            notifyItemRangeChanged(headerCount,getContentItemCount());
+            notifyItemRangeInserted(0, headerCount);
+            notifyItemRangeChanged(headerCount, getContentItemCount());
         }
 
-        if(isHeaderEnable() && !headerEnable){
+        if (isHeaderEnable() && !headerEnable) {
 
             final int headerCount = getHeaderItemCount();
-            notifyItemRangeRemoved(0,headerCount);
-            notifyItemRangeChanged(0,getContentItemCount());
+            notifyItemRangeRemoved(0, headerCount);
+            notifyItemRangeChanged(0, getContentItemCount());
         }
         this.headerEnable = headerEnable;
     }
@@ -193,7 +198,7 @@ public abstract class RecyclerHeaderFooterAdapter<VH extends RecyclerView.ViewHo
 
             final int validHeaderCount = isHeaderEnable() ? getHeaderItemCount() : 0;
             final int startPosition = validHeaderCount + getContentItemCount();
-            notifyItemRangeInserted(startPosition,getFooterItemCount());
+            notifyItemRangeInserted(startPosition, getFooterItemCount());
         }
 
         if (isFooterEnable() && !footerEnable) {
@@ -213,18 +218,18 @@ public abstract class RecyclerHeaderFooterAdapter<VH extends RecyclerView.ViewHo
         this.onItemLongLickListener = onItemLongLickListener;
     }
 
-    public boolean isHeaderItem(int position){
+    public boolean isHeaderItem(int position) {
 
         return isHeaderEnable() && position < getHeaderItemCount();
     }
 
-    public boolean isContentItem(int position){
+    public boolean isContentItem(int position) {
 
         final int validHeaderCount = isHeaderEnable() ? getHeaderItemCount() : 0;
         return position >= validHeaderCount && position < getContentItemCount() + validHeaderCount;
     }
 
-    public boolean isFooterItem(int position){
+    public boolean isFooterItem(int position) {
 
         final int validHeaderCount = isHeaderEnable() ? getHeaderItemCount() : 0;
         return position >= getContentItemCount() + validHeaderCount;
@@ -234,8 +239,10 @@ public abstract class RecyclerHeaderFooterAdapter<VH extends RecyclerView.ViewHo
     public void onAttachedToRecyclerView(RecyclerView recyclerView) {
         super.onAttachedToRecyclerView(recyclerView);
 
+        attachedRecyclerView = recyclerView;
+
         RecyclerView.LayoutManager layoutManager = recyclerView.getLayoutManager();
-        if(layoutManager instanceof GridLayoutManager){
+        if (layoutManager instanceof GridLayoutManager) {
 
             final GridLayoutManager gridLayoutManager = (GridLayoutManager) layoutManager;
             final GridLayoutManager.SpanSizeLookup oldSizeLookup = gridLayoutManager.getSpanSizeLookup();
@@ -244,13 +251,15 @@ public abstract class RecyclerHeaderFooterAdapter<VH extends RecyclerView.ViewHo
                 @Override
                 public int getSpanSize(int position) {
 
-                    if(isHeaderItem(position) && singleLineHeaderEnable){
+                    final int fixedPosition = fixLoopPosition(position);
+
+                    if (isHeaderItem(fixedPosition) && singleLineHeaderEnable) {
                         return gridLayoutManager.getSpanCount();
                     }
-                    if(isFooterItem(position) && singleLineFooterEnable){
+                    if (isFooterItem(fixedPosition) && singleLineFooterEnable) {
                         return gridLayoutManager.getSpanCount();
                     }
-                    if(oldSizeLookup != null){
+                    if (oldSizeLookup != null) {
                         return oldSizeLookup.getSpanSize(position);
                     }
                     return 0;
@@ -260,10 +269,49 @@ public abstract class RecyclerHeaderFooterAdapter<VH extends RecyclerView.ViewHo
     }
 
     @Override
+    public void onDetachedFromRecyclerView(RecyclerView recyclerView) {
+        super.onDetachedFromRecyclerView(recyclerView);
+        attachedRecyclerView = null;
+    }
+
+    @Nullable
+    public RecyclerView getAttachedRecyclerView() {
+        return attachedRecyclerView;
+    }
+
+    /**
+     * 解决第一次反向滑动无效的问题
+     */
+    private void fixFirstLoopInvalid() {
+
+        RecyclerView recyclerView = getAttachedRecyclerView();
+        if(recyclerView == null){
+            return;
+        }
+        final int itemCount = getRawItemCount();
+        if(itemCount <= 0){
+            return;
+        }
+        //滚到中间的周期的起始位置
+        recyclerView.scrollToPosition(Integer.MAX_VALUE / itemCount / 2 * itemCount);
+    }
+
+    protected int fixLoopPosition(int position) {
+
+        if (loopEnable) {
+            return position % getRawItemCount();
+        }
+        return position;
+    }
+
+    @Override
     public void onViewAttachedToWindow(VH holder) {
         super.onViewAttachedToWindow(holder);
 
         int position = holder.getLayoutPosition();
+
+        position = fixLoopPosition(position);
+
         if (isHeaderItem(position) && singleLineHeaderEnable || isFooterItem(position) && singleLineFooterEnable) {
 
             ViewGroup.LayoutParams lp = holder.itemView.getLayoutParams();
@@ -293,4 +341,32 @@ public abstract class RecyclerHeaderFooterAdapter<VH extends RecyclerView.ViewHo
         this.singleLineFooterEnable = singleLineFooterEnable;
     }
 
+    public int getRawItemCount() {
+
+        int itemCount = 0;
+
+        if (isHeaderEnable()) {
+            itemCount += getHeaderItemCount();
+        }
+
+        if (isFooterEnable()) {
+            itemCount += getFooterItemCount();
+        }
+
+        itemCount += getContentItemCount();
+
+        return itemCount;
+    }
+
+    public boolean isLoopEnable() {
+        return loopEnable;
+    }
+
+    public void setLoopEnable(boolean loopEnable) {
+        if(this.loopEnable == loopEnable){
+            return;
+        }
+        this.loopEnable = loopEnable;
+        notifyDataSetChanged();
+    }
 }

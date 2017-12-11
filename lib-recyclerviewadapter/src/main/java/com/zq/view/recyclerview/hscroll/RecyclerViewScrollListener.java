@@ -1,6 +1,7 @@
 package com.zq.view.recyclerview.hscroll;
 
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 
 import com.zq.view.recyclerview.adapter.cell.Cell;

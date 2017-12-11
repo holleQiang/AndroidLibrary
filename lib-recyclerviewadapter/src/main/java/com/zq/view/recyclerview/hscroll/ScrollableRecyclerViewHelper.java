@@ -89,8 +89,23 @@ public class ScrollableRecyclerViewHelper {
         for (Cell cell:
              cellList) {
 
-            Cell baseCell = (Cell) cell;
-            baseCell.addOnAttachStateChangeListener(stateChangeListener);
+            cell.addOnAttachStateChangeListener(stateChangeListener);
+        }
+        if(cellAdapter.isHeaderEnable()){
+            final int headerCount = cellAdapter.getHeaderItemCount();
+            for (int i = 0; i < headerCount; i++) {
+
+                Cell headerCell = cellAdapter.getHeaderCellAt(i);
+                headerCell.addOnAttachStateChangeListener(stateChangeListener);
+            }
+        }
+        if(cellAdapter.isFooterEnable()){
+            final int footerCount = cellAdapter.getFooterItemCount();
+            for (int i = 0; i < footerCount; i++) {
+
+                Cell footerCell = cellAdapter.getFooterCellAt(i);
+                footerCell.addOnAttachStateChangeListener(stateChangeListener);
+            }
         }
     }
 

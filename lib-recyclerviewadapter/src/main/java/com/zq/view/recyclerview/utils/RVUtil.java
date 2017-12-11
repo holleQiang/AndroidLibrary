@@ -50,5 +50,4 @@ public class RVUtil {
             //这里这个变量是用在RecyclerView滚动监听里面的
         }
     }
-
 }
