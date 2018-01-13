@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <declare-styleable name="RulerView">
+        <attr name="minValue" format="integer"/>
+        <attr name="maxValue" format="integer"/>
+        <attr name="bottomLineColor" format="color"/>
+        <attr name="bottomLineWidth" format="dimension"/>
+        <attr name="dividerWidth" format="dimension"/>
+        <attr name="dividerColor" format="color"/>
+        <attr name="dividerHeight" format="dimension"/>
+        <attr name="groupDivideHeight" format="dimension"/>
+        <attr name="groupValue" format="integer"/>
+        <attr name="groupTextColor" format="color"/>
+        <attr name="groupTextSize" format="dimension"/>
+        <attr name="textSpacing" format="dimension"/>
+        <attr name="dividerValue" format="integer"/>
+        <attr name="dividerLength" format="dimension"/>
+        <attr name="indicatorLineColor" format="color"/>
+        <attr name="indicatorLineWidth" format="dimension"/>
+        <attr name="indicatorLineHeight" format="dimension"/>
+    </declare-styleable>
+
+    <attr name="RulerViewStyle"/>
+</resources>

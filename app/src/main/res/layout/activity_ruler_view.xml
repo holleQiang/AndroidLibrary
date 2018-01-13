@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:textSize="20sp"
+        android:textColor="#333333"
+        android:layout_gravity="center"
+        android:layout_marginTop="100dp"
+        android:layout_height="wrap_content" />
+
+    <com.zq.widget.rulerview.RulerView
+        android:id="@+id/m_ruler_view"
+        android:layout_width="match_parent"
+        app:dividerLength="10dp"
+        app:textSpacing="5dp"
+        app:dividerWidth="1px"
+        app:indicatorLineHeight="20dp"
+        app:bottomLineWidth="1px"
+        app:indicatorLineWidth="2dp"
+        android:layout_gravity="center"
+        app:maxValue="5000000"
+        android:paddingBottom="20dp"
+        android:layout_height="wrap_content" />
+
+</LinearLayout>

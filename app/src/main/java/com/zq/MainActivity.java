@@ -28,6 +28,7 @@ import com.zq.view.recyclerview.adapter.cell.MultiCell;
 import com.zq.view.recyclerview.divider.RVItemDivider;
 import com.zq.view.recyclerview.utils.RVUtil;
 import com.zq.view.recyclerview.viewholder.RVViewHolder;
+import com.zq.rulerview.RulerViewDemo;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -64,6 +65,7 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
         cellAdapter.addDataAtLast(MultiCell.convert(R.layout.item_text, "htmlText", dataBinder));
         cellAdapter.addDataAtLast(MultiCell.convert(R.layout.item_text, "FlowLayout", dataBinder));
         cellAdapter.addDataAtLast(MultiCell.convert(R.layout.item_text, "SnapHelper", dataBinder));
+        cellAdapter.addDataAtLast(MultiCell.convert(R.layout.item_text, "RulerView", dataBinder));
         cellAdapter.setOnItemClickListener(this);
         mRecyclerView.setAdapter(cellAdapter);
         mRecyclerView.addItemDecoration(new RVItemDivider(getResources().getColor(R.color.colorPrimary), ViewUtil.dp2px(this, 5)));
@@ -146,6 +148,10 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
             startActivity(FlowLayoutActivity.newIntent(MainActivity.this));
         }else if("SnapHelper".equals(fun)){
             startActivity(new Intent(MainActivity.this, SnapHelperSampleActivity.class));
+        }else if("RulerView".equals(fun)){
+            startActivity(new Intent(MainActivity.this, RulerViewDemo.class));
         }
     }
+
+
 }

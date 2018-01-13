@@ -33,6 +33,7 @@
         <activity android:name=".htmltext.HtmlTextActivity" />
         <activity android:name=".flowlayout.FlowLayoutActivity" />
         <activity android:name=".snaphelper.SnapHelperSampleActivity" />
+        <activity android:name=".rulerview.RulerViewDemo" />
     </application>
 
 </manifest>
