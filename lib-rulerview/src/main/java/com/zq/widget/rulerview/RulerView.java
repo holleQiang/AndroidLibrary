@@ -12,7 +12,6 @@ import android.support.annotation.RequiresApi;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.util.Log;
-import android.util.TypedValue;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
 import android.view.View;
@@ -21,8 +20,6 @@ import android.view.ViewGroup;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.OverScroller;
 import android.widget.Scroller;
-
-import com.zq.widget.rulerview.R;
 
 /**
  * 刻度尺view
@@ -87,14 +84,14 @@ public class RulerView extends View {
 
     private void init(Context context, AttributeSet attrs) {
 
-        MILLISECONDS_PER_PX = calculateSpeedPerPixel(getResources().getDisplayMetrics());
+        MILLISECONDS_PER_PX = calculateSpeedPerPixel(context.getResources().getDisplayMetrics());
         mTouchSlop = ViewConfiguration.get(context).getScaledTouchSlop();
         maxVelocity = ViewConfiguration.get(context).getScaledMaximumFlingVelocity();
         minVelocity = ViewConfiguration.get(context).getScaledMinimumFlingVelocity();
 
         if (attrs != null) {
 
-            TypedArray t = context.obtainStyledAttributes(attrs, R.styleable.RulerView,R.attr.RulerViewStyle,0);
+            TypedArray t = context.obtainStyledAttributes(attrs, R.styleable.RulerView, R.attr.RulerViewStyle, 0);
             minValue = t.getInt(R.styleable.RulerView_minValue, 0);
             maxValue = t.getInt(R.styleable.RulerView_maxValue, 10000);
             bottomLineColor = t.getColor(R.styleable.RulerView_bottomLineColor, Color.GRAY);
@@ -111,7 +108,7 @@ public class RulerView extends View {
             textSpacing = t.getDimensionPixelSize(R.styleable.RulerView_textSpacing, dipToPx(5));
             indicatorLineColor = t.getColor(R.styleable.RulerView_indicatorLineColor, Color.RED);
             indicatorLineWidth = t.getDimensionPixelSize(R.styleable.RulerView_indicatorLineWidth, dipToPx(1));
-            indicatorLineHeight = t.getDimensionPixelSize(R.styleable.RulerView_indicatorLineHeight,dipToPx(50));
+            indicatorLineHeight = t.getDimensionPixelSize(R.styleable.RulerView_indicatorLineHeight, dipToPx(50));
             t.recycle();
         }
         indicateValue = minValue;
@@ -143,7 +140,7 @@ public class RulerView extends View {
         mPaint.setTextSize(groupTextSize);
         float textHeight = mPaint.descent() - mPaint.ascent();
         int height = (int) (bottomLineWidth
-                + Math.max(indicatorLineHeight,Math.max(groupDivideHeight + textSpacing + textHeight, dividerHeight)))
+                + Math.max(indicatorLineHeight, Math.max(groupDivideHeight + textSpacing + textHeight, dividerHeight)))
                 + getPaddingTop() + getPaddingBottom();
         int width = getPaddingLeft() + getPaddingRight() + (maxValue - minValue) * dividerLength;
         setMeasuredDimension(resolveSize(width, widthMeasureSpec), resolveSize(height, heightMeasureSpec));
@@ -591,7 +588,7 @@ public class RulerView extends View {
             if (index <= min) {
                 return min;
             }
-            if(index >= max){
+            if (index >= max) {
                 return max;
             }
 
@@ -611,9 +608,9 @@ public class RulerView extends View {
             } else {
                 return index;
             }
-        }catch (Throwable t){
+        } catch (Throwable t) {
             t.printStackTrace();
-            Log.i("Test","==================index=" + index);
+            Log.i("Test", "==================index=" + index);
         }
 
         return index;
