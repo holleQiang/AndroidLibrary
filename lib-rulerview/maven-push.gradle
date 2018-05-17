@@ -15,7 +15,7 @@ uploadArchives {
 
             pom.groupId = 'com.zq.widget.rulerview'
             pom.artifactId = 'rulerview'
-            pom.version = '0.0.6'
+            pom.version = '0.0.8'
 
             pom.project {
 

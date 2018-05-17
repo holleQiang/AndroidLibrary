@@ -33,5 +33,11 @@ public class RulerViewDemo extends AppCompatActivity {
                 textView.setText(indicateValue +"");
             }
         });
+        mRulerView.post(new Runnable() {
+            @Override
+            public void run() {
+                mRulerView.scrollToValue(100000* 10000);
+            }
+        });
     }
 }

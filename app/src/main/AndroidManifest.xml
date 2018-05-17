@@ -34,6 +34,7 @@
         <activity android:name=".flowlayout.FlowLayoutActivity" />
         <activity android:name=".snaphelper.SnapHelperSampleActivity" />
         <activity android:name=".rulerview.RulerViewDemo" />
+        <activity android:name=".shadow.ShadowTestActivity" />
     </application>
 
 </manifest>

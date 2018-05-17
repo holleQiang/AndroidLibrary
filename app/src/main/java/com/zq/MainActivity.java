@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
 import com.zq.behavior.BehaviorActivity;
@@ -19,6 +20,7 @@ import com.zq.pageradapter.FragmentPagerAdapterTestActivity;
 import com.zq.redpoint.RedPointActivity;
 import com.zq.ringchart.RingChartActivity;
 import com.zq.rotateanim.RotateViewActivity;
+import com.zq.shadow.ShadowTestActivity;
 import com.zq.snaphelper.SnapHelperSampleActivity;
 import com.zq.utils.ViewUtil;
 import com.zq.view.recyclerview.adapter.OnItemClickListener;
@@ -47,6 +49,7 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
 
+
         mRecyclerView.setLayoutManager(new GridLayoutManager(this, 3, GridLayoutManager.VERTICAL, false));
 //        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         RVUtil.setChangeAnimationEnable(mRecyclerView, false);
@@ -66,6 +69,7 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
         cellAdapter.addDataAtLast(MultiCell.convert(R.layout.item_text, "FlowLayout", dataBinder));
         cellAdapter.addDataAtLast(MultiCell.convert(R.layout.item_text, "SnapHelper", dataBinder));
         cellAdapter.addDataAtLast(MultiCell.convert(R.layout.item_text, "RulerView", dataBinder));
+        cellAdapter.addDataAtLast(MultiCell.convert(R.layout.item_text, "ShadowTest", dataBinder));
         cellAdapter.setOnItemClickListener(this);
         mRecyclerView.setAdapter(cellAdapter);
         mRecyclerView.addItemDecoration(new RVItemDivider(getResources().getColor(R.color.colorPrimary), ViewUtil.dp2px(this, 5)));
@@ -150,6 +154,8 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
             startActivity(new Intent(MainActivity.this, SnapHelperSampleActivity.class));
         }else if("RulerView".equals(fun)){
             startActivity(new Intent(MainActivity.this, RulerViewDemo.class));
+        }else if("ShadowTest".equals(fun)){
+            startActivity(new Intent(MainActivity.this, ShadowTestActivity.class));
         }
     }
 

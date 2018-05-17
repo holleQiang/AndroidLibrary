@@ -24,7 +24,7 @@
         app:bottomLineWidth="1px"
         app:indicatorLineWidth="2dp"
         android:layout_gravity="center"
-        app:maxValue="5000000"
+        app:maxValue="2000000000"
         android:paddingBottom="20dp"
         android:layout_height="wrap_content" />
 

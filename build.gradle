@@ -21,11 +21,11 @@ allprojects {
     }
     ext{
 
-        appcompat_support_version = '25.3.1'
-        compileSdkVersion = 25
-        buildToolsVersion = '26.0.2'
-        targetSdkVersion = 25
-
+        appcompat_support_version = '27.1.1'
+        compileSdkVersion = 27
+        buildToolsVersion = '27.0.3'
+        targetSdkVersion = 27
+        minSdkVersion = 14
     }
 }
 
