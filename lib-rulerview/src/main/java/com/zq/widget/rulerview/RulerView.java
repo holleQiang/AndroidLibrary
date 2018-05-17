@@ -166,13 +166,11 @@ public class RulerView extends View {
 
     private void drawDivider(Canvas canvas) {
 
-        final int count = maxValue - minValue + 1;
-
-        final int start = getStartIndex(count);
+        final int start = getStartIndex();
 
         float minCloseIndicatorDistance = Integer.MAX_VALUE;
         int minCloseIndex = 0;
-        for (int i = start; i >= 0; i--) {
+        for (int i = start; i >= minValue; i--) {
             boolean isDivider = i % dividerValue == 0;
             if (!isDivider) {
                 continue;
@@ -202,7 +200,7 @@ public class RulerView extends View {
             }
         }
 
-        for (int i = start + 1; i < count; i++) {
+        for (int i = start + 1; i <= maxValue; i++) {
 
             boolean isDivider = i % dividerValue == 0;
             if (!isDivider) {
@@ -371,7 +369,7 @@ public class RulerView extends View {
 
     private float getLocationOfValue(int value) {
 
-        int dividerIndex = value / dividerValue;
+        int dividerIndex = (value - minValue) / dividerValue;
         float dividerOffset = dividerLength * dividerIndex;
         return dividerOffset + getPaddingLeft();
     }
@@ -385,24 +383,24 @@ public class RulerView extends View {
      */
     private int findClosestDividerValue(float offset, float targetLocation) {
 
-        float minCloseDistanceAbs = Integer.MAX_VALUE;
-        int closestIndex = 0;
-        final int count = maxValue - minValue + 1;
-        final int start = getStartIndex(count);
-        for (int i = start; i >= 0; i--) {
+        float minCloseDistanceAbs = Float.MAX_VALUE;
+        final int start = getStartIndex();
+        int closestIndex = start;
+        for (int i = start; i >= minValue; i--) {
+
+            int dividerIndex = i / dividerValue;
+            float dividerOffset = dividerLength * dividerIndex;
+            float locationX = offset + dividerOffset + getPaddingLeft();
+
+            if (locationX < getPaddingLeft()) {
+                break;
+            }
 
             if (i < minIndicateValue) {
                 continue;
             }
             boolean isDivider = i % dividerValue == 0;
             if (!isDivider) {
-                continue;
-            }
-            int dividerIndex = i / dividerValue;
-            float dividerOffset = dividerLength * dividerIndex;
-            float locationX = offset + dividerOffset + getPaddingLeft();
-
-            if (locationX < getPaddingLeft()) {
                 continue;
             }
 
@@ -413,7 +411,15 @@ public class RulerView extends View {
                 closestIndex = i;
             }
         }
-        for (int i = start + 1; i < count; i++) {
+        for (int i = start + 1; i <= maxValue; i++) {
+
+            int dividerIndex = i / dividerValue;
+            float dividerOffset = dividerLength * dividerIndex;
+            float locationX = offset + dividerOffset + getPaddingLeft();
+
+            if (locationX > getWidth() - getPaddingRight()) {
+                break;
+            }
 
             if (i < minIndicateValue) {
                 continue;
@@ -421,13 +427,6 @@ public class RulerView extends View {
             boolean isDivider = i % dividerValue == 0;
             if (!isDivider) {
                 continue;
-            }
-            int dividerIndex = i / dividerValue;
-            float dividerOffset = dividerLength * dividerIndex;
-            float locationX = offset + dividerOffset + getPaddingLeft();
-
-            if (locationX > getWidth() - getPaddingRight()) {
-                break;
             }
 
             float distance = targetLocation - locationX;
@@ -443,15 +442,46 @@ public class RulerView extends View {
     /**
      * 获取循环开始的位置
      *
-     * @param count
      * @return
      */
-    private int getStartIndex(int count) {
+    private int getStartIndex() {
 
-        final int min = minIndicateValue > minValue ? minIndicateValue - minValue : 0;
-        return findStartIndex(indicateValue - minValue,
-                min,
-                count);
+        int indicateValue = getIndicateValue();
+        if(indicateValue >= Math.max(minIndicateValue,minValue) && indicateValue <= maxValue){
+            return indicateValue;
+        }
+        float value = (getIndicatorLocation() - getPaddingLeft()) / dividerLength * dividerValue;
+        return findStartIndex((int) value);
+    }
+
+    private int findStartIndex(int value){
+
+        if(value >= maxValue){
+            return maxValue;
+        }
+
+        if(value <= minValue){
+            return minValue;
+        }
+        int left = getPaddingLeft();
+        int right = getWidth() - getPaddingRight();
+
+        float fixedOffset = left + offset + (value - minValue) / dividerValue * dividerLength + left;
+
+        int minFixValue = (getWidth() - getPaddingLeft() - getPaddingRight()) / dividerLength * dividerValue;
+
+        if(fixedOffset < left){
+
+            int fixValue = (int) ((left - fixedOffset) / dividerLength * dividerValue);
+
+           return findStartIndex(value + Math.max(minFixValue,fixValue));
+        }else if(fixedOffset > right){
+
+            int fixValue = (int) ((fixedOffset - right)  / dividerLength * dividerValue);
+
+            return findStartIndex(value - Math.max(minFixValue,fixValue));
+        }
+        return value;
     }
 
     class SmoothScrollHelper implements Runnable {
@@ -507,6 +537,7 @@ public class RulerView extends View {
             int deltaOffset = computeScroller.getFinalX();
             int finalOffset = (int) (offset + deltaOffset);
             int closestDividerValue = findClosestDividerValue(finalOffset, getIndicatorLocation());
+            closestDividerValue = Math.min(maxValue,Math.max(Math.max(minIndicateValue,minValue),closestDividerValue));
             smoothScrollToValue(closestDividerValue);
         }
 
@@ -574,49 +605,6 @@ public class RulerView extends View {
     }
 
     /**
-     * 寻找循环起点
-     *
-     * @param index 猜测的起点
-     * @param min   最小起点
-     * @param max   最大起点
-     * @return 合适的起点
-     */
-    private int findStartIndex(int index, int min, int max) {
-
-        try {
-
-            if (index <= min) {
-                return min;
-            }
-            if (index >= max) {
-                return max;
-            }
-
-            int dividerIndex = index / dividerValue;
-            float dividerOffset = dividerLength * dividerIndex;
-            float locationX = offset + dividerOffset + getPaddingLeft();
-            final int minFix = (getWidth() - getPaddingRight() - getPaddingLeft()) / dividerLength - 1;
-
-            if (locationX < getPaddingLeft()) {
-
-                index = Math.min(max, index + Math.max(minFix, (max - index) / 2));
-                return findStartIndex(index, min, max);
-            } else if (locationX > getWidth() - getPaddingRight()) {
-
-                index = Math.max(min, index - Math.max(minFix, (index - min) / 2));
-                return findStartIndex(index, min, max);
-            } else {
-                return index;
-            }
-        } catch (Throwable t) {
-            t.printStackTrace();
-            Log.i("Test", "==================index=" + index);
-        }
-
-        return index;
-    }
-
-    /**
      * 当最小值或者最小指示值变化调用
      */
     private void invalidateWhenMinValueChange() {
@@ -670,4 +658,5 @@ public class RulerView extends View {
     public int getIndicateValue() {
         return indicateValue;
     }
+
 }
