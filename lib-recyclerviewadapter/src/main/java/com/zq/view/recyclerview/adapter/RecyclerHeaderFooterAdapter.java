@@ -74,7 +74,11 @@ public abstract class RecyclerHeaderFooterAdapter<VH extends RecyclerView.ViewHo
                     @Override
                     public void onClick(View v) {
 
-                        onItemClickListener.onItemClick(holder, holder.getAdapterPosition() - headerCount);
+                        int adapterPosition = holder.getAdapterPosition();
+                        if(adapterPosition == RecyclerView.NO_POSITION){
+                            return;
+                        }
+                        onItemClickListener.onItemClick(holder, adapterPosition - headerCount);
                     }
                 });
             }
@@ -85,7 +89,11 @@ public abstract class RecyclerHeaderFooterAdapter<VH extends RecyclerView.ViewHo
                     @Override
                     public boolean onLongClick(View v) {
 
-                        return onItemLongLickListener.onItemLongClick(holder, holder.getAdapterPosition() - headerCount);
+                        int adapterPosition = holder.getAdapterPosition();
+                        if(adapterPosition == RecyclerView.NO_POSITION){
+                            return false;
+                        }
+                        return onItemLongLickListener.onItemLongClick(holder, adapterPosition - headerCount);
                     }
                 });
             }
