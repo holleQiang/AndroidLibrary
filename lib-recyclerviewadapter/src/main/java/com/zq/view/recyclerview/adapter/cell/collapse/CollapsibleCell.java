@@ -30,12 +30,12 @@ public class CollapsibleCell<T> extends MultiCell<T> implements ICollapsibleCell
     }
 
     public CollapsibleCell(@LayoutRes int layoutId, T data, DataBinder<T> dataBinder,List<Cell> collapsibleCells) {
-        super(layoutId, data, null);
+        super(layoutId, data, dataBinder);
         init(collapsibleCells);
     }
 
     public CollapsibleCell(@LayoutRes int layoutId, int spanSize, T data, DataBinder<T> dataBinder,List<Cell> collapsibleCells) {
-        super(layoutId, spanSize, data, null);
+        super(layoutId, spanSize, data, dataBinder);
         init(collapsibleCells);
     }
 

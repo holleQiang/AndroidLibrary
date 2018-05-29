@@ -94,6 +94,7 @@ public class CollapsibleCellHelper {
 
             cellAdapter.removeDataFrom(index + 1, getCollapsibleCount(collapsibleCell));
         }
+        isCollapsible = true;
     }
 
     public static int getCollapsibleCount(ICollapsibleCell collapsibleCell) {
