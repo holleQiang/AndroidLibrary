@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
@@ -45,7 +46,7 @@ public abstract class BaseObjectRecyclerAdapter<T, V extends RecyclerView.ViewHo
         int startPosition = getFixedPosition(position);
         notifyItemInserted(startPosition);
 
-        notifyItemRangeChangedIfNeed(position, startPosition);
+        notifyItemRangeChangedIfNeed(position);
     }
 
     /**
@@ -65,21 +66,9 @@ public abstract class BaseObjectRecyclerAdapter<T, V extends RecyclerView.ViewHo
         int startPosition = getFixedPosition(position);
         notifyItemRangeInserted(startPosition, dataList.size());
 
-        notifyItemRangeChangedIfNeed(position, startPosition);
+        notifyItemRangeChangedIfNeed(position);
     }
 
-
-    /**
-     * 修改指定位置的数据
-     *
-     * @param position
-     * @param data
-     */
-    public void setData(int position, T data) {
-
-        this.dataList.set(position, data);
-        notifyItemChanged(position);
-    }
 
     /**
      * 移除指定位置的数据
@@ -95,7 +84,7 @@ public abstract class BaseObjectRecyclerAdapter<T, V extends RecyclerView.ViewHo
         this.dataList.remove(position);
         int startPosition = getFixedPosition(position);
         notifyItemRemoved(startPosition);
-        notifyItemRangeChangedIfNeed(position, startPosition);
+        notifyItemRangeChangedIfNeed(position);
     }
 
     /**
@@ -201,7 +190,7 @@ public abstract class BaseObjectRecyclerAdapter<T, V extends RecyclerView.ViewHo
         }
         int startPosition = getFixedPosition(position);
         notifyItemRangeRemoved(startPosition, count);
-        notifyItemRangeChangedIfNeed(position, startPosition);
+        notifyItemRangeChangedIfNeed(position);
     }
 
     /**
@@ -257,6 +246,56 @@ public abstract class BaseObjectRecyclerAdapter<T, V extends RecyclerView.ViewHo
         return this.dataList;
     }
 
+    /**
+     * 交换指定位置的数据
+     * @param fromPosition 从此位置开始
+     * @param toPosition 到此位置
+     */
+    public void swap(int fromPosition,int toPosition){
+
+        Collections.swap(this.dataList,fromPosition,toPosition);
+        notifyItemMoved(getFixedPosition(fromPosition),getFixedPosition(toPosition));
+    }
+
+    /**
+     * 修改指定位置的数据
+     *
+     * @param position
+     * @param data
+     */
+    public void replace(int position, T data) {
+
+        if(position < 0 || position >= this.dataList.size()){
+            return;
+        }
+        this.dataList.set(position, data);
+        notifyItemChanged(getFixedPosition(position));
+    }
+
+    /**
+     * 替换数据
+     * @param position
+     * @param dataList
+     */
+    public void replace(int position,List<T> dataList){
+
+        if(position < 0 || position >= this.dataList.size()){
+            return;
+        }
+        if(dataList == null || dataList.isEmpty()){
+            return;
+        }
+        final int dataSize = dataList.size();
+        if(dataSize == 1){
+            replace(position,dataList.get(0));
+            return;
+        }
+        this.dataList.remove(position);
+        notifyItemRemoved(getFixedPosition(position));
+        this.dataList.addAll(position,dataList);
+        notifyItemRangeInserted(getFixedPosition(position),dataSize);
+        notifyItemRangeChangedIfNeed(position + dataSize);
+    }
 
     /**
      * 移除一组数据
@@ -295,11 +334,11 @@ public abstract class BaseObjectRecyclerAdapter<T, V extends RecyclerView.ViewHo
         return (isHeaderEnable() ? getHeaderItemCount() : 0) + position;
     }
 
-    private void notifyItemRangeChangedIfNeed(int dataPosition, int startPosition) {
+    private void notifyItemRangeChangedIfNeed(int fromDataPosition) {
 
         final int contentCount = getContentItemCount();
-        if (dataPosition != contentCount - 1) {
-            notifyItemRangeChanged(startPosition, contentCount - dataPosition);
+        if (fromDataPosition != contentCount - 1) {
+            notifyItemRangeChanged(getFixedPosition(fromDataPosition), contentCount - fromDataPosition);
         }
     }
 }

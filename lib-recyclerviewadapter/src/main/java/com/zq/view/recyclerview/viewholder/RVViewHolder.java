@@ -230,8 +230,8 @@ public class RVViewHolder extends RecyclerView.ViewHolder implements IViewHolder
     }
 
     @Override
-    public IViewHolder setLayouParams(int viewId, ViewGroup.LayoutParams layoutParams) {
-        return getViewHolderDelegate().setLayouParams(viewId, layoutParams);
+    public IViewHolder setLayoutParams(int viewId, ViewGroup.LayoutParams layoutParams) {
+        return getViewHolderDelegate().setLayoutParams(viewId, layoutParams);
     }
 
     @Override

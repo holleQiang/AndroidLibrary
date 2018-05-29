@@ -15,9 +15,7 @@ import com.zq.view.recyclerview.adapter.cell.CellAdapter;
 import com.zq.view.recyclerview.adapter.cell.DataBinder;
 import com.zq.view.recyclerview.adapter.cell.MultiCell;
 import com.zq.view.recyclerview.divider.RVItemDivider;
-import com.zq.view.recyclerview.hscroll.ScrollableRecyclerViewGetter;
 import com.zq.view.recyclerview.hscroll.ScrollableRecyclerViewHelper;
-import com.zq.view.recyclerview.hscroll.controller.RecyclerViewHScrollIdController;
 import com.zq.view.recyclerview.viewholder.RVViewHolder;
 
 import java.util.ArrayList;

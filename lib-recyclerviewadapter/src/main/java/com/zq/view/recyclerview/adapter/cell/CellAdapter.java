@@ -5,7 +5,6 @@ import android.support.annotation.LayoutRes;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
-import android.util.Log;
 import android.util.SparseIntArray;
 import android.view.View;
 import android.view.ViewGroup;
@@ -426,6 +425,42 @@ public final class CellAdapter extends BaseObjectRecyclerAdapter<Cell, RVViewHol
             }
         }
        return -1;
+    }
+
+    /**
+     * 查找指定id的第一个出现的cell
+     * @param layoutId 布局id
+     * @return cell null表示未找到
+     */
+    public <T extends Cell> T findFirstCellOfView(@LayoutRes int layoutId){
+
+        int headerCount = getHeaderItemCount();
+        for (int i = 0; i < headerCount; i++) {
+
+            Cell cell = headerCells.get(i);
+            if(cell.getLayoutId() == layoutId){
+                return (T) cell;
+            }
+        }
+
+        int contentCount = getContentItemCount();
+        for (int i = 0; i < contentCount; i++) {
+
+            Cell cell = getDataAt(i);
+            if(cell.getLayoutId() == layoutId){
+                return (T) cell;
+            }
+        }
+
+        int footerCount = getFooterItemCount();
+        for (int i = 0; i < footerCount; i++) {
+
+            Cell cell = footerCells.get(i);
+            if(cell.getLayoutId() == layoutId){
+                return (T) cell;
+            }
+        }
+        return null;
     }
 
     private int findCellPositionFromHeader(Cell cell) {

@@ -14,27 +14,42 @@ public class ScaledScrollListener extends RecyclerView.OnScrollListener {
     private OrientationHelper orientationHelper;
     private int itemWidth;
     private float scaleFactor;
+    private float maxScaleFactor;
 
-    public ScaledScrollListener(int itemWidth, float scaleFactor) {
+    public ScaledScrollListener(int itemWidth, float scaleFactor, float maxScaleFactor) {
         this.itemWidth = itemWidth;
         this.scaleFactor = scaleFactor;
+        this.maxScaleFactor = maxScaleFactor;
     }
 
     @Override
     public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
         super.onScrolled(recyclerView, dx, dy);
 
+        updateScale(recyclerView);
+    }
+
+
+    @Override
+    public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+        super.onScrollStateChanged(recyclerView, newState);
+        if(newState == RecyclerView.SCROLL_STATE_IDLE){
+            updateScale(recyclerView);
+        }
+    }
+
+    private void updateScale(RecyclerView recyclerView) {
+
         if (orientationHelper == null) {
             orientationHelper = OrientationHelper.createHorizontalHelper(recyclerView.getLayoutManager());
         }
 
-        final int totalSpace = orientationHelper.getTotalSpace();
-        int center;
+        final int center;
         if (recyclerView.getClipToPadding()) {
 
-            center = orientationHelper.getStartAfterPadding() + totalSpace / 2;
+            center = orientationHelper.getStartAfterPadding() + orientationHelper.getTotalSpace() / 2;
         } else {
-            center = totalSpace / 2;
+            center = orientationHelper.getEnd() / 2;
         }
         final int childCount = recyclerView.getChildCount();
         for (int i = 0; i < childCount; i++) {
@@ -45,8 +60,9 @@ public class ScaledScrollListener extends RecyclerView.OnScrollListener {
             childStart += layoutParams.leftMargin;
             int childWidth = orientationHelper.getDecoratedMeasurement(childView) - layoutParams.leftMargin - layoutParams.rightMargin;
             int childCenter = childStart + childWidth / 2;
-            float centerDelta = (childCenter - center) % totalSpace;
+            float centerDelta = (childCenter - center) % orientationHelper.getTotalSpace();
             float scale = scaleFactor + (1 - scaleFactor) * (1 - Math.abs(centerDelta / itemWidth));
+            scale = scale * maxScaleFactor;
             childView.setScaleY(scale);
             childView.setScaleX(scale);
         }

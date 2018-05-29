@@ -318,7 +318,7 @@ public class ViewHolderImpl implements IViewHolder {
     }
 
     @Override
-    public IViewHolder setLayouParams(int viewId, ViewGroup.LayoutParams layoutParams) {
+    public IViewHolder setLayoutParams(int viewId, ViewGroup.LayoutParams layoutParams) {
 
         getView(viewId).setLayoutParams(layoutParams);
         return this;

@@ -97,15 +97,13 @@ public abstract class RecyclerHeaderFooterAdapter<VH extends RecyclerView.ViewHo
     @Override
     public final int getItemCount() {
 
-        int itemCount;
-        if (loopEnable) {
+        int itemCount = getRawItemCount();
+        if (loopEnable && itemCount > 0) {
             itemCount =  Integer.MAX_VALUE;
-        }else{
-            itemCount = getRawItemCount();
-        }
-        if(lastRawItemCount != itemCount){
-            fixFirstLoopInvalid();
-            lastRawItemCount = itemCount;
+            if(lastRawItemCount != itemCount){
+                fixFirstLoopInvalid();
+                lastRawItemCount = itemCount;
+            }
         }
         return itemCount;
     }
@@ -296,9 +294,9 @@ public abstract class RecyclerHeaderFooterAdapter<VH extends RecyclerView.ViewHo
         recyclerView.scrollToPosition(Integer.MAX_VALUE / itemCount / 2 * itemCount);
     }
 
-    protected int fixLoopPosition(int position) {
+    public int fixLoopPosition(int position) {
 
-        if (loopEnable) {
+        if (loopEnable && position > 0) {
             return position % getRawItemCount();
         }
         return position;

@@ -2,7 +2,7 @@ package com.zq.view.recyclerview.adapter.cell.loadmore;
 
 import android.support.annotation.LayoutRes;
 
-import com.zq.view.recyclerview.adapter.cell.Cell;
+import com.zq.view.recyclerview.adapter.cell.BaseCell;
 import com.zq.view.recyclerview.adapter.cell.DataBinder;
 import com.zq.view.recyclerview.adapter.cell.MultiCell;
 
@@ -13,7 +13,7 @@ import com.zq.view.recyclerview.adapter.cell.MultiCell;
 public class SimpleLoadMoreCell extends MultiCell<LMState> {
 
     public SimpleLoadMoreCell(@LayoutRes int layoutId,DataBinder<LMState> dataBinder) {
-        super(layoutId, Cell.FULL_SPAN,LMState.LOADING, dataBinder);
+        super(layoutId, BaseCell.FULL_SPAN,LMState.LOADING, dataBinder);
     }
 
 

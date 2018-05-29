@@ -20,6 +20,7 @@ public class RVItemDivider extends RecyclerView.ItemDecoration {
 
     private int dividerWidth = 20;
     private Drawable dividerDrawable;
+    private boolean skipLast;
 
     public RVItemDivider(int dividerColor, int dividerWidth) {
 
@@ -63,10 +64,9 @@ public class RVItemDivider extends RecyclerView.ItemDecoration {
         } else if (layoutManager instanceof LinearLayoutManager) {
 
             LinearLayoutManager linearLayoutManager = (LinearLayoutManager) layoutManager;
-//            int position = linearLayoutManager.getPosition(view);
-//            if (position == layoutManager.getItemCount() - 1) {
-//                return;
-//            }
+            if (skipLast && linearLayoutManager.getPosition(view) == layoutManager.getItemCount() - 1) {
+                return;
+            }
             int orientation = linearLayoutManager.getOrientation();
             if (orientation == LinearLayoutManager.HORIZONTAL) {
 
@@ -133,14 +133,12 @@ public class RVItemDivider extends RecyclerView.ItemDecoration {
                         boolean isLast = isHorizontalGridBottomLast(itemCount,rowIndex,rowCount,columnIndex,spanCount);
                         int fixSize = isLast ? 0 : l;
                         drawDivider(c,vl - l,vt - l,vl,vb + fixSize);
-                        Log.i("Test",position + "=====l=======" + isLast);
                     }
                     if(t > 0){
 
                         boolean isLast = isHorizontalGridRightLast(itemCount,rowIndex,rowCount,columnIndex,spanCount);
                         int fixSize = isLast ? 0 : l;
                         drawDivider(c,vl - t,vt - t,vr + fixSize,vt);
-                        Log.i("Test",position + "=====t=======" + isLast);
                     }
                 }
 
@@ -152,9 +150,9 @@ public class RVItemDivider extends RecyclerView.ItemDecoration {
             final int childCount = parent.getChildCount();
             for (int i = 0; i < childCount; i++) {
 
-//                if(i == childCount - 1){
-//                    return;
-//                }
+                if(skipLast && i == childCount - 1){
+                    return;
+                }
                 View childView = parent.getChildAt(i);
                 RecyclerView.LayoutParams lp = (RecyclerView.LayoutParams) childView.getLayoutParams();
 
@@ -249,5 +247,13 @@ public class RVItemDivider extends RecyclerView.ItemDecoration {
     private boolean isHorizontalGridBottomLast(int itemCount,int rowIndex,int rowCount,int columnIndex,int spanCount){
 
         return isVerticalGridItemRightLast(itemCount, rowIndex, rowCount,columnIndex,spanCount);
+    }
+
+    public boolean isSkipLast() {
+        return skipLast;
+    }
+
+    public void setSkipLast(boolean skipLast) {
+        this.skipLast = skipLast;
     }
 }

@@ -1,11 +1,15 @@
 package com.zq.view.recyclerview.hscroll;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 
+import com.zq.view.recyclerview.adapter.cell.BaseCell;
 import com.zq.view.recyclerview.adapter.cell.Cell;
 import com.zq.view.recyclerview.adapter.cell.CellAdapter;
+import com.zq.view.recyclerview.adapter.cell.OnAttachStateChangeListener;
 import com.zq.view.recyclerview.hscroll.controller.HorizontalScrollController;
+import com.zq.view.recyclerview.hscroll.controller.VerticalScrollController;
 
 import java.util.List;
 
@@ -17,7 +21,7 @@ import java.util.List;
 public class ScrollableRecyclerViewHelper {
 
     private RecyclerView recyclerView;
-    private Cell.OnAttachStateChangeListener stateChangeListener;
+    private OnAttachStateChangeListener stateChangeListener;
     private DragHorizontalOnItemTouchListener onItemTouchListener;
     private RecyclerView.AdapterDataObserver dataObserver = new RecyclerView.AdapterDataObserver() {
         @Override
@@ -56,29 +60,33 @@ public class ScrollableRecyclerViewHelper {
     };
 
     /**
-     *构造方法
-     * @param recyclerView 父recyclerView
-     * @param recyclerViewGetter 子recyclerView获取接口
+     * 构造方法
+     *
+     * @param recyclerView               父recyclerView
+     * @param verticalScrollController   纵向滚动控制器
+     * @param horizontalScrollController 横向滚动控制器
      */
-    public ScrollableRecyclerViewHelper(@NonNull RecyclerView recyclerView, @NonNull HorizontalScrollController recyclerViewGetter) {
+    public ScrollableRecyclerViewHelper(@NonNull RecyclerView recyclerView,
+                                        @Nullable VerticalScrollController verticalScrollController,
+                                        @Nullable HorizontalScrollController horizontalScrollController) {
         this.recyclerView = recyclerView;
-        stateChangeListener = new RecyclerViewScrollListener(recyclerViewGetter);
-        onItemTouchListener = new DragHorizontalOnItemTouchListener(recyclerView,recyclerViewGetter);
+        stateChangeListener = new RecyclerViewScrollListener(verticalScrollController);
+        onItemTouchListener = new DragHorizontalOnItemTouchListener(recyclerView, horizontalScrollController);
 
-        CellAdapter cellAdapter = (CellAdapter) recyclerView.getAdapter();
-        if(cellAdapter == null){
+        RecyclerView.Adapter adapter = recyclerView.getAdapter();
+        if (adapter == null || !(adapter instanceof CellAdapter)) {
             throw new NullPointerException("recyclerView must have a cellAdapter");
         }
-        cellAdapter.registerAdapterDataObserver(dataObserver);
+        adapter.registerAdapterDataObserver(dataObserver);
     }
 
     /**
      * 和RecyclerView绑定
      */
-    public void  attachToTarget(){
+    public void attachToTarget() {
 
         CellAdapter cellAdapter = (CellAdapter) recyclerView.getAdapter();
-        if(cellAdapter == null || cellAdapter.isEmpty()){
+        if (cellAdapter == null || cellAdapter.isEmpty()) {
             return;
         }
 
@@ -86,12 +94,12 @@ public class ScrollableRecyclerViewHelper {
         recyclerView.addOnItemTouchListener(onItemTouchListener);
 
         List<Cell> cellList = cellAdapter.getDataList();
-        for (Cell cell:
-             cellList) {
+        for (Cell cell :
+                cellList) {
 
             cell.addOnAttachStateChangeListener(stateChangeListener);
         }
-        if(cellAdapter.isHeaderEnable()){
+        if (cellAdapter.isHeaderEnable()) {
             final int headerCount = cellAdapter.getHeaderItemCount();
             for (int i = 0; i < headerCount; i++) {
 
@@ -99,7 +107,7 @@ public class ScrollableRecyclerViewHelper {
                 headerCell.addOnAttachStateChangeListener(stateChangeListener);
             }
         }
-        if(cellAdapter.isFooterEnable()){
+        if (cellAdapter.isFooterEnable()) {
             final int footerCount = cellAdapter.getFooterItemCount();
             for (int i = 0; i < footerCount; i++) {
 
@@ -112,21 +120,22 @@ public class ScrollableRecyclerViewHelper {
     /**
      * 和父RecyclerView分离 滚动失效
      */
-    public void detachFromTarget(){
+    public void detachFromTarget() {
 
         recyclerView.removeOnItemTouchListener(onItemTouchListener);
 
         CellAdapter cellAdapter = (CellAdapter) recyclerView.getAdapter();
-        if(cellAdapter == null || cellAdapter.isEmpty()){
+        if (cellAdapter == null || cellAdapter.isEmpty()) {
             return;
         }
         cellAdapter.unregisterAdapterDataObserver(dataObserver);
         List<Cell> cellList = cellAdapter.getDataList();
-        for (Cell cell:
+        for (Cell cell :
                 cellList) {
 
-            Cell baseCell = (Cell) cell;
+            BaseCell baseCell = (BaseCell) cell;
             baseCell.removeOnAttachStateChangeListener(stateChangeListener);
         }
     }
+
 }

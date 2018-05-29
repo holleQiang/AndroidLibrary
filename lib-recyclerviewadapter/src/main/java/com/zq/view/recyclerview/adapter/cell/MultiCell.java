@@ -1,6 +1,7 @@
 package com.zq.view.recyclerview.adapter.cell;
 
 import android.support.annotation.LayoutRes;
+import android.support.annotation.Nullable;
 
 import com.zq.view.recyclerview.viewholder.RVViewHolder;
 
@@ -11,7 +12,7 @@ import java.util.List;
  * Created by zhangqiang on 2017/8/9.
  */
 
-public class MultiCell<T> extends Cell {
+public class MultiCell<T> extends BaseCell {
 
     private T data;
     private DataBinder<T> dataBinder;
@@ -36,6 +37,7 @@ public class MultiCell<T> extends Cell {
         this.dataBinder = dataBinder;
     }
 
+    @Nullable
     public T getData() {
         return data;
     }
@@ -68,7 +70,20 @@ public class MultiCell<T> extends Cell {
      * @param <T>
      * @return
      */
-    public static <T> MultiCell convert(int layoutRes, T bean, DataBinder<T> dataBinder) {
+    public static <T> MultiCell<T> convert(int layoutRes,int spanSize, T bean, DataBinder<T> dataBinder) {
+
+        return new MultiCell<>(layoutRes,spanSize, bean, dataBinder);
+    }
+
+    /**
+     * 将实体转换为MultiCell
+     * @param layoutRes
+     * @param bean
+     * @param dataBinder
+     * @param <T>
+     * @return
+     */
+    public static <T> MultiCell<T> convert(int layoutRes, T bean, DataBinder<T> dataBinder) {
 
         return new MultiCell<>(layoutRes, bean, dataBinder);
     }

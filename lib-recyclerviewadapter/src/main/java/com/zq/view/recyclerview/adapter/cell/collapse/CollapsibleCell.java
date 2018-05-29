@@ -2,6 +2,7 @@ package com.zq.view.recyclerview.adapter.cell.collapse;
 
 import android.support.annotation.LayoutRes;
 
+import com.zq.view.recyclerview.adapter.cell.BaseCell;
 import com.zq.view.recyclerview.adapter.cell.Cell;
 import com.zq.view.recyclerview.adapter.cell.CellAdapter;
 import com.zq.view.recyclerview.adapter.cell.DataBinder;
@@ -14,66 +15,67 @@ import java.util.List;
  * Created by zhangqiang on 2017/8/21.
  */
 
-public abstract class CollapsibleCell<T> extends MultiCell<T>{
+public class CollapsibleCell<T> extends MultiCell<T> implements ICollapsibleCell{
 
-    private boolean isCollapsible = true;
-    private List<Cell> collapsibleCells;
+    private CollapsibleCellHelper collapsibleCellHelper;
 
     public CollapsibleCell(@LayoutRes int layoutId) {
         super(layoutId);
+        init(null);
     }
 
     public CollapsibleCell(@LayoutRes int layoutId, int spanSize) {
         super(layoutId, spanSize);
+        init(null);
     }
 
     public CollapsibleCell(@LayoutRes int layoutId, T data, DataBinder<T> dataBinder,List<Cell> collapsibleCells) {
         super(layoutId, data, null);
-        this.collapsibleCells = collapsibleCells;
+        init(collapsibleCells);
     }
 
     public CollapsibleCell(@LayoutRes int layoutId, int spanSize, T data, DataBinder<T> dataBinder,List<Cell> collapsibleCells) {
         super(layoutId, spanSize, data, null);
-        this.collapsibleCells = collapsibleCells;
+        init(collapsibleCells);
     }
 
-    /**
-     * 展开子项
-     * @param cellAdapter
-     * @return 展开的数量
-     */
-    public int expand(CellAdapter cellAdapter){
-
-        if(!isCollapsible){
-            return - 1;
-        }
-        int count = CollapsibleCellHelper.expand(cellAdapter,this);
-        isCollapsible = false;
-        return count;
+    private void init(List<Cell> collapsibleCells) {
+        collapsibleCellHelper = new CollapsibleCellHelper(this,collapsibleCells);
     }
 
-    /**
-     * 收起所有子项
-     * @param cellAdapter
-     */
-    public void collapse(CellAdapter cellAdapter){
 
-        if(isCollapsible){
-            return;
-        }
-        CollapsibleCellHelper.collapse(cellAdapter,this);
-        isCollapsible = true;
+    @Override
+    public int expand(CellAdapter cellAdapter) {
+        return collapsibleCellHelper.expand(cellAdapter,false);
     }
 
+    @Override
+    public int expand(CellAdapter cellAdapter, boolean expandChild) {
+        return collapsibleCellHelper.expand(cellAdapter,expandChild);
+    }
+
+    @Override
+    public void collapse(CellAdapter cellAdapter) {
+        collapsibleCellHelper.collapse(cellAdapter);
+    }
+
+    @Override
+    public void setCollapsibleCells(List<Cell> collapsibleCells) {
+        collapsibleCellHelper.setCollapsibleCells(collapsibleCells);
+    }
+
+    @Override
+    public int getCollapsibleCount() {
+        return CollapsibleCellHelper.getCollapsibleCount(this);
+    }
+
+    @Override
     public boolean isCollapsible() {
-        return isCollapsible;
+        return collapsibleCellHelper.isCollapsible();
     }
 
-    public final List<Cell> getCollapsibleCells() {
-        return collapsibleCells;
-    }
-
-    void setCollapsible(boolean collapsible) {
-        isCollapsible = collapsible;
+    @Override
+    public List<Cell> getCollapsibleCells() {
+        return collapsibleCellHelper.getCollapsibleCells();
     }
 }

@@ -10,14 +10,13 @@ import android.view.ViewConfiguration;
 import android.widget.OverScroller;
 
 import com.zq.view.recyclerview.hscroll.controller.HorizontalScrollController;
-import com.zq.view.recyclerview.viewholder.RVViewHolder;
 
 /**
  * 根据手势判断滚动子view中的RecyclerView
  * Created by zhangqiang on 2017/10/20.
  */
 
-class DragHorizontalOnItemTouchListener<Anchor extends View,Target extends View> implements RecyclerView.OnItemTouchListener, Runnable {
+public class DragHorizontalOnItemTouchListener implements RecyclerView.OnItemTouchListener, Runnable {
 
     private VelocityTracker velocityTracker;
     private float mLastMotionX, mLastMotionY;
@@ -29,10 +28,9 @@ class DragHorizontalOnItemTouchListener<Anchor extends View,Target extends View>
     private OverScroller overScroller;
     private int mLastScrollX;
     private boolean shouldChildIntercept;
-    private HorizontalScrollController<Anchor,Target> recyclerViewGetter;
-    private Anchor downAnchorView;
+    private HorizontalScrollController horizontalScrollController;
 
-    DragHorizontalOnItemTouchListener(RecyclerView recyclerView, HorizontalScrollController<Anchor,Target> recyclerViewGetter) {
+    public DragHorizontalOnItemTouchListener(RecyclerView recyclerView, HorizontalScrollController horizontalScrollController) {
 
         Context context = recyclerView.getContext();
         mTouchSlop = ViewConfiguration.get(context).getScaledTouchSlop();
@@ -40,7 +38,7 @@ class DragHorizontalOnItemTouchListener<Anchor extends View,Target extends View>
         maxFlingVelocity = ViewConfiguration.get(context).getScaledMaximumFlingVelocity();
         this.recyclerView = recyclerView;
         overScroller = new OverScroller(context);
-        this.recyclerViewGetter = recyclerViewGetter;
+        this.horizontalScrollController = horizontalScrollController;
     }
 
     @Override
@@ -48,7 +46,7 @@ class DragHorizontalOnItemTouchListener<Anchor extends View,Target extends View>
 
         final int action = e.getAction();
 
-        if(action != MotionEvent.ACTION_DOWN && !shouldChildIntercept){
+        if (action != MotionEvent.ACTION_DOWN && !shouldChildIntercept) {
             return false;
         }
         if ((action == MotionEvent.ACTION_MOVE) && (isDraggedHorizontal)) {
@@ -62,12 +60,11 @@ class DragHorizontalOnItemTouchListener<Anchor extends View,Target extends View>
                 mLastMotionY = e.getY();
 
                 //判断是否要拦截事件
-                View childView = rv.findChildViewUnder(mLastMotionX,mLastMotionY);
-                if(childView != null){
+                View childView = rv.findChildViewUnder(mLastMotionX, mLastMotionY);
+                if (childView != null) {
 
-                    RVViewHolder viewHolder = (RVViewHolder) recyclerView.getChildViewHolder(childView);
-                    downAnchorView = recyclerViewGetter.getAnchorView(viewHolder);
-                    shouldChildIntercept = downAnchorView != null;
+                    RecyclerView.ViewHolder viewHolder =  recyclerView.getChildViewHolder(childView);
+                    shouldChildIntercept = horizontalScrollController.shouldSyncHorizontalScroll(viewHolder);
                 }
 
                 initOrResetVelocityTracker();
@@ -75,17 +72,19 @@ class DragHorizontalOnItemTouchListener<Anchor extends View,Target extends View>
 
                 isDraggedHorizontal = false;
 
-                if (shouldChildIntercept && !overScroller.isFinished()) {
-                    overScroller.abortAnimation();
-                }
+                if (shouldChildIntercept){
 
+                    if(!overScroller.isFinished()){
+                        overScroller.abortAnimation();
+                    }
+                }
                 break;
             case MotionEvent.ACTION_MOVE:
 
                 float deltaX = mLastMotionX - e.getX();
                 float deltaY = mLastMotionY - e.getY();
 
-                if (!isDraggedHorizontal && Math.abs(deltaY) < mTouchSlop * 2 && Math.abs(deltaX) >= mTouchSlop) {
+                if (!isDraggedHorizontal && Math.abs(deltaY) < mTouchSlop * 2 && Math.abs(deltaX) > mTouchSlop) {
                     isDraggedHorizontal = true;
 
                     if (deltaX > 0) {
@@ -101,8 +100,8 @@ class DragHorizontalOnItemTouchListener<Anchor extends View,Target extends View>
             case MotionEvent.ACTION_UP:
             case MotionEvent.ACTION_CANCEL:
                 isDraggedHorizontal = false;
-                downAnchorView = null;
                 recycleVelocityTracker();
+                shouldChildIntercept = false;
                 break;
         }
 
@@ -120,7 +119,7 @@ class DragHorizontalOnItemTouchListener<Anchor extends View,Target extends View>
 
                 float deltaX = mLastMotionX - e.getX();
                 float deltaY = mLastMotionY - e.getY();
-                if (!isDraggedHorizontal && Math.abs(deltaY) < mTouchSlop && Math.abs(deltaX) >= mTouchSlop) {
+                if (!isDraggedHorizontal && Math.abs(deltaY) < mTouchSlop && Math.abs(deltaX) > mTouchSlop) {
                     isDraggedHorizontal = true;
                     if (deltaX > 0) {
                         deltaX -= mTouchSlop;
@@ -166,23 +165,8 @@ class DragHorizontalOnItemTouchListener<Anchor extends View,Target extends View>
 
     private void childRecyclerViewScrollBy(int deltaX) {
 
-        if(downAnchorView == null){
-            return;
-        }
-        final int childCount = recyclerView.getChildCount();
-        for (int j = 0; j < childCount; j++) {
-            View childView = recyclerView.getChildAt(j);
-            RVViewHolder viewHolder = (RVViewHolder) recyclerView.getChildViewHolder(childView);
-            Target targetView = recyclerViewGetter.getTargetView(viewHolder);
-            if(targetView == null){
-                continue;
-            }
-
-            boolean shouldScroll = recyclerViewGetter.shouldSyncHorizontalScroll(downAnchorView,targetView);
-            if(!shouldScroll){
-                continue;
-            }
-            recyclerViewGetter.syncHorizontalScroll(targetView,deltaX);
+        if (shouldChildIntercept && horizontalScrollController != null) {
+            horizontalScrollController.syncHorizontalScroll(recyclerView,deltaX, scrollX);
         }
     }
 
@@ -228,4 +212,5 @@ class DragHorizontalOnItemTouchListener<Anchor extends View,Target extends View>
         overScroller.fling(scrollX, 0, xVelocity, 0, Integer.MIN_VALUE, Integer.MAX_VALUE, 0, 0);
         ViewCompat.postOnAnimation(recyclerView, this);
     }
+
 }

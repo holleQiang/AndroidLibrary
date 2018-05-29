@@ -2,7 +2,7 @@ package com.zq.view.recyclerview.adapter.cell.ob;
 
 import android.database.Observable;
 
-import com.zq.view.recyclerview.adapter.cell.Cell;
+import com.zq.view.recyclerview.adapter.cell.BaseCell;
 
 /**
  * Created by zhangqiang on 2017/8/14.
@@ -11,7 +11,7 @@ import com.zq.view.recyclerview.adapter.cell.Cell;
 public class CellObservable extends Observable<CellObserver> {
 
 
-    public void notifyCellChange(Cell cell){
+    public void notifyCellChange(BaseCell cell){
 
         final int count = mObservers.size();
         for (int i = 0; i < count; i++) {

@@ -1,11 +1,7 @@
 package com.zq.view.recyclerview.hscroll;
 
-import android.support.v7.widget.RecyclerView;
-import android.util.Log;
-import android.view.View;
-
-import com.zq.view.recyclerview.adapter.cell.Cell;
-import com.zq.view.recyclerview.hscroll.controller.HorizontalScrollController;
+import com.zq.view.recyclerview.adapter.cell.OnAttachStateChangeListener;
+import com.zq.view.recyclerview.hscroll.controller.VerticalScrollController;
 import com.zq.view.recyclerview.viewholder.RVViewHolder;
 
 /**
@@ -13,12 +9,12 @@ import com.zq.view.recyclerview.viewholder.RVViewHolder;
  * Created by zhangqiang on 2017/10/20.
  */
 
-class RecyclerViewScrollListener<Anchor extends View,Target extends View> implements Cell.OnAttachStateChangeListener {
+class RecyclerViewScrollListener implements OnAttachStateChangeListener {
 
-    private HorizontalScrollController<Anchor,Target> recyclerViewGetter;
+    private VerticalScrollController verticalScrollController;
 
-    RecyclerViewScrollListener(HorizontalScrollController<Anchor,Target> recyclerViewGetter) {
-        this.recyclerViewGetter = recyclerViewGetter;
+    RecyclerViewScrollListener(VerticalScrollController verticalScrollController) {
+        this.verticalScrollController = verticalScrollController;
     }
 
     @Override
@@ -29,26 +25,9 @@ class RecyclerViewScrollListener<Anchor extends View,Target extends View> implem
     @Override
     public void onViewAttachedToWindow(RVViewHolder viewHolder) {
 
-        Target targetView = recyclerViewGetter.getTargetView(viewHolder);
-        if(targetView == null){
-            return;
-        }
-
-        RecyclerView parentView = (RecyclerView) viewHolder.getView().getParent();
-        if(parentView == null){
-            return;
-        }
-
-        final int childCount = parentView.getChildCount();
-        for (int i = 0; i < childCount; i++) {
-
-            RVViewHolder childViewHolder = (RVViewHolder) parentView.getChildViewHolder(parentView.getChildAt(i));
-
-            Anchor anchorView = recyclerViewGetter.getAnchorView(childViewHolder);
-            if (anchorView != null && childViewHolder != viewHolder && recyclerViewGetter.shouldSyncVerticalScroll(anchorView,targetView)) {
-                recyclerViewGetter.syncVerticalScroll(anchorView,targetView);
-                break;
-            }
+        if(verticalScrollController != null){
+            verticalScrollController.syncVerticalScroll(viewHolder);
         }
     }
+
 }

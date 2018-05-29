@@ -3,6 +3,7 @@ package com.zq.view.recyclerview.viewholder;
 import android.graphics.Bitmap;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
+import android.support.annotation.IdRes;
 import android.support.annotation.StringRes;
 import android.text.TextWatcher;
 import android.text.method.MovementMethod;
@@ -18,92 +19,92 @@ import android.widget.CompoundButton;
 
 public interface IViewHolder {
 
-    <T extends View> T getView(int viewId);
+    <T extends View> T getView(@IdRes int viewId);
 
     View getView();
 
-    IViewHolder setText(int viewId, CharSequence charSequence) ;
+    IViewHolder setText(@IdRes int viewId, CharSequence charSequence) ;
 
-    IViewHolder setImageResource(int viewId, int imageResource);
+    IViewHolder setImageResource(@IdRes int viewId, int imageResource);
 
-    IViewHolder setImageBitmap(int viewId, Bitmap bitmap);
+    IViewHolder setImageBitmap(@IdRes int viewId, Bitmap bitmap);
 
-    IViewHolder setImageDrawable(int viewId, Drawable drawable);
+    IViewHolder setImageDrawable(@IdRes int viewId, Drawable drawable);
 
-    IViewHolder setBackgroundColor(int viewId, int color);
+    IViewHolder setBackgroundColor(@IdRes int viewId, int color);
 
-    IViewHolder setBackgroundRes(int viewId, int backgroundRes);
+    IViewHolder setBackgroundRes(@IdRes int viewId, int backgroundRes);
 
-    IViewHolder setTextColor(int viewId, int textColor);
+    IViewHolder setTextColor(@IdRes int viewId, int textColor);
 
-    IViewHolder setTextColorRes(int viewId, int textColorRes);
+    IViewHolder setTextColorRes(@IdRes int viewId, int textColorRes);
 
-    IViewHolder setAlpha(int viewId, float value);
+    IViewHolder setAlpha(@IdRes int viewId, float value);
 
-    IViewHolder setVisible(int viewId, boolean visible);
+    IViewHolder setVisible(@IdRes int viewId, boolean visible);
 
-    IViewHolder setVisibility(int viewId, int visible);
+    IViewHolder setVisibility(@IdRes int viewId, int visible);
 
-    IViewHolder addLinks(int viewId, int mask);
+    IViewHolder addLinks(@IdRes int viewId, int mask);
 
     IViewHolder setTypeface(Typeface typeface, int... viewIds);
 
-    IViewHolder setProgress(int viewId, int progress);
+    IViewHolder setProgress(@IdRes int viewId, int progress);
 
-    IViewHolder setProgress(int viewId, int progress, int max);
+    IViewHolder setProgress(@IdRes int viewId, int progress, int max);
 
-    IViewHolder setMax(int viewId, int max);
+    IViewHolder setMax(@IdRes int viewId, int max);
 
-    IViewHolder setRating(int viewId, float rating);
+    IViewHolder setRating(@IdRes int viewId, float rating);
 
-    IViewHolder setRating(int viewId, float rating, int max);
+    IViewHolder setRating(@IdRes int viewId, float rating, int max);
 
-    IViewHolder setTag(int viewId, Object tag) ;
+    IViewHolder setTag(@IdRes int viewId, Object tag) ;
 
-    IViewHolder setTag(int viewId, int key, Object tag) ;
+    IViewHolder setTag(@IdRes int viewId, int key, Object tag) ;
 
-    IViewHolder setChecked(int viewId, boolean checked);
+    IViewHolder setChecked(@IdRes int viewId, boolean checked);
 
     /**
      * 关于事件的
      */
-    IViewHolder setOnClickListener(int viewId, View.OnClickListener listener);
+    IViewHolder setOnClickListener(@IdRes int viewId, View.OnClickListener listener);
 
-    IViewHolder setOnTouchListener(int viewId, View.OnTouchListener listener);
+    IViewHolder setOnTouchListener(@IdRes int viewId, View.OnTouchListener listener);
 
-    IViewHolder setOnLongClickListener(int viewId, View.OnLongClickListener listener);
+    IViewHolder setOnLongClickListener(@IdRes int viewId, View.OnLongClickListener listener);
 
-    IViewHolder setAdapter(int viewId, Adapter adapter);
+    IViewHolder setAdapter(@IdRes int viewId, Adapter adapter);
 
-    IViewHolder setOnItemClickListener(int viewId, AdapterView.OnItemClickListener itemClickListener);
+    IViewHolder setOnItemClickListener(@IdRes int viewId, AdapterView.OnItemClickListener itemClickListener);
 
-    IViewHolder setCompoundDrawablePadding(int viewId, int pad);
+    IViewHolder setCompoundDrawablePadding(@IdRes int viewId, int pad);
 
-    IViewHolder setCompoundDrawablesWithIntrinsicBounds(int viewId, Drawable left, Drawable top, Drawable right, Drawable bottom);
+    IViewHolder setCompoundDrawablesWithIntrinsicBounds(@IdRes int viewId, Drawable left, Drawable top, Drawable right, Drawable bottom);
 
-    IViewHolder setOnCheckedChangeListener(int viewId, CompoundButton.OnCheckedChangeListener onCheckedChangeListener);
+    IViewHolder setOnCheckedChangeListener(@IdRes int viewId, CompoundButton.OnCheckedChangeListener onCheckedChangeListener);
 
-    IViewHolder setBackgroundResource(int viewId, int resId);
+    IViewHolder setBackgroundResource(@IdRes int viewId, int resId);
 
-    IViewHolder addTextChangedListener(int viewId, TextWatcher textWatcher);
+    IViewHolder addTextChangedListener(@IdRes int viewId, TextWatcher textWatcher);
 
-    IViewHolder setMovementMethod(int viewId, MovementMethod movement);
+    IViewHolder setMovementMethod(@IdRes int viewId, MovementMethod movement);
 
-    IViewHolder setEnable(int viewId, boolean enable);
+    IViewHolder setEnable(@IdRes int viewId, boolean enable);
 
-     int getVisibility(int viewId);
+     int getVisibility(@IdRes int viewId);
 
-    IViewHolder setLayouParams(int viewId, ViewGroup.LayoutParams layoutParams) ;
+    IViewHolder setLayoutParams(@IdRes int viewId, ViewGroup.LayoutParams layoutParams) ;
 
-    IViewHolder setOnItemLongClickListener(int viewId, AdapterView.OnItemLongClickListener onItemLongClickListener);
+    IViewHolder setOnItemLongClickListener(@IdRes int viewId, AdapterView.OnItemLongClickListener onItemLongClickListener);
 
-    IViewHolder removeAllViews(int viewId);
+    IViewHolder removeAllViews(@IdRes int viewId);
 
-    IViewHolder addView(int viewId, View childView);
+    IViewHolder addView(@IdRes int viewId, View childView);
 
-    IViewHolder setTextSize(int viewId, int unit, float textSize);
+    IViewHolder setTextSize(@IdRes int viewId, int unit, float textSize);
 
-    IViewHolder setTextSize(int viewId, float textSize);
+    IViewHolder setTextSize(@IdRes int viewId, float textSize);
 
-    IViewHolder setText(int viewId, @StringRes int textRes);
+    IViewHolder setText(@IdRes int viewId, @StringRes int textRes);
 }

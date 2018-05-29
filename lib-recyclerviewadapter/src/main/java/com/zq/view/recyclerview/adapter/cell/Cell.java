@@ -1,155 +1,46 @@
 package com.zq.view.recyclerview.adapter.cell;
 
 import android.support.annotation.LayoutRes;
+import android.support.annotation.Nullable;
 
-import com.zq.view.recyclerview.adapter.cell.ob.CellObservable;
 import com.zq.view.recyclerview.adapter.cell.ob.CellObserver;
 import com.zq.view.recyclerview.viewholder.RVViewHolder;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-
 /**
- * cell 基本实现类
- * Created by zhangqiang on 17-7-4.
+ * cell
+ * Created by zhangqiang on 2017/12/23.
  */
 
-public abstract class Cell {
+public interface Cell {
 
-    public static final int FULL_SPAN = -1;
+    int FULL_SPAN = -1;
 
-    private Map<String, Object> tags;
-    private List<OnAttachStateChangeListener> attachStateChangeListeners;
-    private int layoutId;
-    private int spanSize;
-    private CellObservable cellObservable = new CellObservable();
-    private RVViewHolder viewHolder;
+    @Nullable
+    RVViewHolder getAttachedViewHolder();
 
-    public Cell(@LayoutRes int layoutId) {
-        this(layoutId, 1);
-    }
+    void addTag(String key, Object tag);
 
-    public Cell(@LayoutRes int layoutId, int spanSize) {
-        this.layoutId = layoutId;
-        this.spanSize = spanSize;
-    }
+    @Nullable
+    <T> T getTag(String key);
 
-    public int getLayoutId() {
-        return layoutId;
-    }
+    void onViewAttachedToWindow(RVViewHolder viewHolder);
 
-    public int getSpanSize() {
-        return spanSize;
-    }
+    void onViewDetachedFromWindow(RVViewHolder viewHolder);
 
-    public abstract void onBindData(RVViewHolder viewHolder);
+    void onBindData(RVViewHolder viewHolder);
 
-    public void onViewAttachedToWindow(RVViewHolder viewHolder) {
-        this.viewHolder = viewHolder;
-        notifyAttachState(viewHolder);
-    }
+    void onViewCreated(RVViewHolder viewHolder);
 
-    public RVViewHolder getAttachedViewHolder() {
-        return viewHolder;
-    }
+    @LayoutRes
+    int getLayoutId();
 
-    public void onViewDetachedFromWindow(RVViewHolder viewHolder) {
-        this.viewHolder = null;
-        notifyDetachState(viewHolder);
-    }
+    int getSpanSize();
 
-     void registerCellObserver(CellObserver observer) {
+    void registerCellObserver(CellObserver cellObserver);
 
-        if (!cellObservable.hasObserverRegister(observer)) {
-            cellObservable.registerObserver(observer);
-        }
-    }
+    void unRegisterCellObserver(CellObserver observer);
 
-     void unRegisterCellObserver(CellObserver observer) {
+    void addOnAttachStateChangeListener(OnAttachStateChangeListener stateChangeListener);
 
-        if(cellObservable.hasObserverRegister(observer)){
-            cellObservable.unregisterObserver(observer);
-        }
-    }
-
-    public void onViewCreated(RVViewHolder viewHolder) {
-
-    }
-
-    public void notifyCellChange(Cell cell) {
-
-        cellObservable.notifyCellChange(cell);
-    }
-
-    public void notifyCellChange() {
-
-        cellObservable.notifyCellChange(this);
-    }
-
-    public void addTag(String key, Object tag) {
-
-        if (tags == null) {
-            tags = new HashMap<>();
-        }
-        tags.put(key, tag);
-    }
-
-    public Object getTag(String key) {
-
-        if (tags == null) {
-            return null;
-        }
-        return tags.get(key);
-    }
-
-    public interface OnAttachStateChangeListener{
-
-        void onViewDetachedFromWindow(RVViewHolder viewHolder);
-
-        void onViewAttachedToWindow(RVViewHolder viewHolder);
-    }
-
-    public void addOnAttachStateChangeListener(OnAttachStateChangeListener listener){
-
-        if(attachStateChangeListeners == null){
-            attachStateChangeListeners  = new ArrayList<>();
-        }
-        if(!attachStateChangeListeners.contains(listener)){
-            attachStateChangeListeners.add(listener);
-            if(getAttachedViewHolder() != null){
-                listener.onViewAttachedToWindow(getAttachedViewHolder());
-            }
-        }
-    }
-
-    public void removeOnAttachStateChangeListener(OnAttachStateChangeListener listener){
-
-        if(attachStateChangeListeners == null){
-            return;
-        }
-        attachStateChangeListeners.remove(listener);
-    }
-
-    private void notifyAttachState(RVViewHolder viewHolder){
-
-        if(attachStateChangeListeners != null){
-            for (OnAttachStateChangeListener listener:
-                    attachStateChangeListeners) {
-                listener.onViewAttachedToWindow(viewHolder);
-            }
-        }
-    }
-
-    private void notifyDetachState(RVViewHolder viewHolder){
-
-        if(attachStateChangeListeners != null){
-            for (OnAttachStateChangeListener listener:
-                    attachStateChangeListeners) {
-                listener.onViewDetachedFromWindow(viewHolder);
-            }
-        }
-    }
+    void removeOnAttachStateChangeListener(OnAttachStateChangeListener listener);
 }

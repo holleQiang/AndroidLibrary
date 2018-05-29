@@ -1,10 +1,8 @@
 package com.zq.view.recyclerview.adapter;
 
-import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
-import android.view.View;
 
 /**
  * recyclerView 加载更多辅助类
@@ -38,6 +36,24 @@ public class RVLoadMoreHelper {
         @Override
         public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
             super.onScrollStateChanged(recyclerView, newState);
+
+//            if (isLoadingMore || !isLoadMoreEnable  || loadMoreController == null) {
+//                return;
+//            }
+//
+//            RecyclerView.LayoutManager layoutManager = recyclerView.getLayoutManager();
+//
+//            int lastVisibleItem = findLastVisibleItem(layoutManager);
+//            int totalItemCount = layoutManager.getItemCount();
+//            int visibleItemCount = layoutManager.getChildCount();
+//
+//            if (mLastPosition != lastVisibleItem && totalItemCount - lastVisibleItem <= 2 && totalItemCount > visibleItemCount) {
+//
+//                isLoadingMore = true;
+//                recyclerView.removeCallbacks(loadMoreRunnable);
+//                recyclerView.post(loadMoreRunnable);
+//            }
+//            mLastPosition = lastVisibleItem;
         }
 
         @Override
@@ -54,16 +70,11 @@ public class RVLoadMoreHelper {
             int totalItemCount = layoutManager.getItemCount();
             int visibleItemCount = layoutManager.getChildCount();
 
-            if (mLastPosition != lastVisibleItem && totalItemCount - lastVisibleItem == 1 && totalItemCount > visibleItemCount) {
+            if (mLastPosition != lastVisibleItem && totalItemCount - lastVisibleItem <= 2 && totalItemCount > visibleItemCount) {
 
-//                View childView = recyclerView.getChildAt(visibleItemCount - 1);
-//                RecyclerView.LayoutParams layoutParams = (RecyclerView.LayoutParams) childView.getLayoutParams();
-//                if (childView.getBottom() + layoutParams.bottomMargin > recyclerView.getBottom() - recyclerView.getPaddingBottom()) {
-//                    return;
-//                }
                 isLoadingMore = true;
                 recyclerView.removeCallbacks(loadMoreRunnable);
-                ViewCompat.postOnAnimation(recyclerView, loadMoreRunnable);
+                recyclerView.post(loadMoreRunnable);
             }
             mLastPosition = lastVisibleItem;
         }
