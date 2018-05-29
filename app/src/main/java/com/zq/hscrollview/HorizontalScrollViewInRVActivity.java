@@ -16,6 +16,7 @@ import com.zq.view.recyclerview.adapter.cell.DataBinder;
 import com.zq.view.recyclerview.adapter.cell.MultiCell;
 import com.zq.view.recyclerview.divider.RVItemDivider;
 import com.zq.view.recyclerview.hscroll.ScrollableRecyclerViewHelper;
+import com.zq.view.recyclerview.hscroll.controller.RecyclerViewVerticalScrollController;
 import com.zq.view.recyclerview.viewholder.RVViewHolder;
 
 import java.util.ArrayList;
@@ -106,7 +107,7 @@ public class HorizontalScrollViewInRVActivity extends AppCompatActivity {
         }
         cellAdapter.setDataList(cellList);
         totalRecyclerView.setAdapter(cellAdapter);
-        new ScrollableRecyclerViewHelper(totalRecyclerView, new RecyclerViewHScrollIdController(R.id.recycler_view, R.id.recycler_view)).attachToTarget();
+        new ScrollableRecyclerViewHelper(totalRecyclerView,new RecyclerViewVerticalScrollController(R.id.recycler_view), null).attachToTarget();
     }
 
 
