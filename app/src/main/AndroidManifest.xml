@@ -10,6 +10,7 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
+        android:name=".app.App"
         android:theme="@style/AppTheme">
         <activity android:name=".MainActivity">
             <intent-filter>
@@ -18,23 +19,22 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".linechart.LineChartActivity" />
-        <activity android:name=".histogram.HistogramActivity" />
-        <activity android:name=".lrc.LrcActivity" />
-        <activity android:name=".hscrollview.HorizontalScrollViewInRVActivity" />
-        <activity android:name=".jsbridge.JsBridgeActivity" />
-        <activity android:name=".redpoint.RedPointActivity" />
-        <activity android:name=".behavior.BehaviorActivity" />
-        <activity android:name=".gesturepassword.GesturePasswordActivity" />
-        <activity android:name=".ringchart.RingChartActivity" />
-        <activity android:name=".assets.AssetsTestActivity" />
-        <activity android:name=".rotateanim.RotateViewActivity" />
-        <activity android:name=".pageradapter.FragmentPagerAdapterTestActivity" />
-        <activity android:name=".htmltext.HtmlTextActivity" />
-        <activity android:name=".flowlayout.FlowLayoutActivity" />
-        <activity android:name=".snaphelper.SnapHelperSampleActivity" />
-        <activity android:name=".rulerview.RulerViewDemo" />
-        <activity android:name=".shadow.ShadowTestActivity" />
+        <activity android:name=".func.linechart.LineChartActivity" />
+        <activity android:name=".func.histogram.HistogramActivity" />
+        <activity android:name=".func.lrc.LrcActivity" />
+        <activity android:name=".func.hscrollview.HorizontalScrollViewInRVActivity" />
+        <activity android:name=".func.jsbridge.JsBridgeActivity" />
+        <activity android:name=".func.redpoint.RedPointActivity" />
+        <activity android:name=".func.behavior.BehaviorActivity" />
+        <activity android:name=".func.gesturepassword.GesturePasswordActivity" />
+        <activity android:name=".func.ringchart.RingChartActivity" />
+        <activity android:name=".func.rotateanim.RotateViewActivity" />
+        <activity android:name=".func.pageradapter.FragmentPagerAdapterTestActivity" />
+        <activity android:name=".func.htmltext.HtmlTextActivity" />
+        <activity android:name=".func.flowlayout.FlowLayoutActivity" />
+        <activity android:name=".func.snaphelper.SnapHelperSampleActivity" />
+        <activity android:name=".func.rulerview.RulerViewDemo" />
+        <activity android:name=".func.shadow.ShadowTestActivity" />
     </application>
 
 </manifest>

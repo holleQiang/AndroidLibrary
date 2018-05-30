@@ -13,6 +13,5 @@
         <item name="tdw_textSize">24sp</item>
         <item name="tdw_lineWidth">1px</item>
         <item name="tdw_selectXOffset">-10dp</item>
-        <item name="tdw_radiusScale">1</item>
     </style>
 </resources>

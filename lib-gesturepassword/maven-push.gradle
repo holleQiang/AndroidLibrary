@@ -3,13 +3,20 @@ apply plugin: 'maven'
 uploadArchives {
     repositories {
         mavenDeployer {
+            Properties properties = new Properties()
+            InputStream is = project.rootProject.file('local.properties').newDataInputStream()
+            properties.load(is)
+
+            def USER_NAME = properties.get("MAVEN_USER_NAME")
+            def PASSWORD  = properties.get("MAVEN_PASSWORD")
+
             repository(url: "http://47.91.230.246:8081/nexus/content/repositories/releases/") {
-                authentication(userName: "admin", password: "zhang@123")
+                authentication(userName: USER_NAME, password: PASSWORD)
             }
 
             snapshotRepository(
                     url: "http://47.91.230.246:8081/nexus/content/repositories/snapshots") {
-                authentication(userName: "admin", password: "zhang@123")
+                authentication(userName: USER_NAME, password: PASSWORD)
             }
 
             pom.groupId = 'com.zq.widget.gesturepassword'

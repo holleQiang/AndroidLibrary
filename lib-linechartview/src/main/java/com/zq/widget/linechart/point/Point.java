@@ -17,6 +17,8 @@ public class Point {
 
     private boolean selected;
 
+    private Object tag;
+
     public void onDraw(Canvas canvas, Paint paint, float pointX, float pointY,LineChart lineChart){
 
 
@@ -45,5 +47,13 @@ public class Point {
 
     public boolean isSelected() {
         return selected;
+    }
+
+    public Object getTag() {
+        return tag;
+    }
+
+    public void setTag(Object tag) {
+        this.tag = tag;
     }
 }

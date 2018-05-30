@@ -3,6 +3,7 @@
 
     <declare-styleable name="AxisFrameView">
 
+        <attr name="xAxisVisible" format="boolean|reference"/>
         <attr name="xAxisLineVisible" format="boolean|reference"/>
         <attr name="xAxisLineColor" format="color|reference"/>
         <attr name="xAxisLineWidth" format="dimension|reference"/>
@@ -12,7 +13,14 @@
         <attr name="xAxisValueLineColor" format="color|reference"/>
         <attr name="xAxisValueLineWidth" format="dimension|reference"/>
         <attr name="xAxisValueLineVisible" format="boolean|reference"/>
+        <attr name="xAxisValueLineStyle" format="enum">
+            <enum name="normal" value="0"/>
+            <enum name="dash" value="1"/>
+        </attr>
+        <attr name="xAxisValueLineDashWidth" format="dimension|reference"/>
+        <attr name="xAxisValueLineDashGap" format="dimension|reference"/>
 
+        <attr name="yAxisVisible" format="boolean|reference"/>
         <attr name="yAxisLineVisible" format="boolean|reference"/>
         <attr name="yAxisLineColor" format="color|reference"/>
         <attr name="yAxisLineWidth" format="dimension|reference"/>
@@ -27,13 +35,17 @@
         </attr>
         <attr name="yAxisValueLineWidth" format="dimension|reference"/>
         <attr name="yAxisValueLineVisible" format="boolean|reference"/>
+        <attr name="yAxisValueLineDashWidth" format="dimension|reference"/>
+        <attr name="yAxisValueLineDashGap" format="dimension|reference"/>
 
+        <attr name="dragEnable" format="boolean"/>
+        <attr name="indicatorLineColor" format="color"/>
+        <attr name="indicatorLineWidth" format="dimension"/>
     </declare-styleable>
 
     <declare-styleable name="HistogramView">
-        <attr name="rectSpacing" format="dimension|reference"/>
+        <attr name="minRectSpacing" format="dimension|reference"/>
         <attr name="maxRectWidth" format="dimension|reference"/>
-        <attr name="maxRectSize" format="integer|reference"/>
     </declare-styleable>
 
     <declare-styleable name="RingChartView">
@@ -41,4 +53,5 @@
         <attr name="ringTextSize" format="dimension|reference"/>
         <attr name="ringTextVisible" format="boolean|reference"/>
     </declare-styleable>
+
 </resources>

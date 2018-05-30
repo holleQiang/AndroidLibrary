@@ -2,26 +2,30 @@ package com.zq;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
-import com.zq.behavior.BehaviorActivity;
-import com.zq.flowlayout.FlowLayoutActivity;
-import com.zq.gesturepassword.GesturePasswordActivity;
-import com.zq.histogram.HistogramActivity;
-import com.zq.hscrollview.HorizontalScrollViewInRVActivity;
-import com.zq.htmltext.HtmlTextActivity;
-import com.zq.jsbridge.JsBridgeActivity;
-import com.zq.linechart.LineChartActivity;
-import com.zq.lrc.LrcActivity;
-import com.zq.pageradapter.FragmentPagerAdapterTestActivity;
-import com.zq.redpoint.RedPointActivity;
-import com.zq.ringchart.RingChartActivity;
-import com.zq.rotateanim.RotateViewActivity;
-import com.zq.shadow.ShadowTestActivity;
-import com.zq.snaphelper.SnapHelperSampleActivity;
+import com.didi.virtualapk.PluginManager;
+import com.didi.virtualapk.internal.LoadedPlugin;
+import com.didi.virtualapk.utils.PluginUtil;
+import com.zq.func.behavior.BehaviorActivity;
+import com.zq.func.flowlayout.FlowLayoutActivity;
+import com.zq.func.gesturepassword.GesturePasswordActivity;
+import com.zq.func.histogram.HistogramActivity;
+import com.zq.func.hscrollview.HorizontalScrollViewInRVActivity;
+import com.zq.func.htmltext.HtmlTextActivity;
+import com.zq.func.jsbridge.JsBridgeActivity;
+import com.zq.func.linechart.LineChartActivity;
+import com.zq.func.lrc.LrcActivity;
+import com.zq.func.pageradapter.FragmentPagerAdapterTestActivity;
+import com.zq.func.redpoint.RedPointActivity;
+import com.zq.func.ringchart.RingChartActivity;
+import com.zq.func.rotateanim.RotateViewActivity;
+import com.zq.func.shadow.ShadowTestActivity;
+import com.zq.func.snaphelper.SnapHelperSampleActivity;
+import com.zq.utils.FileUtil;
 import com.zq.utils.ViewUtil;
 import com.zq.view.recyclerview.adapter.OnItemClickListener;
 import com.zq.view.recyclerview.adapter.cell.CellAdapter;
@@ -30,7 +34,11 @@ import com.zq.view.recyclerview.adapter.cell.MultiCell;
 import com.zq.view.recyclerview.divider.RVItemDivider;
 import com.zq.view.recyclerview.utils.RVUtil;
 import com.zq.view.recyclerview.viewholder.RVViewHolder;
-import com.zq.rulerview.RulerViewDemo;
+import com.zq.func.rulerview.RulerViewDemo;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -70,6 +78,7 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
         cellAdapter.addDataAtLast(MultiCell.convert(R.layout.item_text, "SnapHelper", dataBinder));
         cellAdapter.addDataAtLast(MultiCell.convert(R.layout.item_text, "RulerView", dataBinder));
         cellAdapter.addDataAtLast(MultiCell.convert(R.layout.item_text, "ShadowTest", dataBinder));
+        cellAdapter.addDataAtLast(MultiCell.convert(R.layout.item_text, "插件测试", dataBinder));
         cellAdapter.setOnItemClickListener(this);
         mRecyclerView.setAdapter(cellAdapter);
         mRecyclerView.addItemDecoration(new RVItemDivider(getResources().getColor(R.color.colorPrimary), ViewUtil.dp2px(this, 5)));
@@ -144,18 +153,40 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
             startActivity(new Intent(MainActivity.this, RingChartActivity.class));
         } else if ("View翻转".equals(fun)) {
             startActivity(new Intent(MainActivity.this, RotateViewActivity.class));
-        }else if ("ViewPager测试".equals(fun)) {
+        } else if ("ViewPager测试".equals(fun)) {
             startActivity(new Intent(MainActivity.this, FragmentPagerAdapterTestActivity.class));
-        }else if ("htmlText".equals(fun)) {
+        } else if ("htmlText".equals(fun)) {
             startActivity(new Intent(MainActivity.this, HtmlTextActivity.class));
-        }else if("FlowLayout".equals(fun)){
+        } else if ("FlowLayout".equals(fun)) {
             startActivity(FlowLayoutActivity.newIntent(MainActivity.this));
-        }else if("SnapHelper".equals(fun)){
+        } else if ("SnapHelper".equals(fun)) {
             startActivity(new Intent(MainActivity.this, SnapHelperSampleActivity.class));
-        }else if("RulerView".equals(fun)){
+        } else if ("RulerView".equals(fun)) {
             startActivity(new Intent(MainActivity.this, RulerViewDemo.class));
-        }else if("ShadowTest".equals(fun)){
+        } else if ("ShadowTest".equals(fun)) {
             startActivity(new Intent(MainActivity.this, ShadowTestActivity.class));
+        } else if ("插件测试".equals(fun)) {
+
+            try {
+
+                String pkg = "com.zq.cc";
+                LoadedPlugin loadedPlugin = PluginManager.getInstance(getApplicationContext()).getLoadedPlugin(pkg);
+                if (loadedPlugin != null) {
+
+                    FileUtil.readStream(getAssets().open("app-release-unsigned.apk"), new FileOutputStream(new File(getFilesDir(), "plugin.apk")));
+                    PluginManager.getInstance(getApplicationContext()).loadPlugin(new File(getFilesDir(), "plugin.apk"));
+                }
+
+//                PluginUtil.hookActivityResources(MainActivity.this, pkg);
+
+                Intent intent = new Intent();
+                intent.setClassName(pkg,"com.zq.cc.MainActivity");
+                startActivity(intent);
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 

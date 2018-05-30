@@ -9,8 +9,6 @@
         <attr name="tdw_lineSpacing" format="float|reference"/>
         //可见的条目数量
         <attr name="tdw_visibleItemCount" format="integer|reference"/>
-        //可见的角度
-        <attr name="tdw_radiusScale" format="float|reference"/>
         //附加的文字距离中心文字的距离
         <attr name="tdw_extraTextPadding" format="dimension|reference"/>
         //文字被选中的颜色

@@ -2,16 +2,24 @@ package com.zq.widget.linechart;
 
 import android.animation.ValueAnimator;
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.support.annotation.Nullable;
+import android.support.v4.view.NestedScrollingChild;
+import android.support.v4.view.NestedScrollingChildHelper;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
-import android.view.ViewConfiguration;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.ViewParent;
 
 import com.zq.widget.AxisFrameView;
+import com.zq.widget.R;
 import com.zq.widget.linechart.line.Line;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.List;
 
 /**
@@ -24,10 +32,7 @@ public class LineChartView extends AxisFrameView implements LineChart {
     private Paint paint;
     private float lineAnimateValue = 1;
     private ValueAnimator lineAnimator;
-    private boolean isBeingDragged;
-    private float lastMotionX, lastMotionY;
-    private int mTouchSlop;
-    private boolean touchable;
+
 
     public LineChartView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
@@ -53,9 +58,9 @@ public class LineChartView extends AxisFrameView implements LineChart {
                 invalidate();
             }
         });
-
-        mTouchSlop = ViewConfiguration.get(context).getScaledTouchSlop();
     }
+
+
 
     @Override
     protected void onDrawContent(Canvas canvas, float xAxisLength, float yAxisLength) {
@@ -69,82 +74,14 @@ public class LineChartView extends AxisFrameView implements LineChart {
         for (int i = 0; i < lineCount; i++) {
 
             Line line = lineList.get(i);
+            if(line == null){
+                continue;
+            }
             line.setLineAnimateValue(lineAnimateValue);
             final int saveCount = canvas.save();
             line.onDraw(canvas, paint, this);
             canvas.restoreToCount(saveCount);
         }
-    }
-
-    @Override
-    public boolean onTouchEvent(MotionEvent event) {
-
-        if(!touchable){
-            return super.onTouchEvent(event);
-        }
-
-        float currX = event.getX();
-        float currY = event.getY();
-
-        switch (event.getAction()) {
-
-            case MotionEvent.ACTION_DOWN:
-
-                lastMotionX = currX;
-                lastMotionY = currY;
-                isBeingDragged = false;
-                break;
-            case MotionEvent.ACTION_MOVE:
-
-                float deltaX = lastMotionX - currX;
-                float deltaY = lastMotionY - currY;
-
-
-                if (!isBeingDragged && Math.abs(deltaX) > mTouchSlop && Math.abs(deltaY) < mTouchSlop) {
-
-                    isBeingDragged = true;
-                }
-                if (isBeingDragged) {
-                    onDragging(currX);
-                }
-                break;
-            case MotionEvent.ACTION_UP:
-            case MotionEvent.ACTION_CANCEL:
-
-                if (isBeingDragged) {
-                    onDragStopped();
-                }
-                isBeingDragged = false;
-                break;
-        }
-
-        getParent().requestDisallowInterceptTouchEvent(isBeingDragged);
-
-        return super.onTouchEvent(event);
-    }
-
-    private void onDragStopped() {
-
-        if (lineList == null) {
-            return;
-        }
-        for (Line line : lineList) {
-
-            line.onDragStopped();
-        }
-        invalidate(getContentRegion());
-    }
-
-    protected void onDragging(float currentX) {
-
-        if (lineList == null) {
-            return;
-        }
-        for (Line line : lineList) {
-
-            line.onDragging(currentX, this);
-        }
-        invalidate(getContentRegion());
     }
 
     public void startAnimation() {
@@ -170,4 +107,42 @@ public class LineChartView extends AxisFrameView implements LineChart {
         this.lineList = lineList;
         postInvalidate();
     }
+
+
+    @Override
+    protected void onDragStart(float currX, float currY) {
+        super.onDragStart(currX, currY);
+        if (lineList == null) {
+            return;
+        }
+        for (Line line : lineList) {
+
+            line.onDragStart(currX,currY,this);
+        }
+    }
+
+    @Override
+    protected void onDragging(float currX, float currY) {
+        super.onDragging(currX, currY);
+        if (lineList == null) {
+            return;
+        }
+        for (Line line : lineList) {
+
+            line.onDragging(currX, currY, this);
+        }
+    }
+
+    @Override
+    protected void onDragStopped() {
+        super.onDragStopped();
+        if (lineList == null) {
+            return;
+        }
+        for (Line line : lineList) {
+
+            line.onDragStopped();
+        }
+    }
+
 }

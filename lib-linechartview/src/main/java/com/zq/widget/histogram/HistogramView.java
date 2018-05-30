@@ -13,6 +13,8 @@ import android.view.ViewConfiguration;
 import com.zq.widget.AxisFrameView;
 import com.zq.widget.R;
 import com.zq.widget.histogram.rect.Rect;
+import com.zq.widget.linechart.LineChart;
+import com.zq.widget.linechart.point.Point;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -26,15 +28,12 @@ import java.util.List;
 public class HistogramView extends AxisFrameView implements Histogram {
 
     private List<Rect> rectList;
-    private int rectSpacing;
-    private float rectWidth;
+    private int rectWidth;
+    private int minRectSpacing;
     private int maxRectWidth;
-    private int maxRectSize;
     private Paint paint;
-    private boolean isBeingDragged;
-    private float lastMotionX, lastMotionY;
-    private int mTouchSlop;
-    private boolean touchable;
+    private int rectSpacing;
+    private OnRectSelectListener onRectSelectListener;
 
     @Override
     protected void init(Context context, AttributeSet attrs) {
@@ -44,14 +43,12 @@ public class HistogramView extends AxisFrameView implements Histogram {
 
             float density = context.getResources().getDisplayMetrics().density;
             TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.HistogramView);
-            rectSpacing = typedArray.getDimensionPixelSize(R.styleable.HistogramView_rectSpacing, (int) (density * 1 + 0.5f));
+            minRectSpacing = typedArray.getDimensionPixelSize(R.styleable.HistogramView_minRectSpacing, (int) (density * 1 + 0.5f));
             maxRectWidth = typedArray.getDimensionPixelOffset(R.styleable.HistogramView_maxRectWidth, (int) (5 * density + 0.5f));
-            maxRectSize = typedArray.getInt(R.styleable.HistogramView_maxRectSize, 30);
             typedArray.recycle();
         }
 
         paint = new Paint();
-        mTouchSlop = ViewConfiguration.get(context).getScaledTouchSlop();
     }
 
     public HistogramView(Context context, @Nullable AttributeSet attrs) {
@@ -92,93 +89,57 @@ public class HistogramView extends AxisFrameView implements Histogram {
         if (rectList == null || rectList.isEmpty()) {
             return;
         }
+        final int count = rectList.size();
+        final int spacingCount = count - 1;
         android.graphics.Rect contentRegion = getContentRegion();
         int contentWidth = contentRegion.width();
-        rectWidth = (contentWidth - rectSpacing * (maxRectSize - 1)) / maxRectSize;
-        rectWidth = Math.min(maxRectWidth, rectWidth);
-    }
-
-
-    @Override
-    public boolean onTouchEvent(MotionEvent event) {
-
-        if(!touchable){
-            return super.onTouchEvent(event);
-        }
-
-        float currX = event.getX();
-        float currY = event.getY();
-
-        switch (event.getAction()) {
-
-            case MotionEvent.ACTION_DOWN:
-
-                lastMotionX = currX;
-                lastMotionY = currY;
-                isBeingDragged = false;
-                break;
-            case MotionEvent.ACTION_MOVE:
-
-                float deltaX = lastMotionX - currX;
-                float deltaY = lastMotionY - currY;
-
-
-                if (!isBeingDragged && Math.abs(deltaX) > mTouchSlop && Math.abs(deltaY) < mTouchSlop) {
-
-                    onDragStart(currX);
-                    isBeingDragged = true;
-                }
-                if (isBeingDragged) {
-                    onDragging(currX);
-                }
-                break;
-            case MotionEvent.ACTION_UP:
-            case MotionEvent.ACTION_CANCEL:
-
-                if (isBeingDragged) {
-                    onDragStopped();
-                }
-                isBeingDragged = false;
-                break;
-        }
-
-        getParent().requestDisallowInterceptTouchEvent(isBeingDragged);
-
-        return super.onTouchEvent(event);
-    }
-
-    private void onDragStart(float currentX) {
-
-        onDragging(currentX);
-    }
-
-    private void onDragStopped() {
-
-        if (rectList == null) {
-            return;
-        }
-        for (Rect rect : rectList) {
-
-            rect.setSelected(false);
-        }
-        invalidate();
-    }
-
-    protected void onDragging(float currentX) {
-
-        if (rectList == null) {
-            return;
-        }
-        for (Rect rect : rectList) {
-
-            float x = getXAxisSizeAt(rect.getxValue());
-            if (currentX > x - rectWidth / 2 && currentX < x + rectWidth / 2) {
-                rect.setSelected(true);
+        rectWidth = (contentWidth - spacingCount * minRectSpacing) / count;
+        rectWidth = Math.max(0, rectWidth);
+        if (rectWidth > maxRectWidth) {
+            rectWidth = maxRectWidth;
+            if (spacingCount != 0) {
+                rectSpacing = (contentWidth - rectWidth * count) / (count - 1);
             } else {
-                rect.setSelected(false);
+                rectSpacing = contentWidth - rectWidth;
             }
         }
-        invalidate();
+    }
+
+    @Override
+    protected void onDragStart(float currX, float currY) {
+        super.onDragStart(currX, currY);
+        Rect minCloseRect = findRectAt(currX);
+
+        if(minCloseRect != null){
+            minCloseRect.setSelected(true);
+            if(onRectSelectListener != null){
+                onRectSelectListener.onRectSelect(minCloseRect);
+            }
+        }
+    }
+
+    @Override
+    protected void onDragging(float currentX, float currY) {
+        super.onDragging(currentX, currY);
+        Rect minCloseRect = findRectAt(currentX);
+
+        if(minCloseRect != null){
+            minCloseRect.setSelected(true);
+            if(onRectSelectListener != null){
+                onRectSelectListener.onRectSelect(minCloseRect);
+            }
+        }
+    }
+
+    @Override
+    protected void onDragStopped() {
+        super.onDragStopped();
+        if (rectList == null) {
+            return;
+        }
+        for (Rect rect : rectList) {
+            rect.setSelected(false);
+        }
     }
 
     public List<Rect> getRectList() {
@@ -187,6 +148,7 @@ public class HistogramView extends AxisFrameView implements Histogram {
 
     public void setRectList(List<Rect> rectList) {
         this.rectList = rectList;
+        computeRectWidth();
         invalidate();
     }
 
@@ -195,12 +157,13 @@ public class HistogramView extends AxisFrameView implements Histogram {
         return rectWidth;
     }
 
+    @Override
     public int getRectSpacing() {
         return rectSpacing;
     }
 
-    public void setRectSpacing(int rectSpacing) {
-        this.rectSpacing = rectSpacing;
+    public void setMinRectSpacing(int minRectSpacing) {
+        this.minRectSpacing = minRectSpacing;
         computeRectWidth();
         invalidate();
     }
@@ -215,13 +178,33 @@ public class HistogramView extends AxisFrameView implements Histogram {
         invalidate();
     }
 
-    public int getMaxRectSize() {
-        return maxRectSize;
+    public Rect findRectAt(float currentX) {
+
+        List<Rect> rectList = getRectList();
+        if (rectList == null || rectList.isEmpty()) {
+            return null;
+        }
+
+        float minDistance = Float.MAX_VALUE;
+        Rect minCloseRect = null;
+        for (Rect rect : rectList) {
+
+            rect.setSelected(false);
+            float distance = Math.abs(currentX - getXAxisSizeAt(rect.getxValue()));
+            if (minDistance > distance) {
+                minDistance = distance;
+                minCloseRect = rect;
+            }
+        }
+        return minCloseRect;
     }
 
-    public void setMaxRectSize(int maxRectSize) {
-        this.maxRectSize = maxRectSize;
-        computeRectWidth();
-        invalidate();
+    public interface OnRectSelectListener{
+
+        void onRectSelect(Rect rect);
+    }
+
+    public void setOnRectSelectListener(OnRectSelectListener onRectSelectListener) {
+        this.onRectSelectListener = onRectSelectListener;
     }
 }

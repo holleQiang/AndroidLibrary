@@ -8,23 +8,32 @@ import android.graphics.DashPathEffect;
 import android.graphics.Paint;
 import android.graphics.PathEffect;
 import android.graphics.Rect;
-import android.graphics.RectF;
 import android.support.annotation.Nullable;
+import android.support.v4.view.NestedScrollingChild;
+import android.support.v4.view.NestedScrollingChildHelper;
+import android.support.v4.view.ViewCompat;
 import android.util.AttributeSet;
+import android.util.Log;
+import android.util.TypedValue;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewConfiguration;
 
 import com.zq.widget.axis.XAxis;
 import com.zq.widget.axis.YAxis;
+import com.zq.widget.linechart.line.Line;
 
 import java.util.List;
 
 /**
+ * 坐标系view
  * Created by zhangqiang on 2017/9/29.
  */
 
-public class AxisFrameView extends View implements AxisFrame{
+public class AxisFrameView extends View implements AxisFrame {
 
     private static final boolean DEBUG = false;
+    private static final int DRAG_DELAY_MILLIONS = 500;
 
     private XAxis xAxis;
     private YAxis yAxis;
@@ -47,6 +56,23 @@ public class AxisFrameView extends View implements AxisFrame{
     private boolean xAxisValueLineVisible, yAxisValueLineVisible;
     private Rect contentRectF = new Rect();
     private int yAxisValueLineStyle;
+    private int yAxisValueLineDashWidth;
+    private int yAxisValueLineDashGap;
+    private int xAxisValueLineStyle;
+    private int xAxisValueLineDashWidth;
+    private int xAxisValueLineDashGap;
+    private boolean xAxisVisible, yAxisVisible;
+    private boolean dragEnable;
+    private OnDragStateChangeListener onDragStateChangeListener;
+    private int indicatorLineColor;
+    private int indicatorLineWidth;
+    private Paint indicatorPaint;
+    private boolean needDrawIndicator;
+    private float currX;
+    private float currY;
+    private boolean isBeingDragged;
+    private int mTouchSlop;
+
 
     public AxisFrameView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
@@ -62,6 +88,7 @@ public class AxisFrameView extends View implements AxisFrame{
     protected void init(Context context, AttributeSet attrs) {
 
         float density = context.getResources().getDisplayMetrics().density;
+        mTouchSlop = ViewConfiguration.get(context).getScaledTouchSlop();
 
         TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.AxisFrameView);
         if (typedArray != null) {
@@ -85,7 +112,17 @@ public class AxisFrameView extends View implements AxisFrame{
             yAxisValueLineWidth = typedArray.getDimensionPixelSize(R.styleable.AxisFrameView_yAxisValueLineWidth, 1);
             xAxisValueLineVisible = typedArray.getBoolean(R.styleable.AxisFrameView_xAxisValueLineVisible, false);
             yAxisValueLineVisible = typedArray.getBoolean(R.styleable.AxisFrameView_yAxisValueLineVisible, false);
-            yAxisValueLineStyle = typedArray.getInt(R.styleable.AxisFrameView_yAxisValueLineStyle,0);
+            yAxisValueLineStyle = typedArray.getInt(R.styleable.AxisFrameView_yAxisValueLineStyle, 0);
+            xAxisValueLineStyle = typedArray.getInt(R.styleable.AxisFrameView_xAxisValueLineStyle, 0);
+            xAxisVisible = typedArray.getBoolean(R.styleable.AxisFrameView_xAxisVisible, true);
+            yAxisVisible = typedArray.getBoolean(R.styleable.AxisFrameView_yAxisVisible, true);
+            dragEnable = typedArray.getBoolean(R.styleable.AxisFrameView_dragEnable, false);
+            indicatorLineColor = typedArray.getColor(R.styleable.AxisFrameView_indicatorLineColor, Color.RED);
+            indicatorLineWidth = typedArray.getDimensionPixelSize(R.styleable.AxisFrameView_indicatorLineWidth, 1);
+            xAxisValueLineDashWidth = typedArray.getDimensionPixelSize(R.styleable.AxisFrameView_xAxisValueLineDashWidth,dipToPx(5));
+            xAxisValueLineDashGap = typedArray.getDimensionPixelSize(R.styleable.AxisFrameView_xAxisValueLineDashGap,dipToPx(1));
+            yAxisValueLineDashWidth = typedArray.getDimensionPixelSize(R.styleable.AxisFrameView_yAxisValueLineDashWidth,dipToPx(5));
+            yAxisValueLineDashGap = typedArray.getDimensionPixelSize(R.styleable.AxisFrameView_yAxisValueLineDashGap,dipToPx(1));
             typedArray.recycle();
         }
 
@@ -119,9 +156,20 @@ public class AxisFrameView extends View implements AxisFrame{
         yAxisLinePaint.setColor(yAxisLineColor);
         yAxisLinePaint.setStrokeWidth(yAxisLineWidth);
 
-        if(yAxisValueLineStyle == 1){
-            PathEffect yAxisValueLinePathEffect = new DashPathEffect(new float[]{density * 5, density * 1}, 0);
-            yAxisValueLinePaint.setPathEffect(yAxisValueLinePathEffect);
+        indicatorPaint = new Paint();
+        indicatorPaint.setAntiAlias(true);
+        indicatorPaint.setDither(true);
+        indicatorPaint.setColor(indicatorLineColor);
+        indicatorPaint.setStrokeWidth(indicatorLineWidth);
+
+        if (yAxisValueLineStyle == 1) {
+            PathEffect dashPathEffect = new DashPathEffect(new float[]{yAxisValueLineDashWidth, yAxisValueLineDashGap}, 0);
+            yAxisValueLinePaint.setPathEffect(dashPathEffect);
+        }
+
+        if (xAxisValueLineStyle == 1) {
+            PathEffect dashPathEffect = new DashPathEffect(new float[]{xAxisValueLineDashWidth, xAxisValueLineDashGap}, 0);
+            xAxisValueLinePaint.setPathEffect(dashPathEffect);
         }
 
         //关闭硬件加速
@@ -134,13 +182,21 @@ public class AxisFrameView extends View implements AxisFrame{
 
         drawXAxis(canvas);
 
-
         drawYAxis(canvas);
 
         final int saveCount = canvas.save();
         canvas.clipRect(contentRectF);
         onDrawContent(canvas, xAxisLength, yAxisLength);
         canvas.restoreToCount(saveCount);
+
+        if (needDrawIndicator) {
+            drawIndicator(canvas);
+        }
+    }
+
+    private void drawIndicator(Canvas canvas) {
+
+        canvas.drawLine(currX - indicatorLineWidth / 2, getPaddingTop(), currX - indicatorLineWidth / 2, getxAxisTranslation(), indicatorPaint);
     }
 
 
@@ -150,12 +206,12 @@ public class AxisFrameView extends View implements AxisFrame{
         if (DEBUG) {
 
             canvas.save();
-            canvas.clipRect(yAxisTranslation, xAxisTranslation + xAxisSpacing, getWidth() - getPaddingRight(), getHeight() - getPaddingBottom());
+            canvas.clipRect(getyAxisTranslation(), xAxisTranslation + xAxisSpacing, getWidth() - getPaddingRight(), getHeight() - getPaddingBottom());
             canvas.drawColor(Color.parseColor("#90ff0000"));
             canvas.restore();
         }
 
-        if (xAxis == null) {
+        if (xAxis == null || !xAxisVisible) {
             return;
         }
 
@@ -185,7 +241,7 @@ public class AxisFrameView extends View implements AxisFrame{
             float textHeight = xAxisTextPaint.descent() - xAxisTextPaint.ascent();
             float baseLine = xAxisTranslation + xAxisSpacing + (maxXAxisTextHeight - textHeight) / 2 - xAxisTextPaint.ascent();
 
-            if (xAxisValueLineVisible && centerX > yAxisTranslation && centerX <= maxXAxisSize) {
+            if (xAxisValueLineVisible && centerX >= yAxisTranslation && centerX <= maxXAxisSize) {
                 canvas.drawLine(centerX, getPaddingTop(), centerX, xAxisTranslation, xAxisValueLinePaint);
             }
 
@@ -208,7 +264,7 @@ public class AxisFrameView extends View implements AxisFrame{
             canvas.restore();
         }
 
-        if (yAxis == null) {
+        if (yAxis == null || !yAxisVisible) {
             return;
         }
 
@@ -227,7 +283,7 @@ public class AxisFrameView extends View implements AxisFrame{
 
             YAxis.Item yItem = yItemList.get(i);
             String drawText = yItem.getDrawText();
-            float textWidth = yAxisTextPaint.measureText(drawText);
+//            float textWidth = yAxisTextPaint.measureText(drawText);
 
             float y = getYAxisSizeAt(yItem.getValue());
             float textHeight = yAxisTextPaint.descent() - yAxisTextPaint.ascent();
@@ -270,57 +326,42 @@ public class AxisFrameView extends View implements AxisFrame{
         calculateParams(w, h);
     }
 
-    private void calculateParams(int w, int h){
+    private void calculateParams(int w, int h) {
 
-        if(w <= 0 || h <= 0){
+        if (w <= 0 || h <= 0) {
             return;
         }
 
-        maxXAxisTextHeight = getMaxXAxisHeight();
-        maxYAxisTextWidth = getMaxYAxisWidth();
 
-        if (yAxis != null) {
+        if (yAxis != null && yAxisVisible) {
 
             if (isYAxisInside) {
                 yAxisTranslation = getPaddingLeft();
             } else {
+                maxYAxisTextWidth = getMaxYAxisWidth();
                 yAxisTranslation = maxYAxisTextWidth + yAxisSpacing + getPaddingLeft();
             }
         } else {
             yAxisTranslation = getPaddingLeft();
         }
 
-        if (xAxis != null) {
+
+        if (xAxis != null && xAxisVisible) {
+            maxXAxisTextHeight = getMaxXAxisHeight();
             xAxisTranslation = h - getPaddingBottom() - (maxXAxisTextHeight + xAxisSpacing);
         } else {
-            xAxisTranslation = getPaddingTop();
+            xAxisTranslation = h - getPaddingBottom();
         }
 
         xAxisLength = w - getPaddingRight() - yAxisTranslation;
         yAxisLength = xAxisTranslation - getPaddingTop();
 
-        contentRectF.set((int)getyAxisTranslation(),
+        contentRectF.set((int) getyAxisTranslation(),
                 getPaddingTop(),
                 getWidth() - getPaddingRight(),
-                (int)getxAxisTranslation());
+                (int) getxAxisTranslation());
     }
 
-    @Override
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-        int widthMode = MeasureSpec.getMode(widthMeasureSpec);
-        int heightMode = MeasureSpec.getMode(heightMeasureSpec);
-        int widthSize = MeasureSpec.getSize(widthMeasureSpec);
-        int heightSize = MeasureSpec.getSize(heightMeasureSpec);
-        int exactWidth, exactHeight;
-        if (widthMode == MeasureSpec.EXACTLY) {
-            exactWidth = widthSize;
-        }
-
-        if (heightMode == MeasureSpec.EXACTLY) {
-            exactHeight = heightSize;
-        }
-    }
 
     private float getMaxYAxisWidth() {
 
@@ -371,7 +412,7 @@ public class AxisFrameView extends View implements AxisFrame{
 
     public void setXAxis(XAxis xAxis) {
         this.xAxis = xAxis;
-        calculateParams(getWidth(),getHeight());
+        calculateParams(getWidth(), getHeight());
         invalidate();
     }
 
@@ -381,7 +422,7 @@ public class AxisFrameView extends View implements AxisFrame{
 
     public void setYAxis(YAxis yAxis) {
         this.yAxis = yAxis;
-        calculateParams(getWidth(),getHeight());
+        calculateParams(getWidth(), getHeight());
         invalidate();
     }
 
@@ -406,4 +447,171 @@ public class AxisFrameView extends View implements AxisFrame{
         return yAxisLength;
     }
 
+
+    protected XAxis.Item findXAxisItemAt(float x) {
+
+        if (x <= getyAxisTranslation() || x > getWidth()) {
+            return null;
+        }
+        XAxis xAxis = getXAxis();
+        if (xAxis == null) {
+            return null;
+        }
+        List<XAxis.Item> xAxisItems = xAxis.getItems();
+        if (xAxisItems == null || xAxisItems.isEmpty()) {
+            return null;
+        }
+        float minDistance = Float.MAX_VALUE;
+        XAxis.Item minCloseItem = null;
+        for (XAxis.Item xAxisItem : xAxisItems) {
+
+            float itemXLocation = getXAxisSizeAt(xAxisItem.getValue());
+            float distance = Math.abs(x - itemXLocation);
+            if (minDistance > distance) {
+                minDistance = distance;
+                minCloseItem = xAxisItem;
+            }
+        }
+        return minCloseItem;
+    }
+
+    protected YAxis.Item findYAxisItemAt(float y) {
+
+        if (y <= 0 || y > getxAxisTranslation()) {
+            return null;
+        }
+        YAxis yAxis = getYAxis();
+        if (yAxis == null) {
+            return null;
+        }
+        List<YAxis.Item> yAxisItems = yAxis.getItems();
+        if (yAxisItems == null || yAxisItems.isEmpty()) {
+            return null;
+        }
+        float minDistance = Float.MAX_VALUE;
+        YAxis.Item minCloseItem = null;
+        for (YAxis.Item yAxisItem : yAxisItems) {
+
+            float itemXLocation = getXAxisSizeAt(yAxisItem.getValue());
+            float distance = Math.abs(y - itemXLocation);
+            if (minDistance > distance) {
+                minDistance = distance;
+                minCloseItem = yAxisItem;
+            }
+        }
+        return minCloseItem;
+    }
+
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        if (!dragEnable) {
+            return super.onTouchEvent(event);
+        }
+        float currX = event.getX();
+        float currY = event.getY();
+
+        switch (event.getAction()) {
+
+            case MotionEvent.ACTION_DOWN:
+
+                isBeingDragged = false;
+                removeCallbacks(dragDelayRunnable);
+                postDelayed(dragDelayRunnable,DRAG_DELAY_MILLIONS);
+                this.currX = currX;
+                this.currY = currY;
+                break;
+            case MotionEvent.ACTION_MOVE:
+
+                float deltaXAbs = Math.abs(this.currX - currX);
+                float deltaYAbs = Math.abs(this.currY - currY);
+                if(!isBeingDragged && (deltaXAbs > mTouchSlop || deltaYAbs > mTouchSlop)){
+                    removeCallbacks(dragDelayRunnable);
+                }
+                if(isBeingDragged){
+                    onDragging(currX, currY);
+                }
+                break;
+            case MotionEvent.ACTION_UP:
+            case MotionEvent.ACTION_CANCEL:
+
+                removeCallbacks(dragDelayRunnable);
+                isBeingDragged = false;
+                onDragStopped();
+                break;
+        }
+        getParent().requestDisallowInterceptTouchEvent(isBeingDragged);
+        return true;
+    }
+
+    protected void onDragStart(float currX, float currY) {
+
+        if (onDragStateChangeListener != null) {
+            onDragStateChangeListener.onStart(currX,currY);
+        }
+        computeIndicatorParams(currX,currY);
+        invalidate(getContentRegion());
+    }
+
+    protected void onDragging(float currX, float currY) {
+
+        if (onDragStateChangeListener != null) {
+            onDragStateChangeListener.onDragging(currX,currY);
+        }
+        computeIndicatorParams(currX, currY);
+        invalidate(getContentRegion());
+    }
+
+    protected void onDragStopped() {
+
+        if (onDragStateChangeListener != null) {
+            onDragStateChangeListener.onStop();
+        }
+        needDrawIndicator = false;
+        invalidate(getContentRegion());
+    }
+
+    private void computeIndicatorParams(float currX, float currY) {
+
+        Rect contentRegion = getContentRegion();
+        if (!contentRegion.contains((int) currX, (int) currY)) {
+            currX = Math.max(contentRegion.left, currX);
+            currX = Math.min(contentRegion.right, currX);
+            currY = Math.max(contentRegion.top, currY);
+            currY = Math.min(contentRegion.bottom, currY);
+        }
+        this.currX = currX;
+        this.currY = currY;
+        needDrawIndicator = true;
+    }
+
+    public interface OnDragStateChangeListener {
+
+        void onStart(float currX, float currY);
+
+        void onDragging(float currX, float currY);
+
+        void onStop();
+    }
+
+    public void setOnDragStateChangeListener(OnDragStateChangeListener onDragStateChangeListener) {
+        this.onDragStateChangeListener = onDragStateChangeListener;
+    }
+
+    public OnDragStateChangeListener getOnDragStateChangeListener() {
+        return onDragStateChangeListener;
+    }
+
+    private int dipToPx(float dip){
+
+        return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,dip,getResources().getDisplayMetrics());
+    }
+
+    private Runnable dragDelayRunnable = new Runnable() {
+        @Override
+        public void run() {
+            isBeingDragged = true;
+            onDragStart(currX,currY);
+        }
+    };
 }

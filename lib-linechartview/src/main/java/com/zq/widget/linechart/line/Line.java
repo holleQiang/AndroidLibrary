@@ -37,6 +37,7 @@ public class Line {
     private int fillStartColor = Color.parseColor("#33ff4a43");
     private int fillEndColor = Color.parseColor("#33ff4a43");
     private Path fillAreaPath = new Path();
+    private OnPointSelectListener onPointSelectListener;
 
     public void onDraw(Canvas canvas, Paint paint, LineChart lineChart) {
 
@@ -106,12 +107,15 @@ public class Line {
             }
             paint.reset();
             paint.setShader(fillShader);
+            paint.setAntiAlias(true);
+            paint.setDither(true);
             canvas.drawPath(fillAreaPath, paint);
         }
 
         paint.reset();
         paint.setStyle(Paint.Style.STROKE);
         paint.setAntiAlias(true);
+        paint.setDither(true);
         paint.setStrokeJoin(Paint.Join.ROUND);
         paint.setColor(getLineColor());
         paint.setStrokeWidth(getLineWidth());
@@ -130,45 +134,66 @@ public class Line {
         }
     }
 
-    public void onDragging(float currentX, LineChart lineChart) {
+    public void onDragStart(float currX, float currY, LineChart lineChart) {
+
+        onDragging(currX, currY, lineChart);
+    }
+
+    public void onDragging(float currentX, float currY, LineChart lineChart) {
+
+        Point minClosePoint = findPointAt(currentX, lineChart);
+
+        if(minClosePoint != null){
+            minClosePoint.setSelected(true);
+            if(onPointSelectListener != null){
+                onPointSelectListener.onPointSelect(minClosePoint);
+            }
+        }
+    }
+
+    public void onDragStopped() {
 
         List<Point> pointList = getPointList();
         if (pointList == null || pointList.isEmpty()) {
             return;
         }
 
-        Point lastPoint = null;
-        final int pointCount = pointList.size();
-        for (int i = 0; i < pointCount; i++) {
-
-            Point point = pointList.get(i);
+        for (Point point : pointList) {
             point.setSelected(false);
-
-            float pointX = lineChart.getXAxisSizeAt(point.getxValue());
-
-            if (lastPoint != null) {
-
-                float lastPointX = lineChart.getXAxisSizeAt(lastPoint.getxValue());
-
-                if (lastPointX <= currentX && currentX <= pointX) {
-
-                    if (currentX < (lastPointX + pointX) / 2) {
-                        lastPoint.setSelected(true);
-                    } else {
-                        point.setSelected(true);
-                    }
-                }
-            }
-
-            if (i == 0 && currentX <= pointX && currentX > lineChart.getyAxisTranslation()) {
-                point.setSelected(true);
-            }
-
-            if (i == pointCount - 1 && currentX >= pointX && currentX <= lineChart.getWidth() - lineChart.getPaddingRight()) {
-                point.setSelected(true);
-            }
-            lastPoint = point;
         }
+    }
+
+
+    public Point findPointAt(float currentX,LineChart lineChart){
+
+        List<Point> pointList = getPointList();
+        if (pointList == null || pointList.isEmpty()) {
+            return null;
+        }
+
+        float minDistance = Float.MAX_VALUE;
+        Point minClosePoint = null;
+        for (Point point : pointList) {
+
+            point.setSelected(false);
+            float distance = Math.abs(currentX - lineChart.getXAxisSizeAt(point.getxValue()));
+            if(minDistance > distance){
+                minDistance = distance;
+                minClosePoint = point;
+            }
+        }
+        return minClosePoint;
+    }
+
+    protected boolean isLineChartSizeChanged(LineChart lineChart) {
+
+        return lastLineChartWidth != lineChart.getWidth() || lastLineChartHeight != lineChart.getHeight();
+    }
+
+
+    public interface OnPointSelectListener{
+
+        void onPointSelect(Point point);
     }
 
     public List<Point> getPointList() {
@@ -195,21 +220,6 @@ public class Line {
         this.lineWidth = lineWidth;
     }
 
-    public void onDragStopped() {
-
-        List<Point> pointList = getPointList();
-        if (pointList == null || pointList.isEmpty()) {
-            return;
-        }
-
-        final int pointCount = pointList.size();
-        for (int i = 0; i < pointCount; i++) {
-
-            Point point = pointList.get(i);
-            point.setSelected(false);
-        }
-    }
-
     public float getLineAnimateValue() {
         return lineAnimateValue;
     }
@@ -226,11 +236,6 @@ public class Line {
         this.fillAreaVisible = fillAreaVisible;
     }
 
-    protected boolean isLineChartSizeChanged(LineChart lineChart) {
-
-        return lastLineChartWidth != lineChart.getWidth() || lastLineChartHeight != lineChart.getHeight();
-    }
-
     public int getFillStartColor() {
         return fillStartColor;
     }
@@ -245,5 +250,13 @@ public class Line {
 
     public void setFillEndColor(int fillEndColor) {
         this.fillEndColor = fillEndColor;
+    }
+
+    public OnPointSelectListener getOnPointSelectListener() {
+        return onPointSelectListener;
+    }
+
+    public void setOnPointSelectListener(OnPointSelectListener onPointSelectListener) {
+        this.onPointSelectListener = onPointSelectListener;
     }
 }

@@ -18,6 +18,8 @@ public class Rect {
 
     private boolean isSelected;
 
+    private Object tag;
+
     public Rect(int topColor, int bottomColor) {
         this.topColor = topColor;
         this.bottomColor = bottomColor;
@@ -27,14 +29,18 @@ public class Rect {
 
         float left,top,right,bottom;
 
-        if(isSelected){
+//        if(isSelected){
+//
+//            left = x - histogram.getRectWidth()/2 - histogram.getRectSpacing()/2;
+//            right = x + histogram.getRectWidth()/2 + histogram.getRectSpacing()/2;
+//        }else{
+//            left = x - histogram.getRectWidth()/2;
+//            right = x + histogram.getRectWidth()/2;
+//        }
 
-            left = x - histogram.getRectWidth()/2 - histogram.getRectSpacing()/2;
-            right = x + histogram.getRectWidth()/2 + histogram.getRectSpacing()/2;
-        }else{
-            left = x - histogram.getRectWidth()/2;
-            right = x + histogram.getRectWidth()/2;
-        }
+        left = x - histogram.getRectWidth()/2;
+        right = x + histogram.getRectWidth()/2;
+
         if(getyValue() > 0){
 
             paint.setColor(topColor);
@@ -46,10 +52,10 @@ public class Rect {
             top = histogram.getYAxisSizeAt(0);
             bottom = histogram.getYAxisSizeAt(getyValue());
         }
-        left = Math.max(histogram.getyAxisTranslation(),left);
-        top = Math.max(histogram.getPaddingTop(),top);
-        right = Math.min(histogram.getWidth() - histogram.getPaddingRight(),right);
-        bottom = Math.min(histogram.getxAxisTranslation(),bottom);
+//        left = Math.max(histogram.getyAxisTranslation(),left);
+//        top = Math.max(histogram.getPaddingTop(),top);
+//        right = Math.min(histogram.getWidth() - histogram.getPaddingRight(),right);
+//        bottom = Math.min(histogram.getxAxisTranslation(),bottom);
         canvas.drawRect(left, top, right, bottom, paint);
     }
 
@@ -75,5 +81,13 @@ public class Rect {
 
     public void setSelected(boolean selected) {
         isSelected = selected;
+    }
+
+    public Object getTag() {
+        return tag;
+    }
+
+    public void setTag(Object tag) {
+        this.tag = tag;
     }
 }

@@ -16,11 +16,13 @@
             <option value="$PROJECT_DIR$/lib-htmltext" />
             <option value="$PROJECT_DIR$/lib-linechartview" />
             <option value="$PROJECT_DIR$/lib-lrcview" />
+            <option value="$PROJECT_DIR$/lib-pluginVirtualApk" />
             <option value="$PROJECT_DIR$/lib-recyclerviewadapter" />
             <option value="$PROJECT_DIR$/lib-rulerview" />
             <option value="$PROJECT_DIR$/lib-rxjava" />
             <option value="$PROJECT_DIR$/lib-sidebar" />
             <option value="$PROJECT_DIR$/lib-smartnumber" />
+            <option value="$PROJECT_DIR$/lib-utils" />
             <option value="$PROJECT_DIR$/lib-wheelview" />
           </set>
         </option>

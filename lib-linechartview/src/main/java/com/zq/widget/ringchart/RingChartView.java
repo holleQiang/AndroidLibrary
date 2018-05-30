@@ -121,7 +121,7 @@ public class RingChartView extends View {
         paint.reset();
         paint.setAntiAlias(true);
         paint.setXfermode(xfermode);
-        paint.setColor(Color.TRANSPARENT);
+        paint.setColor(Color.WHITE);
         canvas.drawCircle(centerX, centerY, radius - ringWidth, paint);
         canvas.restoreToCount(saveFlag);
     }
@@ -145,8 +145,8 @@ public class RingChartView extends View {
                 arcItemList) {
 
             int weight = arcItem.getWeight();
-            if (weight <= 0) {
-                throw new IllegalArgumentException("the weight of arcItem can not be <= 0");
+            if (weight < 0) {
+                throw new IllegalArgumentException("the weight of arcItem can not be < 0");
             }
             totalWeight += arcItem.getWeight();
         }
