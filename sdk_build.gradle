@@ -1,0 +1,456 @@
+import org.w3c.dom.Attr
+import org.w3c.dom.Document
+import org.w3c.dom.Element
+import org.w3c.dom.NamedNodeMap
+import org.w3c.dom.Node
+import org.w3c.dom.NodeList
+
+import javax.xml.parsers.DocumentBuilder
+import javax.xml.parsers.DocumentBuilderFactory
+import javax.xml.transform.TransformerFactory
+import javax.xml.transform.dom.DOMSource
+import javax.xml.transform.stream.StreamResult
+import java.util.regex.Matcher
+import java.util.regex.Pattern
+import java.util.ArrayList
+import java.util.HashMap
+import java.util.List
+import java.util.Map
+
+task deletaSdkSource(type: Delete) {
+
+    group 'sdk'
+
+    println '--------deletaSdkSource----------'
+
+    delete 'src/sdk/java'
+}
+
+task copySdkSource(type: Copy, dependsOn: deletaSdkSource) {
+
+    group 'sdk'
+
+    println '--------copySdkSource----------'
+
+    from "src/main/java"
+    into "src/sdk/java"
+}
+
+task assembleSDK(dependsOn: copySdkSource) {
+
+    group 'sdk'
+
+    doLast {
+
+        println '--------assembleSDK----------'
+
+        //    log("开始打包")
+//        File file = rootProject.file('app/src/sdk/java/com/caiyi/fund/trade/gui/activity/wallet/WalletHomeActivity.java')
+
+
+        File file = file('src/sdk/java')
+
+        updateButterKnifeInject(file)
+    }
+}
+
+
+afterEvaluate {
+
+    tasks.matching { task ->
+        task.name == 'preBuild'
+    }.each { task ->
+
+        println '------afterEvaluate-----' + task.name
+        task.dependsOn(assembleSDK)
+    }
+}
+
+
+static String switchToIf(String input) {
+
+    Map<String, String> replaceStrMap = new HashMap<>()
+
+    Pattern pattern = Pattern.compile("(?<= )switch(?= )")
+    Matcher matcher = pattern.matcher(input)
+    while (matcher.find()) {
+
+        int start = matcher.start()
+
+        String switchBlock = getSwitchBlock(input, start)
+
+        if (switchBlock == null) {
+            return input
+        }
+
+        if (!isAndroidIdSwitch(switchBlock)) {
+            continue
+        }
+
+//        System.out.println(switchBlock)
+
+        String ifStr = replaceSwitchWithIf(switchBlock)
+
+        replaceStrMap.put(switchBlock, ifStr)
+    }
+
+    for (Map.Entry<String, String> entry : replaceStrMap.entrySet()) {
+
+        input = input.replace(entry.getKey(), entry.getValue())
+    }
+    return input
+}
+
+private static String getSwitchBlock(String input, int start) {
+
+    int length = input.length()
+    int blockStartIndex = 0
+    int blockEndIndex = 0
+    StringBuilder sb = new StringBuilder()
+    for (int i = start; i < length; i++) {
+
+        char c = input.charAt(i)
+
+        if (c == '{') {
+
+            blockStartIndex++
+        } else if (c == '}') {
+
+            blockEndIndex++
+        }
+
+        sb.append(c)
+
+        if (blockStartIndex != 0 && blockStartIndex == blockEndIndex) {
+
+            return sb.toString()
+        }
+    }
+    return null
+}
+
+private static String replaceSwitchWithIf(String target) {
+
+    String variable = findVariable(target)
+
+    List<CaseBlockBean> caseBlocks = findCaseBlocks(target)
+
+    StringBuilder sb = new StringBuilder()
+    sb.append(String.format("int variable = %s;", variable))
+    sb.append("\r\n")
+
+    int caseBlockSize = caseBlocks.size()
+    for (int i = 0; i < caseBlockSize; i++) {
+
+        CaseBlockBean caseBlock = caseBlocks.get(i)
+
+        List<CaseConditionBean> caseConditions = caseBlock.getCaseConditions()
+
+        String caseBody = caseBlock.getCaseBody()
+
+        if (containsDefault(caseConditions) && caseBody.endsWith("}")) {
+            caseBody = caseBody.substring(0, caseBody.length() - 1)
+        }
+
+        if (i == 0) {
+
+            sb.append("\t\t")
+            String ifStr = makeIf(caseConditions)
+            if (ifStr != null) {
+                sb.append(ifStr)
+            }
+            sb.append("{")
+            sb.append("\n")
+            sb.append(String.format("%s", caseBody))
+            sb.append("\n")
+        } else {
+
+            sb.append("\t\t")
+            sb.append("}else ")
+            String ifStr = makeIf(caseConditions)
+            if (ifStr != null) {
+                sb.append(ifStr)
+            }
+            sb.append("{")
+            sb.append("\n")
+            sb.append(String.format("%s", caseBody))
+            sb.append("\n")
+        }
+    }
+    sb.append("\t\t")
+    sb.append("}\n")
+    return sb.toString()
+}
+
+
+private static boolean containsDefault(List<CaseConditionBean> caseConditions) {
+
+    for (CaseConditionBean caseCondition : caseConditions) {
+        if (caseCondition.isDefault()) {
+            return true
+        }
+    }
+    return false
+}
+
+private static String makeIf(List<CaseConditionBean> caseConditions) {
+
+    if (caseConditions == null || caseConditions.isEmpty()) {
+        throw new IllegalArgumentException("case condition null")
+    }
+
+    if (containsDefault(caseConditions)) {
+        return null
+    }
+
+    StringBuilder sb = new StringBuilder()
+    sb.append("if(")
+    int size = caseConditions.size()
+    for (int i = 0; i < size; i++) {
+
+        CaseConditionBean caseCondition = caseConditions.get(i)
+
+        sb.append("variable == ")
+        sb.append(caseCondition.getCondition())
+
+        if (i != size - 1) {
+            sb.append(" || ")
+        }
+    }
+    sb.append(")")
+    return sb.toString()
+}
+
+
+private static String findVariable(String switchStr) {
+
+    String variable = null
+
+    Pattern pattern = Pattern.compile("switch.*?\\(([^\\(\\)]*?|([\\s\\S]*?\\([^\\(\\)]*?\\)[\\s\\S]*?))\\)")
+    Matcher matcher = pattern.matcher(switchStr)
+    if (matcher.find()) {
+
+        String group = matcher.group()
+        variable = group.substring(group.indexOf("(") + 1, group.lastIndexOf(")"))
+    }
+    return variable
+}
+
+private static List<CaseBlockBean> findCaseBlocks(String switchStr) {
+
+    List<CaseBlockBean> blockBeans = new ArrayList<>()
+    Pattern pattern = Pattern.compile("(case[\\s]*?R\\.id\\..*:|default)[\\s\\S]*?(?=break;[\\s]*?case[\\s]*?R\\.id\\..*:|return;[\\s]*?case[\\s]*?R\\.id\\..*:|\$)")
+    Matcher matcher = pattern.matcher(switchStr)
+    while (matcher.find()) {
+
+        String caseBlockStr = matcher.group()
+        List<CaseConditionBean> caseConditions = findCaseConditions(caseBlockStr)
+        String caseBody = findCaseBody(caseBlockStr)
+
+        CaseBlockBean caseBlockBean = new CaseBlockBean()
+        caseBlockBean.setCaseConditions(caseConditions)
+        caseBlockBean.setCaseBody(caseBody)
+        blockBeans.add(caseBlockBean)
+    }
+    return blockBeans
+}
+
+private static List<CaseConditionBean> findCaseConditions(String caseBlock) {
+
+    List<CaseConditionBean> conditions = new ArrayList<>()
+    Pattern pattern = Pattern.compile("(case[\\s]*?R\\.id\\..*?|default)[\\s\\S]*?(?=:)")
+    Matcher matcher = pattern.matcher(caseBlock)
+    while (matcher.find()) {
+
+        String caseConditionStr = matcher.group()
+
+        CaseConditionBean caseConditionBean = new CaseConditionBean()
+        if (caseConditionStr.startsWith("default")) {
+            caseConditionBean.setCondition(caseConditionStr.substring(7))
+            caseConditionBean.setDefault(true)
+        } else {
+            caseConditionBean.setCondition(caseConditionStr.substring(4))
+            caseConditionBean.setDefault(false)
+        }
+        conditions.add(caseConditionBean)
+    }
+    return conditions
+}
+
+private static String findCaseBody(String caseBlock) {
+
+    Pattern pattern = Pattern.compile("(case[\\s]*?R\\.id\\..*?|default)[\\s\\S]*?(?=:)")
+    Matcher matcher = pattern.matcher(caseBlock)
+    int end = -1
+    while (matcher.find()) {
+        end = matcher.end()
+    }
+    if (end == -1) {
+        return null
+    }
+    return caseBlock.substring(end + 1, caseBlock.length() - 1)
+            .replaceAll("break;[\\s]*?\$", "")
+            .replaceAll("break;", "return;")
+}
+
+private static boolean isAndroidIdSwitch(String switchStr) {
+
+    Pattern pattern = Pattern.compile("case.*?R\\.id.*?:")
+    return pattern.matcher(switchStr).find()
+}
+
+class CaseConditionBean {
+
+    private String condition
+
+    private boolean isDefault
+
+    String getCondition() {
+        return condition
+    }
+
+    void setCondition(String condition) {
+        this.condition = condition
+    }
+
+    boolean isDefault() {
+        return isDefault
+    }
+
+    void setDefault(boolean aDefault) {
+        isDefault = aDefault
+    }
+}
+
+class CaseBlockBean {
+
+    private List<CaseConditionBean> caseConditions
+
+    private String caseBody
+
+    List<CaseConditionBean> getCaseConditions() {
+        return caseConditions
+    }
+
+    void setCaseConditions(List<CaseConditionBean> caseConditions) {
+        this.caseConditions = caseConditions
+    }
+
+    String getCaseBody() {
+        return caseBody
+    }
+
+    void setCaseBody(String caseBody) {
+        this.caseBody = caseBody
+    }
+}
+
+def log(log) {
+
+    println '-------------------' + log
+}
+
+void replaceFile(File file) {
+
+//    println file.getAbsolutePath() + file.length() + '------------'
+
+    RandomAccessFile raf = null
+    BufferedWriter bufferedWriter = null
+    try {
+
+        raf = new RandomAccessFile(file, 'r')
+        StringBuilder sb = new StringBuilder()
+        byte[] buffer = new byte[1024]
+        int len
+        while ((len = raf.read(buffer)) != -1) {
+            sb.append(new String(buffer, 0, len, "utf-8"))
+        }
+
+        String packageName = readPackageName()
+
+        String rPackage = 'import ' + packageName + '.R;'
+        int rIndex = sb.indexOf(rPackage)
+        if (rIndex != -1) {
+            sb.insert(rIndex + rPackage.length(), '\r\nimport '+ packageName +'.R2;')
+        }
+        String content = sb.toString()
+
+
+        content = replaceRToR2(content)
+        content = switchToIf(content)
+
+        bufferedWriter = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), "utf-8"))
+        bufferedWriter.write(content)
+        bufferedWriter.flush()
+    } catch (Throwable t) {
+        t.printStackTrace()
+    } finally {
+
+        if (raf != null) {
+            raf.close()
+        }
+        if (bufferedWriter != null) {
+            bufferedWriter.close()
+        }
+    }
+}
+
+static String replaceRToR2(String input) {
+
+    input = input.replaceAll("((?<=@(BindView)\\()R(?=\\.id\\..*))|((?<=@(BindArray)\\()R(?=\\.array\\..*))", "R2")
+
+    final String OnClickPattern = "@OnClick\\([\\s\\S]*?\\)"
+    Pattern pattern = Pattern.compile(OnClickPattern)
+    Matcher matcher = pattern.matcher(input)
+    if (matcher.find()) {
+
+        String group = matcher.group().replaceAll("R.id", "R2.id")
+        input = input.replaceAll(OnClickPattern, group)
+    }
+    return input
+}
+
+def updateButterKnifeInject(File file) {
+
+
+    if (file.isFile()) {
+
+        replaceFile(file)
+    } else if (file.isDirectory()) {
+
+        File[] childFiles = file.listFiles()
+        if (childFiles == null) {
+            return
+        }
+        for (int i = 0; i < childFiles.length; i++) {
+            updateButterKnifeInject(childFiles[i])
+        }
+    }else{
+
+        println '--------file not exists----------' + file.getAbsolutePath()
+    }
+}
+
+String readPackageName(){
+
+    File file = file('src/main/AndroidManifest.xml')
+    if(!file.exists()){
+        return null
+    }
+    FileInputStream fis = new FileInputStream(file)
+    StringBuilder sb = new StringBuilder()
+    byte[] buffer = new byte[1024]
+    int len
+    while ((len = fis.read(buffer)) != -1) {
+        sb.append(new String(buffer, 0, len, "utf-8"))
+    }
+    fis.close()
+    Pattern pattern = Pattern.compile("(?<=package=\")[a-z._]+(?=\")")
+    Matcher matcher = pattern.matcher(sb.toString())
+    if(matcher.find()){
+
+        String packageName = matcher.group()
+        return packageName
+    }
+    return null
+}
