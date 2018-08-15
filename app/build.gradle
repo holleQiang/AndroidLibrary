@@ -40,7 +40,6 @@ dependencies {
     implementation project(':lib-sidebar')
     implementation 'com.github.bumptech.glide:glide:4.0.0'
     implementation project(':lib-rulerview')
-    implementation project(':lib-pluginVirtualApk')
     implementation project(':lib-utils')
     implementation 'com.didi.virtualapk:core:0.9.5'
     implementation 'com.zq.widget:linechart:0.0.7'

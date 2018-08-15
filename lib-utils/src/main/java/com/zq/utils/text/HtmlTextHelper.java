@@ -1,4 +1,4 @@
-package com.caiyi.fund.trade.widget.html;
+package com.zq.utils.text;
 
 import android.content.Context;
 import android.graphics.Rect;
@@ -11,14 +11,11 @@ import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.TextUtils;
-import android.text.style.AbsoluteSizeSpan;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.ImageSpan;
 import android.text.style.StrikethroughSpan;
 import android.text.style.URLSpan;
 
-import com.caiyi.fund.trade.R;
-import com.caiyi.fund.trade.utils.ResourceUtil;
 import com.caiyi.fund.trade.widget.span.AlignVerticalImageSpan;
 import com.caiyi.fund.trade.widget.span.URLSpanWrapper;
 
@@ -144,7 +141,7 @@ public class HtmlTextHelper {
 
                 return loadAndroidDrawableResource(data);
             } else {
-                return ContextCompat.getDrawable(context, R.mipmap.ic_launcher).mutate();
+                return null;
             }
         }
 
@@ -155,14 +152,7 @@ public class HtmlTextHelper {
             if (drawableId == 0) {
                return null;
             }
-            final Drawable drawable;
-            String colorStr = data.getQueryParameter("color");
-            if (!TextUtils.isEmpty(colorStr)) {
-                int color = Integer.valueOf(colorStr);
-                drawable = ResourceUtil.getDrawableWithFillIntColor(context, drawableId, color);
-            } else {
-                drawable = ContextCompat.getDrawable(context, drawableId);
-            }
+            final Drawable drawable = ContextCompat.getDrawable(context, drawableId);
             if(drawable == null){
                 return null;
             }
@@ -185,14 +175,7 @@ public class HtmlTextHelper {
             if (drawableId == 0) {
                 return null;
             }
-            final Drawable drawable;
-            String colorStr = data.getQueryParameter("color");
-            if (!TextUtils.isEmpty(colorStr)) {
-                int color = Integer.valueOf(colorStr);
-                drawable = ResourceUtil.getDrawableWithFillIntColor(context, drawableId, color);
-            } else {
-                drawable = ContextCompat.getDrawable(context, drawableId);
-            }
+            final Drawable drawable = ContextCompat.getDrawable(context, drawableId);
             if(drawable == null){
                 return null;
             }

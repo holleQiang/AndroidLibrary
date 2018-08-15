@@ -1,4 +1,4 @@
-package com.caiyi.fund.trade.gui.cell.state;
+package com.zq.view.recyclerview.adapter.cell.state;
 
 /**
  * Created by zhangqiang on 2017/12/25.
@@ -12,7 +12,7 @@ public interface StateDataBinder<T> {
 
     void bindEmptyData(StateHelper<T> stateHelper);
 
-    void bindData(StateHelper<T> stateHelper,T data);
+    void bindData(StateHelper<T> stateHelper, T data);
 
     boolean isEmpty(T data);
 }

@@ -2,14 +2,12 @@ package com.zq;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
 import com.didi.virtualapk.PluginManager;
 import com.didi.virtualapk.internal.LoadedPlugin;
-import com.didi.virtualapk.utils.PluginUtil;
 import com.zq.func.behavior.BehaviorActivity;
 import com.zq.func.flowlayout.FlowLayoutActivity;
 import com.zq.func.gesturepassword.GesturePasswordActivity;

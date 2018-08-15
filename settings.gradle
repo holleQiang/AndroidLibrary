@@ -1,1 +1,1 @@
-include ':app', ':lib-recyclerviewadapter', ':lib-wheelview', ':lib-database', ':lib-blur', ':lib-linechartview', ':lib-lrcview', ':lib-gesturepassword', ':lib-smartnumber', ':lib-htmltext', ':lib-flowlayout', ':lib-sidebar', ':lib-rulerview', ':lib-rxjava', ':lib-pluginVirtualApk', ':lib-utils'
+include ':app', ':lib-recyclerviewadapter', ':lib-wheelview', ':lib-database', ':lib-blur', ':lib-linechartview', ':lib-lrcview', ':lib-gesturepassword', ':lib-smartnumber', ':lib-htmltext', ':lib-flowlayout', ':lib-sidebar', ':lib-rulerview', ':lib-utils'

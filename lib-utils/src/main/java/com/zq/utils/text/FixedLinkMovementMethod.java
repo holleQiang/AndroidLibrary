@@ -1,9 +1,7 @@
-package com.caiyi.fund.trade.widget.span;
+package com.zq.utils.text;
 
 import android.os.Build;
 import android.support.annotation.Nullable;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.view.ViewCompat;
 import android.text.Layout;
 import android.text.Spannable;
 import android.text.Spanned;
@@ -11,13 +9,11 @@ import android.text.method.LinkMovementMethod;
 import android.text.method.MovementMethod;
 import android.text.style.BackgroundColorSpan;
 import android.text.style.ClickableSpan;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.caiyi.fund.trade.R;
 
 /**
  * Created by zhangqiang on 2017/12/19.
@@ -32,6 +28,8 @@ public class FixedLinkMovementMethod extends LinkMovementMethod {
     private boolean isWidgetLongClickable;
     private ClickableSpan touchedTarget;
     private boolean isContextClickable;
+
+    private int btnPressedColor;
 
     public static MovementMethod getInstance() {
         if (sInstance == null)
@@ -63,7 +61,7 @@ public class FixedLinkMovementMethod extends LinkMovementMethod {
                     int start = buffer.getSpanStart(touchedTarget);
                     int end = buffer.getSpanEnd(touchedTarget);
                     setFlag(buffer, start, end);
-                    buffer.setSpan(new BackgroundColorSpan(ContextCompat.getColor(widget.getContext(), R.color.btn_pressed)),
+                    buffer.setSpan(new BackgroundColorSpan(btnPressedColor),
                             start,
                             end,
                             Spanned.SPAN_INCLUSIVE_EXCLUSIVE);

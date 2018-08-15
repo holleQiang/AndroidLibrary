@@ -1,4 +1,4 @@
-package com.caiyi.fund.trade.gui.cell;
+package com.zq.view.recyclerview.adapter.cell.state;
 
 import android.support.annotation.NonNull;
 

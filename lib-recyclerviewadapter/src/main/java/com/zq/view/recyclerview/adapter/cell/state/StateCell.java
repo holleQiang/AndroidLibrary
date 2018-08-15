@@ -1,11 +1,7 @@
-package com.caiyi.fund.trade.gui.cell;
+package com.zq.view.recyclerview.adapter.cell.state;
 
 import android.support.annotation.LayoutRes;
 
-import com.caiyi.fund.trade.R;
-import com.caiyi.fund.trade.gui.cell.state.OnRequestDataListener;
-import com.caiyi.fund.trade.gui.cell.state.StateDataBinder;
-import com.caiyi.fund.trade.gui.cell.state.StateHelper;
 import com.zq.view.recyclerview.adapter.cell.BaseCell;
 import com.zq.view.recyclerview.viewholder.RVViewHolder;
 
