@@ -38,3 +38,5 @@ dependencies {
 }
 
 apply from: './maven-push.gradle'
+apply plugin: 'com.github.dcendents.android-maven'
+group='com.zq.blur'

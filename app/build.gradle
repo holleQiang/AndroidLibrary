@@ -1,5 +1,4 @@
 apply plugin: 'com.android.application'
-apply plugin: 'com.didi.virtualapk.host'
 
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
