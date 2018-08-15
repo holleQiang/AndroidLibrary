@@ -28,4 +28,3 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 }
 apply plugin: 'com.github.dcendents.android-maven'
-group='com.zq.widget.flowlayout'

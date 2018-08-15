@@ -29,7 +29,5 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     implementation "com.android.support:appcompat-v7:${rootProject.ext.appcompat_support_version}"
     implementation "com.android.support:recyclerview-v7:${rootProject.ext.appcompat_support_version}"
-//    implementation "com.android.support:appcompat-v7:26.1.0"
-//    implementation "com.android.support:recyclerview-v7:26.1.0"
 }
-apply from: './maven-push.gradle'
+apply plugin: 'com.github.dcendents.android-maven'
