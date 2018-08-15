@@ -27,6 +27,5 @@ android {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 }
-apply from: './maven-push.gradle'
 apply plugin: 'com.github.dcendents.android-maven'
 group='com.zq.widget.flowlayout'
