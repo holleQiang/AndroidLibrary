@@ -9,6 +9,6 @@
         <attr name="normalTextSize" format="dimension|reference" />
         <attr name="resetDelayTime" format="integer|reference"/>
         <attr name="resetAfterDrag" format="boolean|reference"/>
-        <attr name="lineSpacing" format="reference|dimension"/>
+        <attr name="lrcLineSpacing" format="reference|dimension"/>
     </declare-styleable>
 </resources>

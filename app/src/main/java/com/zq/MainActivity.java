@@ -2,6 +2,7 @@ package com.zq;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -26,6 +27,7 @@ import com.zq.func.snaphelper.SnapHelperSampleActivity;
 import com.zq.utils.FileUtil;
 import com.zq.utils.ViewUtil;
 import com.zq.view.recyclerview.adapter.OnItemClickListener;
+import com.zq.view.recyclerview.adapter.cell.Cell;
 import com.zq.view.recyclerview.adapter.cell.CellAdapter;
 import com.zq.view.recyclerview.adapter.cell.DataBinder;
 import com.zq.view.recyclerview.adapter.cell.MultiCell;
@@ -33,21 +35,34 @@ import com.zq.view.recyclerview.divider.RVItemDivider;
 import com.zq.view.recyclerview.utils.RVUtil;
 import com.zq.view.recyclerview.viewholder.RVViewHolder;
 import com.zq.func.rulerview.RulerViewDemo;
+import com.zq.widget.ptr.CellConverter;
+import com.zq.widget.ptr.PullToRefreshHelper;
+import com.zq.widget.ptr.SourceFactory;
+import com.zq.widget.ptr.loadmore.LoadMoreWidget;
+import com.zq.widget.ptr.refresh.RefreshWidget;
+import com.zq.widget.ptr.view.SimplePullToRefreshView;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.reactivex.Observable;
 
-public class MainActivity extends AppCompatActivity implements OnItemClickListener {
+public class MainActivity extends AppCompatActivity implements OnItemClickListener, CellConverter<List<String>> {
 
 
-    CellAdapter cellAdapter;
     boolean change;
     @BindView(R.id.m_recycler_view)
     RecyclerView mRecyclerView;
+    @BindView(R.id.m_swipe_refresh_layout)
+    SwipeRefreshLayout mSwipeRefreshLayout;
+
+    PullToRefreshHelper<List<String>> pullToRefreshHelper;
+    private SimplePullToRefreshView<List<String>> refreshView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,31 +70,52 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
 
+        refreshView = new SimplePullToRefreshView<>(mRecyclerView, mSwipeRefreshLayout, this);
+        refreshView.getRefreshWidget().setOnRefreshListener(new RefreshWidget.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                pullToRefreshHelper.refresh();
+            }
+        });
+        refreshView.getLoadMoreWidget().setOnLoadMoreListener(new LoadMoreWidget.OnLoadMoreListener() {
+            @Override
+            public void onLoadMore() {
+                pullToRefreshHelper.loadMore();
+            }
+        });
+        refreshView.getLoadMoreWidget().setLoadMoreEnable(true);
+        refreshView.getAdapter().setOnItemClickListener(this);
+        pullToRefreshHelper = new PullToRefreshHelper<>(refreshView,
+                new SourceFactory<List<String>>() {
+                    @Override
+                    public Observable<List<String>> createRefreshSource(int pageIndex, int pageSize, int startIndex, int endIndex) {
 
-        mRecyclerView.setLayoutManager(new GridLayoutManager(this, 3, GridLayoutManager.VERTICAL, false));
+                        List<String> strings = new ArrayList<>();
+                        strings.add("图表");
+                        strings.add("柱状图");
+                        strings.add("RecyclerView嵌套RecyclerView");
+                        strings.add("JsBridge测试");
+                        strings.add("小红点");
+                        strings.add("Behavior");
+                        strings.add("手势密码");
+                        strings.add("环形图");
+                        strings.add("View翻转");
+                        strings.add("ViewPager测试");
+                        strings.add("htmlText");
+                        strings.add("FlowLayout");
+                        strings.add("SnapHelper");
+                        strings.add("RulerView");
+                        strings.add("ShadowTest");
+                        strings.add("插件测试");
+                        return Observable.just(strings);
+                    }
+                });
+
+        mRecyclerView.setLayoutManager(new GridLayoutManager(this, 2, GridLayoutManager.VERTICAL, false));
 //        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         RVUtil.setChangeAnimationEnable(mRecyclerView, false);
-        cellAdapter = new CellAdapter(this);
-        cellAdapter.addDataAtLast(MultiCell.convert(R.layout.item_text, "图表", dataBinder));
-        cellAdapter.addDataAtLast(MultiCell.convert(R.layout.item_text, "柱状图", dataBinder));
-        cellAdapter.addDataAtLast(MultiCell.convert(R.layout.item_text, "歌词", dataBinder));
-        cellAdapter.addDataAtLast(MultiCell.convert(R.layout.item_text, "RecyclerView嵌套RecyclerView", dataBinder));
-        cellAdapter.addDataAtLast(MultiCell.convert(R.layout.item_text, "JsBridge测试", dataBinder));
-        cellAdapter.addDataAtLast(MultiCell.convert(R.layout.item_text, "小红点", dataBinder));
-        cellAdapter.addDataAtLast(MultiCell.convert(R.layout.item_text, "Behavior", dataBinder));
-        cellAdapter.addDataAtLast(MultiCell.convert(R.layout.item_text, "手势密码", dataBinder));
-        cellAdapter.addDataAtLast(MultiCell.convert(R.layout.item_text, "环形图", dataBinder));
-        cellAdapter.addDataAtLast(MultiCell.convert(R.layout.item_text, "View翻转", dataBinder));
-        cellAdapter.addDataAtLast(MultiCell.convert(R.layout.item_text, "ViewPager测试", dataBinder));
-        cellAdapter.addDataAtLast(MultiCell.convert(R.layout.item_text, "htmlText", dataBinder));
-        cellAdapter.addDataAtLast(MultiCell.convert(R.layout.item_text, "FlowLayout", dataBinder));
-        cellAdapter.addDataAtLast(MultiCell.convert(R.layout.item_text, "SnapHelper", dataBinder));
-        cellAdapter.addDataAtLast(MultiCell.convert(R.layout.item_text, "RulerView", dataBinder));
-        cellAdapter.addDataAtLast(MultiCell.convert(R.layout.item_text, "ShadowTest", dataBinder));
-        cellAdapter.addDataAtLast(MultiCell.convert(R.layout.item_text, "插件测试", dataBinder));
-        cellAdapter.setOnItemClickListener(this);
-        mRecyclerView.setAdapter(cellAdapter);
         mRecyclerView.addItemDecoration(new RVItemDivider(getResources().getColor(R.color.colorPrimary), ViewUtil.dp2px(this, 5)));
+        pullToRefreshHelper.init();
     }
 
     private DataBinder<String> dataBinder = new DataBinder<String>() {
@@ -118,10 +154,11 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
         }
     };
 
+
     @Override
     public void onItemClick(RecyclerView.ViewHolder holder, int position) {
 
-        MultiCell multiCell = (MultiCell) cellAdapter.getDataAt(position);
+        MultiCell multiCell = (MultiCell) refreshView.getAdapter().getDataAt(position);
         String fun = (String) multiCell.getData();
         if (fun.equals("图表")) {
 
@@ -178,7 +215,7 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
 //                PluginUtil.hookActivityResources(MainActivity.this, pkg);
 
                 Intent intent = new Intent();
-                intent.setClassName(pkg,"com.zq.cc.MainActivity");
+                intent.setClassName(pkg, "com.zq.cc.MainActivity");
                 startActivity(intent);
             } catch (IOException e) {
                 e.printStackTrace();
@@ -189,4 +226,27 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
     }
 
 
+    @Override
+    public List<Cell> convert(List<String> s) {
+        
+        List<Cell> cellList = new ArrayList<>();
+        cellList.add(MultiCell.convert(R.layout.item_text, "图表", dataBinder));
+        cellList.add(MultiCell.convert(R.layout.item_text, "柱状图", dataBinder));
+        cellList.add(MultiCell.convert(R.layout.item_text, "歌词", dataBinder));
+        cellList.add(MultiCell.convert(R.layout.item_text, "RecyclerView嵌套RecyclerView", dataBinder));
+        cellList.add(MultiCell.convert(R.layout.item_text, "JsBridge测试", dataBinder));
+        cellList.add(MultiCell.convert(R.layout.item_text, "小红点", dataBinder));
+        cellList.add(MultiCell.convert(R.layout.item_text, "Behavior", dataBinder));
+        cellList.add(MultiCell.convert(R.layout.item_text, "手势密码", dataBinder));
+        cellList.add(MultiCell.convert(R.layout.item_text, "环形图", dataBinder));
+        cellList.add(MultiCell.convert(R.layout.item_text, "View翻转", dataBinder));
+        cellList.add(MultiCell.convert(R.layout.item_text, "ViewPager测试", dataBinder));
+        cellList.add(MultiCell.convert(R.layout.item_text, "htmlText", dataBinder));
+        cellList.add(MultiCell.convert(R.layout.item_text, "FlowLayout", dataBinder));
+        cellList.add(MultiCell.convert(R.layout.item_text, "SnapHelper", dataBinder));
+        cellList.add(MultiCell.convert(R.layout.item_text, "RulerView", dataBinder));
+        cellList.add(MultiCell.convert(R.layout.item_text, "ShadowTest", dataBinder));
+        cellList.add(MultiCell.convert(R.layout.item_text, "插件测试", dataBinder));
+        return cellList;
+    }
 }

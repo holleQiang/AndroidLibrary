@@ -70,7 +70,7 @@ public class LrcView extends View {
             normalTextSize = ta.getDimensionPixelSize(R.styleable.LrcView_normalTextSize, (int) (density * 20 + 0.5f));
             playingTextColor = ta.getColor(R.styleable.LrcView_playingTextColor, Color.RED);
             normalTextColor = ta.getColor(R.styleable.LrcView_normalTextColor, Color.DKGRAY);
-            lineSpacing = ta.getDimensionPixelSize(R.styleable.LrcView_lineSpacing, (int) (10 * density + 0.5f));
+            lineSpacing = ta.getDimensionPixelSize(R.styleable.LrcView_lrcLineSpacing, (int) (10 * density + 0.5f));
             isResetAfterDrag = ta.getBoolean(R.styleable.LrcView_resetAfterDrag, true);
             resetDelayTime = ta.getInt(R.styleable.LrcView_resetDelayTime, 2000);
             ta.recycle();
