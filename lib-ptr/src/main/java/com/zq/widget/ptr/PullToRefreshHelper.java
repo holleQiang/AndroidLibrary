@@ -103,7 +103,7 @@ public class PullToRefreshHelper<T> {
     public void loadMore() {
 
         loadMoreEventSubject.onNext(true);
-        final int pageIndex = mPageIndex;
+        final int pageIndex = mPageIndex + 1;
         final int startIndex = mStartIndex + mPageSize;
         final int endIndex = startIndex + mPageSize;
         sourceFactory.createLoadMoreSource(pageIndex, mPageSize, startIndex, endIndex)
