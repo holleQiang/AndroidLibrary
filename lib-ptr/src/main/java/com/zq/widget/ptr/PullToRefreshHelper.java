@@ -134,4 +134,8 @@ public class PullToRefreshHelper<T> {
                     }
                 });
     }
+
+    public PullToRefreshView<T> getView() {
+        return view;
+    }
 }
