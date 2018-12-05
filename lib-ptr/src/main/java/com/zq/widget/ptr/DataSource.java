@@ -2,7 +2,7 @@ package com.zq.widget.ptr;
 
 import io.reactivex.Observable;
 
-public abstract class SourceFactory<T> {
+public abstract class DataSource<T> {
 
     public abstract Observable<T> createRefreshSource(int pageIndex, int pageSize, int startIndex, int endIndex);
 

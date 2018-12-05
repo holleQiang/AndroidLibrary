@@ -13,7 +13,10 @@ import com.zq.widget.ptr.refresh.RefreshWidget;
 import java.util.Collections;
 import java.util.List;
 
-public abstract class BasePullToRefreshView<T> implements PullToRefreshView<T>{
+/**
+ * 下拉刷新view基类
+ */
+public abstract class BasePullToRefreshView<T> implements PullToRefreshView<T> {
 
     private RefreshWidget mRefreshWidget;
     private LoadMoreWidget mLoadMoreWidget;
@@ -36,8 +39,14 @@ public abstract class BasePullToRefreshView<T> implements PullToRefreshView<T>{
     @Override
     public void setupRefreshData(T t) {
         List<Cell> cellList = cellConverter.convert(t);
-        if(cellList == null || cellList.isEmpty()){
-            mAdapter.setDataList(Collections.singletonList(getEmptyCell()));
+        if (cellList == null || cellList.isEmpty()) {
+            //如果刷新的数据为空，提示没数据
+            Cell emptyCell = getEmptyCell();
+            if (emptyCell== null) {
+                mAdapter.removeAll();
+            }else {
+                mAdapter.setDataList(Collections.singletonList(emptyCell));
+            }
             return;
         }
         mAdapter.setDataList(cellList);
@@ -46,30 +55,35 @@ public abstract class BasePullToRefreshView<T> implements PullToRefreshView<T>{
     @Override
     public void setupRefreshError(Throwable e) {
 
-        if (mAdapter.isEmpty() ) {
-            mAdapter.setDataList(Collections.singletonList(getErrorCell(e)));
-        }else if(hasFixedCell()){
-            mAdapter.removeAll();
-            mAdapter.setDataList(Collections.singletonList(getErrorCell(e)));
+        if (mAdapter.isEmpty()) {
+            Cell errorCell = getErrorCell(e);
+            if (errorCell != null) {
+                mAdapter.setDataList(Collections.singletonList(errorCell));
+            }
+        } else if (hasFixedCell()) {
+            Cell errorCell = getErrorCell(e);
+            if (errorCell != null) {
+                mAdapter.setDataList(Collections.singletonList(errorCell));
+            }
         }
     }
 
-    private boolean hasFixedCell(){
+    private boolean hasFixedCell() {
 
         int contentItemCount = mAdapter.getContentItemCount();
         for (int i = 0; i < contentItemCount; i++) {
             Cell cell = mAdapter.getDataAt(i);
-            if(isFixedCell(cell)){
+            if (isFixedCell(cell)) {
                 return true;
             }
         }
         return false;
     }
 
-    protected boolean isFixedCell(Cell cell){
+    protected boolean isFixedCell(Cell cell) {
         return cell != null && (cell.equals(getLoadingCell())
-        || cell.equals(getErrorCell(null))
-        || cell.equals(getEmptyCell()));
+                || cell.equals(getErrorCell(null))
+                || cell.equals(getEmptyCell()));
     }
 
     @Override
@@ -98,13 +112,19 @@ public abstract class BasePullToRefreshView<T> implements PullToRefreshView<T>{
 
     @Override
     public void showLoadingView() {
-        mAdapter.removeAll();
-        mAdapter.setDataList(Collections.singletonList(getLoadingCell()));
+        Cell loadingCell = getLoadingCell();
+        if (loadingCell == null) {
+            return;
+        }
+        mAdapter.setDataList(Collections.singletonList(loadingCell));
     }
 
     @Override
     public void hideLoadingView() {
-        mAdapter.removeData(getLoadingCell());
+        Cell loadingCell = getLoadingCell();
+        if (loadingCell != null) {
+            mAdapter.removeData(loadingCell);
+        }
     }
 
     @Override
@@ -112,11 +132,12 @@ public abstract class BasePullToRefreshView<T> implements PullToRefreshView<T>{
         mRefreshWidget.setRefreshEnable(refreshEnable);
     }
 
+    @Nullable
     protected abstract Cell getLoadingCell();
-
+    @Nullable
     protected abstract Cell getEmptyCell();
-
-    protected abstract  Cell getErrorCell(@Nullable Throwable e);
+    @Nullable
+    protected abstract Cell getErrorCell(@Nullable Throwable e);
 
     public RecyclerView getRecyclerView() {
         return mRecyclerView;

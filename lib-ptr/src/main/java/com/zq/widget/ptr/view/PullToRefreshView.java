@@ -36,9 +36,19 @@ public interface PullToRefreshView<T> {
      */
     void setRefreshComplete();
 
+    /**
+     * 显示加载中view
+     */
     void showLoadingView();
 
+    /**
+     * 隐藏加载中view
+     */
     void hideLoadingView();
 
+    /**
+     * 设置是否能刷新
+     * @param refreshEnable refreshEnable
+     */
     void setRefreshEnable(boolean refreshEnable);
 }

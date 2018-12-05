@@ -11,23 +11,22 @@ import com.zq.view.recyclerview.adapter.cell.MultiCell;
 import com.zq.view.recyclerview.viewholder.RVViewHolder;
 import com.zq.widget.ptr.CellConverter;
 import com.zq.widget.ptr.R;
-import com.zq.widget.ptr.loadmore.RecyclerViewLoadMoreWidget;
+import com.zq.widget.ptr.loadmore.SampleLoadMoreWidget;
 import com.zq.widget.ptr.refresh.SwipeRefreshWidget;
-import com.zq.widget.ptr.view.BasePullToRefreshView;
 
-public class SimplePullToRefreshView<T> extends BasePullToRefreshView<T> {
+public class SamplePullToRefreshView<T> extends BasePullToRefreshView<T> {
 
-    private final Cell LOADING_CELL = MultiCell.convert(R.layout.view_loading, "", null);
-    private final Cell EMPTY_CELL = MultiCell.convert(R.layout.view_empty, "", null);
-    private final MultiCell<String> ERROR_CELL = MultiCell.convert(R.layout.view_error, "", new DataBinder<String>() {
+    private final Cell LOADING_CELL = MultiCell.convert(R.layout.view_loading, Cell.FULL_SPAN,"", null);
+    private final Cell EMPTY_CELL = MultiCell.convert(R.layout.view_empty, Cell.FULL_SPAN,"", null);
+    private final MultiCell<String> ERROR_CELL = MultiCell.convert(R.layout.view_error,Cell.FULL_SPAN, "", new DataBinder<String>() {
         @Override
         public void bindData(RVViewHolder viewHolder, String data) {
             viewHolder.setText(R.id.tv_error, data);
         }
     });
 
-    public SimplePullToRefreshView(@NonNull RecyclerView mRecyclerView, @NonNull SwipeRefreshLayout swipeRefreshLayout, @NonNull CellConverter<T> cellConverter) {
-        super(mRecyclerView, new SwipeRefreshWidget(swipeRefreshLayout), new RecyclerViewLoadMoreWidget(mRecyclerView), cellConverter);
+    public SamplePullToRefreshView(@NonNull RecyclerView mRecyclerView, @NonNull SwipeRefreshLayout swipeRefreshLayout, @NonNull CellConverter<T> cellConverter) {
+        super(mRecyclerView, new SwipeRefreshWidget(swipeRefreshLayout), new SampleLoadMoreWidget(mRecyclerView), cellConverter);
     }
 
     @Override

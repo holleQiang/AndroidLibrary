@@ -2,6 +2,8 @@ package com.zq;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
@@ -28,7 +30,6 @@ import com.zq.utils.FileUtil;
 import com.zq.utils.ViewUtil;
 import com.zq.view.recyclerview.adapter.OnItemClickListener;
 import com.zq.view.recyclerview.adapter.cell.Cell;
-import com.zq.view.recyclerview.adapter.cell.CellAdapter;
 import com.zq.view.recyclerview.adapter.cell.DataBinder;
 import com.zq.view.recyclerview.adapter.cell.MultiCell;
 import com.zq.view.recyclerview.divider.RVItemDivider;
@@ -37,20 +38,23 @@ import com.zq.view.recyclerview.viewholder.RVViewHolder;
 import com.zq.func.rulerview.RulerViewDemo;
 import com.zq.widget.ptr.CellConverter;
 import com.zq.widget.ptr.PullToRefreshHelper;
-import com.zq.widget.ptr.SourceFactory;
+import com.zq.widget.ptr.DataSource;
 import com.zq.widget.ptr.loadmore.LoadMoreWidget;
 import com.zq.widget.ptr.refresh.RefreshWidget;
-import com.zq.widget.ptr.view.SimplePullToRefreshView;
+import com.zq.widget.ptr.view.SamplePullToRefreshView;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.reactivex.Observable;
+import io.reactivex.Scheduler;
+import io.reactivex.disposables.Disposable;
 
 public class MainActivity extends AppCompatActivity implements OnItemClickListener, CellConverter<List<String>> {
 
@@ -62,7 +66,7 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
     SwipeRefreshLayout mSwipeRefreshLayout;
 
     PullToRefreshHelper<List<String>> pullToRefreshHelper;
-    private SimplePullToRefreshView<List<String>> refreshView;
+    private SamplePullToRefreshView<List<String>> refreshView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,7 +74,8 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
 
-        refreshView = new SimplePullToRefreshView<>(mRecyclerView, mSwipeRefreshLayout, this);
+        mRecyclerView.setLayoutManager(new GridLayoutManager(this, 2, GridLayoutManager.VERTICAL, false));
+        refreshView = new SamplePullToRefreshView<>(mRecyclerView, mSwipeRefreshLayout, this);
         refreshView.getRefreshWidget().setOnRefreshListener(new RefreshWidget.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -86,7 +91,7 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
         refreshView.getLoadMoreWidget().setLoadMoreEnable(true);
         refreshView.getAdapter().setOnItemClickListener(this);
         pullToRefreshHelper = new PullToRefreshHelper<>(refreshView,
-                new SourceFactory<List<String>>() {
+                new DataSource<List<String>>() {
                     @Override
                     public Observable<List<String>> createRefreshSource(int pageIndex, int pageSize, int startIndex, int endIndex) {
 
@@ -107,15 +112,48 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
                         strings.add("RulerView");
                         strings.add("ShadowTest");
                         strings.add("插件测试");
-                        return Observable.just(strings);
+                        return Observable.just(strings).delay(1000,TimeUnit.MILLISECONDS).observeOn(new Scheduler() {
+                            @Override
+                            public Worker createWorker() {
+                                return new Worker() {
+                                    @Override
+                                    public Disposable schedule(final Runnable run, long delay, TimeUnit unit) {
+                                        final Handler handler = new Handler(Looper.getMainLooper());
+                                        handler.postDelayed(run,unit.toMillis(delay));
+                                        return new Disposable() {
+                                            boolean isDisposed;
+                                            @Override
+                                            public void dispose() {
+                                                handler.removeCallbacks(run);
+                                                isDisposed = true;
+                                            }
+
+                                            @Override
+                                            public boolean isDisposed() {
+                                                return isDisposed;
+                                            }
+                                        };
+                                    }
+
+                                    @Override
+                                    public void dispose() {
+
+                                    }
+
+                                    @Override
+                                    public boolean isDisposed() {
+                                        return false;
+                                    }
+                                };
+                            }
+                        });
                     }
                 });
 
-        mRecyclerView.setLayoutManager(new GridLayoutManager(this, 2, GridLayoutManager.VERTICAL, false));
 //        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         RVUtil.setChangeAnimationEnable(mRecyclerView, false);
         mRecyclerView.addItemDecoration(new RVItemDivider(getResources().getColor(R.color.colorPrimary), ViewUtil.dp2px(this, 5)));
-        pullToRefreshHelper.init();
+        pullToRefreshHelper.initRefresh();
     }
 
     private DataBinder<String> dataBinder = new DataBinder<String>() {

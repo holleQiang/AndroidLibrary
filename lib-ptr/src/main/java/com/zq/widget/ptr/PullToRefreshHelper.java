@@ -4,7 +4,6 @@ import android.support.annotation.NonNull;
 
 import com.zq.widget.ptr.view.PullToRefreshView;
 
-import io.reactivex.Observable;
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.subjects.PublishSubject;
@@ -15,52 +14,58 @@ public class PullToRefreshHelper<T> {
     private int mStartIndex;
     private final PublishSubject<Boolean> refreshEventSubject = PublishSubject.create();
     private final PublishSubject<Boolean> loadMoreEventSubject = PublishSubject.create();
-    private SourceFactory<T> sourceFactory;
+    private DataSource<T> dataSource;
     private final int mInitPageIndex;
     private final int mPageSize;
     private PullToRefreshView<T> view;
 
-    public PullToRefreshHelper(@NonNull PullToRefreshView<T> view, SourceFactory<T> sourceFactory) {
+    public PullToRefreshHelper(@NonNull PullToRefreshView<T> view, DataSource<T> sourceFactory) {
         this(view, sourceFactory, 0, 20);
     }
 
-    public PullToRefreshHelper(@NonNull PullToRefreshView<T> view, SourceFactory<T> sourceFactory, int initPageIndex, int pageSize) {
+    public PullToRefreshHelper(@NonNull PullToRefreshView<T> view, DataSource<T> dataSource, int initPageIndex, int pageSize) {
         this.view = view;
-        this.sourceFactory = sourceFactory;
+        this.dataSource = dataSource;
         this.mInitPageIndex = initPageIndex;
         this.mPageSize = pageSize;
     }
 
-    public void init() {
+    /**
+     * 会显示加载中的页面
+     */
+    public void initRefresh() {
 
-        refresh(true);
+        refreshInternal(true);
     }
 
     public void refresh() {
 
-        refresh(false);
+        refreshInternal(false);
     }
 
-    private void refresh(final boolean isInit) {
+    /**
+     * 刷新
+     * @param isInitRefresh 是否初始化刷新
+     */
+    private void refreshInternal(final boolean isInitRefresh) {
 
         if (view == null) {
             return;
         }
-        if (isInit) {
+        stopRefresh();
+        stopLoadMore();
+        if (isInitRefresh) {
             view.setRefreshEnable(false);
             view.showLoadingView();
         }
-
-        refreshEventSubject.onNext(true);
         final int pageIndex = mInitPageIndex;
         final int startIndex = 0;
         final int endIndex = startIndex + mPageSize;
-        sourceFactory.createRefreshSource(pageIndex, mPageSize, startIndex, endIndex)
+        dataSource.createRefreshSource(pageIndex, mPageSize, startIndex, endIndex)
                 .takeUntil(refreshEventSubject)
                 .subscribe(new Observer<T>() {
 
-                    //防止发射空数据
-                    boolean isDone;
+                    boolean isComplete;
 
                     @Override
                     public void onSubscribe(Disposable d) {
@@ -69,47 +74,64 @@ public class PullToRefreshHelper<T> {
 
                     @Override
                     public void onNext(T t) {
-                        isDone = true;
-                        if (isInit) {
-                            view.setRefreshEnable(true);
-                            view.hideLoadingView();
-                        }
+                        //刷新成功
                         mPageIndex = pageIndex;
                         mStartIndex = startIndex;
+                        if (isInitRefresh) {
+
+                            view.setRefreshEnable(true);
+                            view.hideLoadingView();
+                        } else {
+                            view.setRefreshComplete();
+                        }
+                        isComplete = true;
                         view.setupRefreshData(t);
                     }
 
                     @Override
                     public void onError(Throwable e) {
-                        isDone = true;
-                        if (isInit) {
+                        isComplete = true;
+                        //刷新失败
+                        if (isInitRefresh) {
                             view.setRefreshEnable(true);
                             view.hideLoadingView();
+                        } else {
+                            view.setRefreshComplete();
                         }
                         view.setupRefreshError(e);
                     }
 
                     @Override
                     public void onComplete() {
-                        if (!isDone && isInit) {
+
+                        if (isComplete) {
+                            return;
+                        }
+                        if (isInitRefresh) {
                             view.setRefreshEnable(true);
                             view.hideLoadingView();
+                        } else {
+                            view.setRefreshComplete();
                         }
-                        view.setRefreshComplete();
                     }
                 });
     }
 
+    /**
+     * 加载更多
+     */
     public void loadMore() {
 
-        loadMoreEventSubject.onNext(true);
+        stopLoadMore();
         final int pageIndex = mPageIndex + 1;
         final int startIndex = mStartIndex + mPageSize;
         final int endIndex = startIndex + mPageSize;
-        sourceFactory.createLoadMoreSource(pageIndex, mPageSize, startIndex, endIndex)
+        dataSource.createLoadMoreSource(pageIndex, mPageSize, startIndex, endIndex)
                 .takeUntil(loadMoreEventSubject)
                 .takeUntil(refreshEventSubject)
                 .subscribe(new Observer<T>() {
+
+                    boolean isComplete;
 
                     @Override
                     public void onSubscribe(Disposable d) {
@@ -118,24 +140,34 @@ public class PullToRefreshHelper<T> {
 
                     @Override
                     public void onNext(T t) {
+                        isComplete = true;
                         mPageIndex = pageIndex;
                         mStartIndex = startIndex;
                         view.setupLoadMoreData(t);
+                        view.setLoadMoreComplete();
                     }
 
                     @Override
                     public void onError(Throwable e) {
+                        isComplete = true;
                         view.setupLoadMoreError(e);
+                        view.setLoadMoreComplete();
                     }
 
                     @Override
                     public void onComplete() {
-                        view.setLoadMoreComplete();
+                        if (!isComplete) {
+                            view.setLoadMoreComplete();
+                        }
                     }
                 });
     }
 
-    public PullToRefreshView<T> getView() {
-        return view;
+    public void stopRefresh() {
+        refreshEventSubject.onNext(true);
+    }
+
+    public void stopLoadMore() {
+        refreshEventSubject.onNext(true);
     }
 }
