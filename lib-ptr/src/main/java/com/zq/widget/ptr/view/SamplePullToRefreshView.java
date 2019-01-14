@@ -4,6 +4,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
+import android.widget.Toast;
 
 import com.zq.view.recyclerview.adapter.cell.Cell;
 import com.zq.view.recyclerview.adapter.cell.DataBinder;
@@ -14,36 +15,49 @@ import com.zq.widget.ptr.R;
 import com.zq.widget.ptr.loadmore.SampleLoadMoreWidget;
 import com.zq.widget.ptr.refresh.SwipeRefreshWidget;
 
-public class SamplePullToRefreshView<T> extends BasePullToRefreshView<T> {
-
-    private final Cell LOADING_CELL = MultiCell.convert(R.layout.view_loading, Cell.FULL_SPAN,"", null);
-    private final Cell EMPTY_CELL = MultiCell.convert(R.layout.view_empty, Cell.FULL_SPAN,"", null);
-    private final MultiCell<String> ERROR_CELL = MultiCell.convert(R.layout.view_error,Cell.FULL_SPAN, "", new DataBinder<String>() {
-        @Override
-        public void bindData(RVViewHolder viewHolder, String data) {
-            viewHolder.setText(R.id.tv_error, data);
-        }
-    });
+public class SamplePullToRefreshView<T> extends SimplePullToRefreshView<T> {
 
     public SamplePullToRefreshView(@NonNull RecyclerView mRecyclerView, @NonNull SwipeRefreshLayout swipeRefreshLayout, @NonNull CellConverter<T> cellConverter) {
-        super(mRecyclerView, new SwipeRefreshWidget(swipeRefreshLayout), new SampleLoadMoreWidget(mRecyclerView), cellConverter);
+        super(mRecyclerView, new SwipeRefreshWidget(swipeRefreshLayout), new SampleLoadMoreWidget(mRecyclerView),cellConverter);
+    }
+
+    @Nullable
+    @Override
+    Cell onCreateLoadingCell() {
+        return MultiCell.convert(R.layout.view_loading, Cell.FULL_SPAN,"", null);
+    }
+
+    @Nullable
+    @Override
+    Cell onCreateErrorCell() {
+        return MultiCell.convert(R.layout.view_error,Cell.FULL_SPAN, "", new DataBinder<String>() {
+            @Override
+            public void bindData(RVViewHolder viewHolder, String data) {
+                viewHolder.setText(R.id.tv_error, data);
+            }
+        });
+    }
+
+    @Nullable
+    @Override
+    Cell onCreateEmptyCell() {
+        return MultiCell.convert(R.layout.view_empty, Cell.FULL_SPAN,"", null);
     }
 
     @Override
-    protected Cell getLoadingCell() {
-        return LOADING_CELL;
-    }
-
-    @Override
-    protected Cell getEmptyCell() {
-        return EMPTY_CELL;
-    }
-
-    @Override
-    protected Cell getErrorCell(@Nullable Throwable e) {
+    void onShowErrorCell(@NonNull Cell errorCell, @Nullable Throwable e) {
         if (e != null) {
-            ERROR_CELL.setData(e.getMessage());
+            ((MultiCell<String>) errorCell).setData(e.getMessage());
         }
-        return ERROR_CELL;
+    }
+
+    @Override
+    void setupUnhandledRefreshError(@Nullable Throwable e) {
+        Toast.makeText(getRecyclerView().getContext(), "刷新失败", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void setupLoadMoreError(Throwable e) {
+        Toast.makeText(getRecyclerView().getContext(), "加载更多失败", Toast.LENGTH_SHORT).show();
     }
 }

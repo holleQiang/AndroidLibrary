@@ -7,7 +7,9 @@ import android.os.Looper;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 
 import com.didi.virtualapk.PluginManager;
 import com.didi.virtualapk.internal.LoadedPlugin;
@@ -37,8 +39,10 @@ import com.zq.view.recyclerview.utils.RVUtil;
 import com.zq.view.recyclerview.viewholder.RVViewHolder;
 import com.zq.func.rulerview.RulerViewDemo;
 import com.zq.widget.ptr.CellConverter;
-import com.zq.widget.ptr.PullToRefreshHelper;
-import com.zq.widget.ptr.DataSource;
+import com.zq.widget.ptr.SimplePullToRefreshHelper;
+import com.zq.widget.ptr.data.Callback;
+import com.zq.widget.ptr.data.DataSource;
+import com.zq.widget.ptr.data.RxDataSource;
 import com.zq.widget.ptr.loadmore.LoadMoreWidget;
 import com.zq.widget.ptr.refresh.RefreshWidget;
 import com.zq.widget.ptr.view.SamplePullToRefreshView;
@@ -53,8 +57,10 @@ import java.util.concurrent.TimeUnit;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.reactivex.Observable;
+import io.reactivex.Observer;
 import io.reactivex.Scheduler;
 import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Action;
 
 public class MainActivity extends AppCompatActivity implements OnItemClickListener, CellConverter<List<String>> {
 
@@ -65,7 +71,7 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
     @BindView(R.id.m_swipe_refresh_layout)
     SwipeRefreshLayout mSwipeRefreshLayout;
 
-    PullToRefreshHelper<List<String>> pullToRefreshHelper;
+    SimplePullToRefreshHelper<List<String>> pullToRefreshHelper;
     private SamplePullToRefreshView<List<String>> refreshView;
 
     @Override
@@ -75,6 +81,7 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
         ButterKnife.bind(this);
 
         mRecyclerView.setLayoutManager(new GridLayoutManager(this, 2, GridLayoutManager.VERTICAL, false));
+//        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         refreshView = new SamplePullToRefreshView<>(mRecyclerView, mSwipeRefreshLayout, this);
         refreshView.getRefreshWidget().setOnRefreshListener(new RefreshWidget.OnRefreshListener() {
             @Override
@@ -90,11 +97,16 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
         });
         refreshView.getLoadMoreWidget().setLoadMoreEnable(true);
         refreshView.getAdapter().setOnItemClickListener(this);
-        pullToRefreshHelper = new PullToRefreshHelper<>(refreshView,
-                new DataSource<List<String>>() {
+//        new Handler().postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+//                pullToRefreshHelper.stopRefresh();
+//            }
+//        },500);
+        pullToRefreshHelper = new SimplePullToRefreshHelper<>(refreshView,
+                new RxDataSource<List<String>>() {
                     @Override
-                    public Observable<List<String>> createRefreshSource(int pageIndex, int pageSize, int startIndex, int endIndex) {
-
+                    public Observable<List<String>> getDataSource(int pageIndex, int pageSize, int startIndex, int endIndex) {
                         List<String> strings = new ArrayList<>();
                         strings.add("图表");
                         strings.add("柱状图");

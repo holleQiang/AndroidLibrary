@@ -1,23 +1,27 @@
-package com.zq.view.recyclerview.adapter;
+package com.zq.view.recyclerview.loadmore;
 
+import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
+import android.util.Log;
 
 /**
- * recyclerView 加载更多辅助类
- * Created by zhangqiang on 2017/8/17.
+ * Author：zhangqiang
+ * Date：2019/1/14 21:35:29
+ * Email:852286406@qq.com
+ * Github:https://github.com/holleQiang
  */
-
-public class RVLoadMoreHelper {
+public class LoadMoreHelper {
 
     private boolean isLoadingMore = false;
     private boolean isLoadMoreEnable;
-    private LoadMoreController loadMoreController;
+    private LoadMoreListener mLoadMoreListener;
+    private RecyclerView mRecyclerView;
 
-    public RVLoadMoreHelper(RecyclerView recyclerView, LoadMoreController loadMoreController) {
-        recyclerView.addOnScrollListener(new InternalScrollerListener());
-        this.loadMoreController = loadMoreController;
+    public LoadMoreHelper(RecyclerView recyclerView) {
+        mRecyclerView = recyclerView;
+        recyclerView.addOnScrollListener(new LoadMoreHelper.InternalScrollerListener());
     }
 
     public boolean isLoadMoreEnable() {
@@ -34,33 +38,15 @@ public class RVLoadMoreHelper {
         private int mLastPosition;
 
         @Override
-        public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+        public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
             super.onScrollStateChanged(recyclerView, newState);
-
-//            if (isLoadingMore || !isLoadMoreEnable  || loadMoreController == null) {
-//                return;
-//            }
-//
-//            RecyclerView.LayoutManager layoutManager = recyclerView.getLayoutManager();
-//
-//            int lastVisibleItem = findLastVisibleItem(layoutManager);
-//            int totalItemCount = layoutManager.getItemCount();
-//            int visibleItemCount = layoutManager.getChildCount();
-//
-//            if (mLastPosition != lastVisibleItem && totalItemCount - lastVisibleItem <= 2 && totalItemCount > visibleItemCount) {
-//
-//                isLoadingMore = true;
-//                recyclerView.removeCallbacks(loadMoreRunnable);
-//                recyclerView.post(loadMoreRunnable);
-//            }
-//            mLastPosition = lastVisibleItem;
         }
 
         @Override
-        public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+        public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
             super.onScrolled(recyclerView, dx, dy);
 
-            if (isLoadingMore || !isLoadMoreEnable || dy <= 0 || loadMoreController == null) {
+            if (isLoadingMore || !isLoadMoreEnable || dy <= 0 || mLoadMoreListener == null) {
                 return;
             }
 
@@ -70,8 +56,11 @@ public class RVLoadMoreHelper {
             int totalItemCount = layoutManager.getItemCount();
             int visibleItemCount = layoutManager.getChildCount();
 
-            if (mLastPosition != lastVisibleItem && totalItemCount - lastVisibleItem <= 2 && totalItemCount > visibleItemCount) {
+            if (mLastPosition != lastVisibleItem
+                    && totalItemCount - 1 == lastVisibleItem
+                    && totalItemCount > visibleItemCount) {
 
+                Log.i("Test","=========post=========" + mLastPosition);
                 isLoadingMore = true;
                 recyclerView.removeCallbacks(loadMoreRunnable);
                 recyclerView.post(loadMoreRunnable);
@@ -109,28 +98,24 @@ public class RVLoadMoreHelper {
         return max;
     }
 
-    public interface LoadMoreController {
-
-        void shouldShowLoadMoreView();
-
-        void shouldHideLoadMoreView();
-    }
-
-    public void setLoadMoreComplete() {
+    public void finishLoadMore() {
 
         this.isLoadingMore = false;
-        if (loadMoreController != null) {
-            loadMoreController.shouldHideLoadMoreView();
-        }
+        mRecyclerView.removeCallbacks(loadMoreRunnable);
     }
 
     private Runnable loadMoreRunnable = new Runnable() {
         @Override
         public void run() {
 
-            if (loadMoreController != null) {
-                loadMoreController.shouldShowLoadMoreView();
+            if (mLoadMoreListener != null) {
+                mLoadMoreListener.onLoadMore();
             }
         }
     };
+
+    public LoadMoreHelper setLoadMoreListener(LoadMoreListener loadMoreListener) {
+        this.mLoadMoreListener = loadMoreListener;
+        return this;
+    }
 }
