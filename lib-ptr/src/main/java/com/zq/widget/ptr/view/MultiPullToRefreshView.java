@@ -1,6 +1,6 @@
 package com.zq.widget.ptr.view;
 
-public interface PullToRefreshView<R,L> {
+public interface MultiPullToRefreshView<R,L> {
 
     /**
      * 填充刷新数据

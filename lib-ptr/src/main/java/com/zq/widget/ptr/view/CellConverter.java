@@ -1,4 +1,4 @@
-package com.zq.widget.ptr;
+package com.zq.widget.ptr.view;
 
 import com.zq.view.recyclerview.adapter.cell.Cell;
 

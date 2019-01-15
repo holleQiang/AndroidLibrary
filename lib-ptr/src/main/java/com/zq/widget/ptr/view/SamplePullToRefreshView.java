@@ -10,7 +10,6 @@ import com.zq.view.recyclerview.adapter.cell.Cell;
 import com.zq.view.recyclerview.adapter.cell.DataBinder;
 import com.zq.view.recyclerview.adapter.cell.MultiCell;
 import com.zq.view.recyclerview.viewholder.RVViewHolder;
-import com.zq.widget.ptr.CellConverter;
 import com.zq.widget.ptr.R;
 import com.zq.widget.ptr.loadmore.SampleLoadMoreWidget;
 import com.zq.widget.ptr.refresh.SwipeRefreshWidget;

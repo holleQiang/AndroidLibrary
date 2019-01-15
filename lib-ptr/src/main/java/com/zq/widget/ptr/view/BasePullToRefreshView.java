@@ -6,7 +6,6 @@ import android.support.v7.widget.RecyclerView;
 
 import com.zq.view.recyclerview.adapter.cell.Cell;
 import com.zq.view.recyclerview.adapter.cell.CellAdapter;
-import com.zq.widget.ptr.CellConverter;
 import com.zq.widget.ptr.loadmore.LoadMoreWidget;
 import com.zq.widget.ptr.refresh.RefreshWidget;
 
@@ -16,7 +15,7 @@ import java.util.List;
 /**
  * 下拉刷新view基类
  */
-public abstract class BasePullToRefreshView<R, L> implements PullToRefreshView<R, L> {
+public abstract class BasePullToRefreshView<R, L> implements MultiPullToRefreshView<R, L> {
 
     private RefreshWidget mRefreshWidget;
     private LoadMoreWidget mLoadMoreWidget;
