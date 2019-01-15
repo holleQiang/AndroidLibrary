@@ -16,7 +16,7 @@ import java.util.List;
 /**
  * 下拉刷新view基类
  */
-public abstract class BasePullToRefreshView<R,L> implements PullToRefreshView<R,L> {
+public abstract class BasePullToRefreshView<R, L> implements PullToRefreshView<R, L> {
 
     private RefreshWidget mRefreshWidget;
     private LoadMoreWidget mLoadMoreWidget;
@@ -32,15 +32,17 @@ public abstract class BasePullToRefreshView<R,L> implements PullToRefreshView<R,
     private final Cell mErrorCell;
 
     @Nullable
-    abstract Cell onCreateLoadingCell();
-    @Nullable
-    abstract Cell onCreateErrorCell();
-    @Nullable
-    abstract Cell onCreateEmptyCell();
+    protected abstract Cell onCreateLoadingCell();
 
-    abstract void onShowErrorCell(@NonNull Cell errorCell,@Nullable Throwable e);
+    @Nullable
+    protected abstract Cell onCreateErrorCell();
 
-    abstract void setupUnhandledRefreshError(@Nullable Throwable e);
+    @Nullable
+    protected abstract Cell onCreateEmptyCell();
+
+    protected abstract void onShowErrorCell(@NonNull Cell errorCell, @Nullable Throwable e);
+
+    protected abstract void setupUnhandledRefreshError(@Nullable Throwable e);
 
 
     public BasePullToRefreshView(@NonNull RecyclerView mRecyclerView,
@@ -66,9 +68,9 @@ public abstract class BasePullToRefreshView<R,L> implements PullToRefreshView<R,
         if (cellList == null || cellList.isEmpty()) {
             //如果刷新的数据为空，提示没数据
             Cell emptyCell = getEmptyCell();
-            if (emptyCell== null) {
+            if (emptyCell == null) {
                 mAdapter.removeAll();
-            }else {
+            } else {
                 mAdapter.setDataList(Collections.singletonList(emptyCell));
             }
             return;
@@ -85,17 +87,15 @@ public abstract class BasePullToRefreshView<R,L> implements PullToRefreshView<R,
         if (mAdapter.isEmpty() || hasFixedCell()) {
             Cell errorCell = getErrorCell();
             if (errorCell != null) {
-                onShowErrorCell(errorCell,e);
+                onShowErrorCell(errorCell, e);
                 mAdapter.setDataList(Collections.singletonList(errorCell));
-            }else {
+            } else {
                 setupUnhandledRefreshError(e);
             }
-        }else {
+        } else {
             setupUnhandledRefreshError(e);
         }
     }
-
-
 
 
     @Override
@@ -192,7 +192,7 @@ public abstract class BasePullToRefreshView<R,L> implements PullToRefreshView<R,
                 || cell.equals(getEmptyCell()));
     }
 
-    protected boolean onInterceptRefreshError(@Nullable Throwable e){
+    protected boolean onInterceptRefreshError(@Nullable Throwable e) {
         return false;
     }
 

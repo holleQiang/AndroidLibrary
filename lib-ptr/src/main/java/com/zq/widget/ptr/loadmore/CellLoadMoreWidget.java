@@ -1,18 +1,12 @@
 package com.zq.widget.ptr.loadmore;
 
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
-import android.view.View;
 
 import com.zq.view.recyclerview.adapter.cell.Cell;
 import com.zq.view.recyclerview.adapter.cell.CellAdapter;
-import com.zq.view.recyclerview.adapter.cell.DataBinder;
-import com.zq.view.recyclerview.adapter.cell.MultiCell;
 import com.zq.view.recyclerview.loadmore.LoadMoreHelper;
 import com.zq.view.recyclerview.loadmore.LoadMoreListener;
-import com.zq.view.recyclerview.viewholder.RVViewHolder;
-import com.zq.widget.ptr.R;
 
 /**
  * Author：zhangqiang

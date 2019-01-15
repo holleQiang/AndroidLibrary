@@ -12,24 +12,34 @@ import com.zq.view.recyclerview.adapter.cell.MultiCell;
 import com.zq.view.recyclerview.viewholder.RVViewHolder;
 import com.zq.widget.ptr.CellConverter;
 import com.zq.widget.ptr.R;
+import com.zq.widget.ptr.loadmore.LoadMoreWidget;
 import com.zq.widget.ptr.loadmore.SampleLoadMoreWidget;
+import com.zq.widget.ptr.refresh.RefreshWidget;
 import com.zq.widget.ptr.refresh.SwipeRefreshWidget;
 
-public class SamplePullToRefreshView<T> extends SimplePullToRefreshView<T> {
+public class SamplePullToRefreshView<T,B> extends BasePullToRefreshView<T, B> {
 
-    public SamplePullToRefreshView(@NonNull RecyclerView mRecyclerView, @NonNull SwipeRefreshLayout swipeRefreshLayout, @NonNull CellConverter<T> cellConverter) {
-        super(mRecyclerView, new SwipeRefreshWidget(swipeRefreshLayout), new SampleLoadMoreWidget(mRecyclerView),cellConverter);
+
+    public SamplePullToRefreshView(@NonNull RecyclerView mRecyclerView,
+                                   @NonNull SwipeRefreshLayout swipeRefreshLayout,
+                                   @NonNull CellConverter<T> refreshCellConverter,
+                                   @NonNull CellConverter<B> loadMoreCellConverter) {
+        super(mRecyclerView,
+                new SwipeRefreshWidget(swipeRefreshLayout),
+                new SampleLoadMoreWidget(mRecyclerView),
+                refreshCellConverter,
+                loadMoreCellConverter);
     }
 
     @Nullable
     @Override
-    Cell onCreateLoadingCell() {
+    protected  Cell onCreateLoadingCell() {
         return MultiCell.convert(R.layout.view_loading, Cell.FULL_SPAN,"", null);
     }
 
     @Nullable
     @Override
-    Cell onCreateErrorCell() {
+    protected Cell onCreateErrorCell() {
         return MultiCell.convert(R.layout.view_error,Cell.FULL_SPAN, "", new DataBinder<String>() {
             @Override
             public void bindData(RVViewHolder viewHolder, String data) {
@@ -40,12 +50,12 @@ public class SamplePullToRefreshView<T> extends SimplePullToRefreshView<T> {
 
     @Nullable
     @Override
-    Cell onCreateEmptyCell() {
+    protected Cell onCreateEmptyCell() {
         return MultiCell.convert(R.layout.view_empty, Cell.FULL_SPAN,"", null);
     }
 
     @Override
-    void onShowErrorCell(@NonNull Cell errorCell, @Nullable Throwable e) {
+    protected  void onShowErrorCell(@NonNull Cell errorCell, @Nullable Throwable e) {
         if (e != null) {
             MultiCell<String> mErrorCell = (MultiCell<String>) errorCell;
             mErrorCell.setData(e.getMessage());
@@ -53,12 +63,8 @@ public class SamplePullToRefreshView<T> extends SimplePullToRefreshView<T> {
     }
 
     @Override
-    void setupUnhandledRefreshError(@Nullable Throwable e) {
+    protected void setupUnhandledRefreshError(@Nullable Throwable e) {
         Toast.makeText(getRecyclerView().getContext(), "刷新失败", Toast.LENGTH_SHORT).show();
     }
 
-//    @Override
-//    public void setupLoadMoreError(Throwable e) {
-//        Toast.makeText(getRecyclerView().getContext(), "加载更多失败", Toast.LENGTH_SHORT).show();
-//    }
 }

@@ -12,26 +12,26 @@ import com.zq.widget.ptr.view.PullToRefreshView;
  * Email:852286406@qq.com
  * Github:https://github.com/holleQiang
  */
-public class PullToRefreshHelper<R, L> {
+public class PullToRefreshHelper<T, B> {
 
     private int mPageIndex;
     private int mStartIndex;
-    private DataSource<R> refreshDataSource;
-    private DataSource<L> loadMoreDataSource;
+    private DataSource<T> refreshDataSource;
+    private DataSource<B> loadMoreDataSource;
     private final int mInitPageIndex;
     private final int mPageSize;
     @NonNull
-    private PullToRefreshView<R, L> view;
+    private PullToRefreshView<T, B> view;
 
-    public PullToRefreshHelper(@NonNull PullToRefreshView<R, L> view,
-                               @NonNull DataSource<R> refreshDataSource,
-                               @NonNull DataSource<L> loadMoreDataSource) {
+    public PullToRefreshHelper(@NonNull PullToRefreshView<T, B> view,
+                               @NonNull DataSource<T> refreshDataSource,
+                               @NonNull DataSource<B> loadMoreDataSource) {
         this(view, refreshDataSource, loadMoreDataSource, 0, 20);
     }
 
-    public PullToRefreshHelper(@NonNull PullToRefreshView<R, L> view,
-                               @NonNull DataSource<R> refreshDataSource,
-                               @NonNull DataSource<L> loadMoreDataSource,
+    public PullToRefreshHelper(@NonNull PullToRefreshView<T, B> view,
+                               @NonNull DataSource<T> refreshDataSource,
+                               @NonNull DataSource<B> loadMoreDataSource,
                                int initPageIndex,
                                int pageSize) {
         this.view = view;
@@ -55,11 +55,11 @@ public class PullToRefreshHelper<R, L> {
         final int endIndex = startIndex + mPageSize;
         mPageIndex = pageIndex;
         mStartIndex = startIndex;
-        refreshDataSource.loadData(pageIndex, mPageSize, startIndex, endIndex, new InternalCallback<>(new Callback<R>() {
+        refreshDataSource.loadData(pageIndex, mPageSize, startIndex, endIndex, new InternalCallback<>(new Callback<T>() {
 
             @Override
-            public void onNextData(@NonNull R r) {
-                view.setupRefreshData(r);
+            public void onNextData(@NonNull T t) {
+                view.setupRefreshData(t);
             }
 
             @Override
@@ -85,11 +85,11 @@ public class PullToRefreshHelper<R, L> {
         final int pageIndex = mInitPageIndex;
         final int startIndex = 0;
         final int endIndex = startIndex + mPageSize;
-        refreshDataSource.loadData(pageIndex, mPageSize, startIndex, endIndex, new InternalCallback<>(new Callback<R>() {
+        refreshDataSource.loadData(pageIndex, mPageSize, startIndex, endIndex, new InternalCallback<>(new Callback<T>() {
 
             @Override
-            public void onNextData(@NonNull R r) {
-                view.setupRefreshData(r);
+            public void onNextData(@NonNull T t) {
+                view.setupRefreshData(t);
             }
 
             @Override
@@ -117,10 +117,10 @@ public class PullToRefreshHelper<R, L> {
         final int pageIndex = mPageIndex + 1;
         final int startIndex = mStartIndex + mPageSize;
         final int endIndex = startIndex + mPageSize;
-        loadMoreDataSource.loadData(pageIndex, mPageSize, startIndex, endIndex, new InternalCallback<>(new Callback<L>() {
+        loadMoreDataSource.loadData(pageIndex, mPageSize, startIndex, endIndex, new InternalCallback<>(new Callback<B>() {
             @Override
-            public void onNextData(@NonNull L l) {
-                view.setupLoadMoreData(l);
+            public void onNextData(@NonNull B b) {
+                view.setupLoadMoreData(b);
             }
 
             @Override

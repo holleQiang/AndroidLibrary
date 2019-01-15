@@ -7,10 +7,7 @@ import android.os.Looper;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
-import android.view.View;
 
 import com.didi.virtualapk.PluginManager;
 import com.didi.virtualapk.internal.LoadedPlugin;
@@ -40,12 +37,8 @@ import com.zq.view.recyclerview.utils.RVUtil;
 import com.zq.view.recyclerview.viewholder.RVViewHolder;
 import com.zq.func.rulerview.RulerViewDemo;
 import com.zq.widget.ptr.CellConverter;
-import com.zq.widget.ptr.SimplePullToRefreshHelper;
-import com.zq.widget.ptr.data.Callback;
-import com.zq.widget.ptr.data.DataSource;
 import com.zq.widget.ptr.data.RxDataSource;
 import com.zq.widget.ptr.loadmore.LoadMoreWidget;
-import com.zq.widget.ptr.loadmore.SampleLoadMoreWidget;
 import com.zq.widget.ptr.refresh.RefreshWidget;
 import com.zq.widget.ptr.view.SamplePullToRefreshView;
 
@@ -59,10 +52,8 @@ import java.util.concurrent.TimeUnit;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.reactivex.Observable;
-import io.reactivex.Observer;
 import io.reactivex.Scheduler;
 import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.Action;
 import io.reactivex.functions.Function;
 
 public class MainActivity extends AppCompatActivity implements OnItemClickListener, CellConverter<List<String>> {

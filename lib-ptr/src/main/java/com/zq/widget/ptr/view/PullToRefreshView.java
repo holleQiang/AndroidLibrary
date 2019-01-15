@@ -1,12 +1,12 @@
 package com.zq.widget.ptr.view;
 
-public interface PullToRefreshView<R,L> {
+public interface PullToRefreshView<T,B> {
 
     /**
      * 填充刷新数据
-     * @param r data
+     * @param t data
      */
-    void setupRefreshData(R r);
+    void setupRefreshData(T t);
 
     /**
      * 处理刷新失败
@@ -16,9 +16,9 @@ public interface PullToRefreshView<R,L> {
 
     /**
      * 填充加载更多数据
-     * @param l t
+     * @param b t
      */
-    void setupLoadMoreData(L l);
+    void setupLoadMoreData(B b);
 
     /**
      * 处理加载更多失败
