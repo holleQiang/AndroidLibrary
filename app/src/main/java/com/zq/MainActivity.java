@@ -37,6 +37,7 @@ import com.zq.view.recyclerview.utils.RVUtil;
 import com.zq.view.recyclerview.viewholder.RVViewHolder;
 import com.zq.func.rulerview.RulerViewDemo;
 import com.zq.widget.ptr.CellConverter;
+import com.zq.widget.ptr.PullToRefreshHelper;
 import com.zq.widget.ptr.data.RxDataSource;
 import com.zq.widget.ptr.loadmore.LoadMoreWidget;
 import com.zq.widget.ptr.refresh.RefreshWidget;
@@ -65,8 +66,8 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
     @BindView(R.id.m_swipe_refresh_layout)
     SwipeRefreshLayout mSwipeRefreshLayout;
 
-    SimplePullToRefreshHelper<List<String>> pullToRefreshHelper;
-    private SamplePullToRefreshView<List<String>> refreshView;
+    PullToRefreshHelper<List<String>,List<String>> pullToRefreshHelper;
+    private SamplePullToRefreshView<List<String>,List<String>> refreshView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,7 +77,7 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
 
         mRecyclerView.setLayoutManager(new GridLayoutManager(this, 3, GridLayoutManager.VERTICAL, false));
 //        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        refreshView = new SamplePullToRefreshView<>(mRecyclerView, mSwipeRefreshLayout, this);
+        refreshView = new SamplePullToRefreshView<>(mRecyclerView, mSwipeRefreshLayout, this,this);
         refreshView.getRefreshWidget().setOnRefreshListener(new RefreshWidget.OnRefreshListener() {
             @Override
 
@@ -98,7 +99,7 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
 //                pullToRefreshHelper.stopRefresh();
 //            }
 //        },500);
-        pullToRefreshHelper = new SimplePullToRefreshHelper<>(refreshView,
+        pullToRefreshHelper = new PullToRefreshHelper<>(refreshView,
                 new RxDataSource<List<String>>() {
                     @Override
                     public Observable<List<String>> getDataSource(int pageIndex, int pageSize, int startIndex, int endIndex) {
