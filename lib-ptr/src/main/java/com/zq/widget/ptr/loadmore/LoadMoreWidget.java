@@ -8,6 +8,8 @@ public interface LoadMoreWidget {
 
     void setLoadMoreEnable(boolean enable);
 
+    void setupLoadMoreError(Throwable e);
+
     interface OnLoadMoreListener{
 
         void onLoadMore();

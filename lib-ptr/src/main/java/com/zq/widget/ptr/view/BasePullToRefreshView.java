@@ -77,8 +77,11 @@ public abstract class BasePullToRefreshView<R,L> implements PullToRefreshView<R,
     }
 
     @Override
-    public void setupRefreshError(Throwable e) {
-
+    public final void setupRefreshError(Throwable e) {
+        mRefreshWidget.setRefreshComplete();
+        if (onInterceptRefreshError(e)) {
+            return;
+        }
         if (mAdapter.isEmpty() || hasFixedCell()) {
             Cell errorCell = getErrorCell();
             if (errorCell != null) {
@@ -94,22 +97,6 @@ public abstract class BasePullToRefreshView<R,L> implements PullToRefreshView<R,
 
 
 
-    private boolean hasFixedCell() {
-        int contentItemCount = mAdapter.getContentItemCount();
-        for (int i = 0; i < contentItemCount; i++) {
-            Cell cell = mAdapter.getDataAt(i);
-            if (isFixedCell(cell)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private boolean isFixedCell(Cell cell) {
-        return cell != null && (cell.equals(getLoadingCell())
-                || cell.equals(getErrorCell())
-                || cell.equals(getEmptyCell()));
-    }
 
     @Override
     public void setupLoadMoreData(L l) {
@@ -148,6 +135,11 @@ public abstract class BasePullToRefreshView<R,L> implements PullToRefreshView<R,
     }
 
     @Override
+    public void setupLoadMoreError(Throwable e) {
+        mLoadMoreWidget.setupLoadMoreError(e);
+    }
+
+    @Override
     public void setRefreshEnable(boolean refreshEnable) {
         mRefreshWidget.setRefreshEnable(refreshEnable);
     }
@@ -182,4 +174,26 @@ public abstract class BasePullToRefreshView<R,L> implements PullToRefreshView<R,
     public Cell getErrorCell() {
         return mErrorCell;
     }
+
+    private boolean hasFixedCell() {
+        int contentItemCount = mAdapter.getContentItemCount();
+        for (int i = 0; i < contentItemCount; i++) {
+            Cell cell = mAdapter.getDataAt(i);
+            if (isFixedCell(cell)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean isFixedCell(Cell cell) {
+        return cell != null && (cell.equals(getLoadingCell())
+                || cell.equals(getErrorCell())
+                || cell.equals(getEmptyCell()));
+    }
+
+    protected boolean onInterceptRefreshError(@Nullable Throwable e){
+        return false;
+    }
+
 }

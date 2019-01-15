@@ -96,7 +96,6 @@ public class PullToRefreshHelper<R, L> {
             public void onError(Throwable e) {
                 //刷新失败
                 view.setupRefreshError(e);
-                view.setRefreshComplete();
             }
 
             @Override
@@ -134,7 +133,6 @@ public class PullToRefreshHelper<R, L> {
             @Override
             public void onError(Throwable e) {
                 view.setupLoadMoreError(e);
-                view.setLoadMoreComplete();
             }
         }));
     }

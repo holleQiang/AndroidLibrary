@@ -51,4 +51,5 @@ public interface PullToRefreshView<R,L> {
      * @param refreshEnable refreshEnable
      */
     void setRefreshEnable(boolean refreshEnable);
+
 }

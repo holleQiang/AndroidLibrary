@@ -51,14 +51,17 @@ public class LoadMoreHelper {
             }
 
             RecyclerView.LayoutManager layoutManager = recyclerView.getLayoutManager();
-
-            int lastVisibleItem = findLastVisibleItem(layoutManager);
+            if (layoutManager == null) {
+                return;
+            }
             int totalItemCount = layoutManager.getItemCount();
             int visibleItemCount = layoutManager.getChildCount();
+            if (totalItemCount <= visibleItemCount) {
+                return;
+            }
+            int lastVisibleItem = findLastVisibleItem(layoutManager);
 
-            if (mLastPosition != lastVisibleItem
-                    && totalItemCount - 1 == lastVisibleItem
-                    && totalItemCount > visibleItemCount) {
+            if (mLastPosition != lastVisibleItem && totalItemCount - 1 == lastVisibleItem) {
 
                 Log.i("Test","=========post=========" + mLastPosition);
                 isLoadingMore = true;

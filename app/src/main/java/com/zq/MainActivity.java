@@ -10,6 +10,7 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.View;
 
 import com.didi.virtualapk.PluginManager;
 import com.didi.virtualapk.internal.LoadedPlugin;
@@ -44,6 +45,7 @@ import com.zq.widget.ptr.data.Callback;
 import com.zq.widget.ptr.data.DataSource;
 import com.zq.widget.ptr.data.RxDataSource;
 import com.zq.widget.ptr.loadmore.LoadMoreWidget;
+import com.zq.widget.ptr.loadmore.SampleLoadMoreWidget;
 import com.zq.widget.ptr.refresh.RefreshWidget;
 import com.zq.widget.ptr.view.SamplePullToRefreshView;
 
@@ -61,6 +63,7 @@ import io.reactivex.Observer;
 import io.reactivex.Scheduler;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Action;
+import io.reactivex.functions.Function;
 
 public class MainActivity extends AppCompatActivity implements OnItemClickListener, CellConverter<List<String>> {
 
@@ -80,11 +83,12 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
 
-        mRecyclerView.setLayoutManager(new GridLayoutManager(this, 2, GridLayoutManager.VERTICAL, false));
+        mRecyclerView.setLayoutManager(new GridLayoutManager(this, 3, GridLayoutManager.VERTICAL, false));
 //        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         refreshView = new SamplePullToRefreshView<>(mRecyclerView, mSwipeRefreshLayout, this);
         refreshView.getRefreshWidget().setOnRefreshListener(new RefreshWidget.OnRefreshListener() {
             @Override
+
             public void onRefresh() {
                 pullToRefreshHelper.refresh();
             }
@@ -124,43 +128,25 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
                         strings.add("RulerView");
                         strings.add("ShadowTest");
                         strings.add("插件测试");
-                        return Observable.just(strings).delay(1000,TimeUnit.MILLISECONDS).observeOn(new Scheduler() {
-                            @Override
-                            public Worker createWorker() {
-                                return new Worker() {
-                                    @Override
-                                    public Disposable schedule(final Runnable run, long delay, TimeUnit unit) {
-                                        final Handler handler = new Handler(Looper.getMainLooper());
-                                        handler.postDelayed(run,unit.toMillis(delay));
-                                        return new Disposable() {
-                                            boolean isDisposed;
-                                            @Override
-                                            public void dispose() {
-                                                handler.removeCallbacks(run);
-                                                isDisposed = true;
-                                            }
+                        return Observable.just(strings).delay(1000, TimeUnit.MILLISECONDS).observeOn(mainThreadScheduler);
+                    }
+                }, new RxDataSource<List<String>>() {
+            @Override
+            public Observable<List<String>> getDataSource(int pageIndex, int pageSize, int startIndex, int endIndex) {
+                List<String> list = new ArrayList<>();
+                return Observable.just(list).delay(1,TimeUnit.SECONDS).observeOn(mainThreadScheduler).map(new Function<List<String>, List<String>>() {
+                    @Override
+                    public List<String> apply(List<String> strings) throws Exception {
+                        if (((int) (Math.random() * 10))%2 == 0) {
 
-                                            @Override
-                                            public boolean isDisposed() {
-                                                return isDisposed;
-                                            }
-                                        };
-                                    }
-
-                                    @Override
-                                    public void dispose() {
-
-                                    }
-
-                                    @Override
-                                    public boolean isDisposed() {
-                                        return false;
-                                    }
-                                };
-                            }
-                        });
+                            throw new RuntimeException();
+                        }else {
+                            return strings;
+                        }
                     }
                 });
+            }
+        });
 
 //        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         RVUtil.setChangeAnimationEnable(mRecyclerView, false);
@@ -299,4 +285,41 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
         cellList.add(MultiCell.convert(R.layout.item_text, "插件测试", dataBinder));
         return cellList;
     }
+
+    static Scheduler mainThreadScheduler =  new Scheduler() {
+        @Override
+        public Worker createWorker() {
+            return new Worker() {
+                @Override
+                public Disposable schedule(final Runnable run, long delay, TimeUnit unit) {
+                    final Handler handler = new Handler(Looper.getMainLooper());
+                    handler.postDelayed(run, unit.toMillis(delay));
+                    return new Disposable() {
+                        boolean isDisposed;
+
+                        @Override
+                        public void dispose() {
+                            handler.removeCallbacks(run);
+                            isDisposed = true;
+                        }
+
+                        @Override
+                        public boolean isDisposed() {
+                            return isDisposed;
+                        }
+                    };
+                }
+
+                @Override
+                public void dispose() {
+
+                }
+
+                @Override
+                public boolean isDisposed() {
+                    return false;
+                }
+            };
+        }
+    };
 }

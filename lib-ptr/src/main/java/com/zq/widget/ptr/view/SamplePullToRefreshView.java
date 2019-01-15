@@ -47,7 +47,8 @@ public class SamplePullToRefreshView<T> extends SimplePullToRefreshView<T> {
     @Override
     void onShowErrorCell(@NonNull Cell errorCell, @Nullable Throwable e) {
         if (e != null) {
-            ((MultiCell<String>) errorCell).setData(e.getMessage());
+            MultiCell<String> mErrorCell = (MultiCell<String>) errorCell;
+            mErrorCell.setData(e.getMessage());
         }
     }
 
@@ -56,8 +57,8 @@ public class SamplePullToRefreshView<T> extends SimplePullToRefreshView<T> {
         Toast.makeText(getRecyclerView().getContext(), "刷新失败", Toast.LENGTH_SHORT).show();
     }
 
-    @Override
-    public void setupLoadMoreError(Throwable e) {
-        Toast.makeText(getRecyclerView().getContext(), "加载更多失败", Toast.LENGTH_SHORT).show();
-    }
+//    @Override
+//    public void setupLoadMoreError(Throwable e) {
+//        Toast.makeText(getRecyclerView().getContext(), "加载更多失败", Toast.LENGTH_SHORT).show();
+//    }
 }

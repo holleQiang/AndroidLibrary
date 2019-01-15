@@ -29,4 +29,5 @@ public class SwipeRefreshWidget implements RefreshWidget {
     public void setRefreshEnable(boolean refreshEnable) {
         swipeRefreshLayout.setEnabled(refreshEnable);
     }
+
 }
