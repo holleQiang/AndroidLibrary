@@ -21,9 +21,11 @@ public abstract class CellLoadMoreWidget implements LoadMoreWidget {
     private OnLoadMoreListener onLoadMoreListener;
 
     @NonNull
-    abstract Cell onCreateLoadMoreCell();
+    protected abstract Cell onCreateLoadMoreCell();
 
     protected abstract void updateCellWhenError(Cell cell, Throwable e);
+
+    protected abstract void initLoadMoreCell(Cell loadMoreCell);
 
     public CellLoadMoreWidget(RecyclerView mRecyclerView) {
         this.mRecyclerView = mRecyclerView;
@@ -75,12 +77,9 @@ public abstract class CellLoadMoreWidget implements LoadMoreWidget {
                 cellAdapter.addDataAtLast(mLoadMoreCell);
             }
         }
-        onShowLoadMoreCell(mLoadMoreCell);
+        initLoadMoreCell(mLoadMoreCell);
     }
 
-    protected void onShowLoadMoreCell(Cell loadMoreCell) {
-
-    }
 
     private void hideLoadMoreCell() {
         RecyclerView.Adapter adapter = mRecyclerView.getAdapter();

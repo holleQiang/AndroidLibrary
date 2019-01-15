@@ -12,9 +12,7 @@ import com.zq.view.recyclerview.adapter.cell.MultiCell;
 import com.zq.view.recyclerview.viewholder.RVViewHolder;
 import com.zq.widget.ptr.CellConverter;
 import com.zq.widget.ptr.R;
-import com.zq.widget.ptr.loadmore.LoadMoreWidget;
 import com.zq.widget.ptr.loadmore.SampleLoadMoreWidget;
-import com.zq.widget.ptr.refresh.RefreshWidget;
 import com.zq.widget.ptr.refresh.SwipeRefreshWidget;
 
 public class SamplePullToRefreshView<T,B> extends BasePullToRefreshView<T, B> {
@@ -29,29 +27,14 @@ public class SamplePullToRefreshView<T,B> extends BasePullToRefreshView<T, B> {
                 new SampleLoadMoreWidget(mRecyclerView),
                 refreshCellConverter,
                 loadMoreCellConverter);
-    }
-
-    @Nullable
-    @Override
-    protected  Cell onCreateLoadingCell() {
-        return MultiCell.convert(R.layout.view_loading, Cell.FULL_SPAN,"", null);
-    }
-
-    @Nullable
-    @Override
-    protected Cell onCreateErrorCell() {
-        return MultiCell.convert(R.layout.view_error,Cell.FULL_SPAN, "", new DataBinder<String>() {
+        setLoadingCell(MultiCell.convert(R.layout.view_loading, Cell.FULL_SPAN,"", null));
+        setErrorCell(MultiCell.convert(R.layout.view_error,Cell.FULL_SPAN, "", new DataBinder<String>() {
             @Override
             public void bindData(RVViewHolder viewHolder, String data) {
                 viewHolder.setText(R.id.tv_error, data);
             }
-        });
-    }
-
-    @Nullable
-    @Override
-    protected Cell onCreateEmptyCell() {
-        return MultiCell.convert(R.layout.view_empty, Cell.FULL_SPAN,"", null);
+        }));
+        setEmptyCell(MultiCell.convert(R.layout.view_empty, Cell.FULL_SPAN,"", null));
     }
 
     @Override

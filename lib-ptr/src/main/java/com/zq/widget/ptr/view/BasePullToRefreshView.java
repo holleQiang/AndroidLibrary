@@ -25,24 +25,11 @@ public abstract class BasePullToRefreshView<R, L> implements PullToRefreshView<R
     private CellConverter<L> loadMoreCellConverter;
     private RecyclerView mRecyclerView;
     @Nullable
-    private final Cell mLoadingCell;
+    private  Cell mLoadingCell;
     @Nullable
-    private final Cell mEmptyCell;
+    private  Cell mEmptyCell;
     @Nullable
-    private final Cell mErrorCell;
-
-    @Nullable
-    protected abstract Cell onCreateLoadingCell();
-
-    @Nullable
-    protected abstract Cell onCreateErrorCell();
-
-    @Nullable
-    protected abstract Cell onCreateEmptyCell();
-
-    protected abstract void onShowErrorCell(@NonNull Cell errorCell, @Nullable Throwable e);
-
-    protected abstract void setupUnhandledRefreshError(@Nullable Throwable e);
+    private  Cell mErrorCell;
 
 
     public BasePullToRefreshView(@NonNull RecyclerView mRecyclerView,
@@ -57,9 +44,7 @@ public abstract class BasePullToRefreshView<R, L> implements PullToRefreshView<R
         this.refreshCellConverter = refreshCellConverter;
         this.loadMoreCellConverter = loadMoreCellConverter;
         mRecyclerView.setAdapter(mAdapter);
-        mLoadingCell = onCreateLoadingCell();
-        mEmptyCell = onCreateEmptyCell();
-        mErrorCell = onCreateErrorCell();
+
     }
 
     @Override
@@ -71,6 +56,7 @@ public abstract class BasePullToRefreshView<R, L> implements PullToRefreshView<R
             if (emptyCell == null) {
                 mAdapter.removeAll();
             } else {
+                onShowEmptyCell(emptyCell);
                 mAdapter.setDataList(Collections.singletonList(emptyCell));
             }
             return;
@@ -98,6 +84,7 @@ public abstract class BasePullToRefreshView<R, L> implements PullToRefreshView<R
     }
 
 
+
     @Override
     public void setupLoadMoreData(L l) {
         List<Cell> cellList = loadMoreCellConverter.convert(l);
@@ -123,6 +110,7 @@ public abstract class BasePullToRefreshView<R, L> implements PullToRefreshView<R
         if (loadingCell == null) {
             return;
         }
+        onShowLoadingCell(loadingCell);
         mAdapter.setDataList(Collections.singletonList(loadingCell));
     }
 
@@ -175,6 +163,21 @@ public abstract class BasePullToRefreshView<R, L> implements PullToRefreshView<R
         return mErrorCell;
     }
 
+    public BasePullToRefreshView<R, L> setLoadingCell(@Nullable Cell mLoadingCell) {
+        this.mLoadingCell = mLoadingCell;
+        return this;
+    }
+
+    public BasePullToRefreshView<R, L> setEmptyCell(@Nullable Cell mEmptyCell) {
+        this.mEmptyCell = mEmptyCell;
+        return this;
+    }
+
+    public BasePullToRefreshView<R, L> setErrorCell(@Nullable Cell mErrorCell) {
+        this.mErrorCell = mErrorCell;
+        return this;
+    }
+
     private boolean hasFixedCell() {
         int contentItemCount = mAdapter.getContentItemCount();
         for (int i = 0; i < contentItemCount; i++) {
@@ -196,4 +199,19 @@ public abstract class BasePullToRefreshView<R, L> implements PullToRefreshView<R
         return false;
     }
 
+    protected void onShowErrorCell(@NonNull Cell errorCell, @Nullable Throwable e) {
+
+    }
+
+    protected void onShowEmptyCell(@NonNull Cell emptyCell) {
+
+    }
+
+    protected void onShowLoadingCell(@NonNull Cell loadingCell) {
+
+    }
+
+    protected void setupUnhandledRefreshError(@Nullable Throwable e) {
+
+    }
 }

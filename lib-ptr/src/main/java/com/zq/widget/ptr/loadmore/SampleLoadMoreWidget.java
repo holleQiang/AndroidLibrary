@@ -24,7 +24,7 @@ public class SampleLoadMoreWidget extends CellLoadMoreWidget {
 
     @NonNull
     @Override
-    Cell onCreateLoadMoreCell() {
+    protected Cell onCreateLoadMoreCell() {
         return new MultiCell<>(R.layout.view_load_more, STATE_LOADING, new DataBinder<Integer>() {
             @Override
             public void bindData(final RVViewHolder viewHolder, Integer data) {
@@ -55,8 +55,7 @@ public class SampleLoadMoreWidget extends CellLoadMoreWidget {
     }
 
     @Override
-    protected void onShowLoadMoreCell(Cell loadMoreCell) {
-        super.onShowLoadMoreCell(loadMoreCell);
+    protected void initLoadMoreCell(Cell loadMoreCell) {
         setStateLoading();
     }
 
