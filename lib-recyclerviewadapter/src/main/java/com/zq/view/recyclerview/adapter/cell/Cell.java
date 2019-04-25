@@ -2,6 +2,7 @@ package com.zq.view.recyclerview.adapter.cell;
 
 import android.support.annotation.LayoutRes;
 import android.support.annotation.Nullable;
+import android.view.ViewGroup;
 
 import com.zq.view.recyclerview.adapter.cell.ob.CellObserver;
 import com.zq.view.recyclerview.viewholder.RVViewHolder;
@@ -29,7 +30,7 @@ public interface Cell {
 
     void onBindData(RVViewHolder viewHolder);
 
-    void onViewCreated(RVViewHolder viewHolder);
+    RVViewHolder createView(ViewGroup parent);
 
     @LayoutRes
     int getLayoutId();

@@ -24,6 +24,7 @@ import com.zq.func.pageradapter.FragmentPagerAdapterTestActivity;
 import com.zq.func.redpoint.RedPointActivity;
 import com.zq.func.ringchart.RingChartActivity;
 import com.zq.func.rotateanim.RotateViewActivity;
+import com.zq.func.rulerview.RulerViewDemo;
 import com.zq.func.shadow.ShadowTestActivity;
 import com.zq.func.snaphelper.SnapHelperSampleActivity;
 import com.zq.utils.FileUtil;
@@ -35,12 +36,11 @@ import com.zq.view.recyclerview.adapter.cell.MultiCell;
 import com.zq.view.recyclerview.divider.RVItemDivider;
 import com.zq.view.recyclerview.utils.RVUtil;
 import com.zq.view.recyclerview.viewholder.RVViewHolder;
-import com.zq.func.rulerview.RulerViewDemo;
-import com.zq.widget.ptr.CellConverter;
 import com.zq.widget.ptr.PullToRefreshHelper;
 import com.zq.widget.ptr.data.RxDataSource;
 import com.zq.widget.ptr.loadmore.LoadMoreWidget;
 import com.zq.widget.ptr.refresh.RefreshWidget;
+import com.zq.widget.ptr.view.CellConverter;
 import com.zq.widget.ptr.view.SamplePullToRefreshView;
 
 import java.io.File;
@@ -66,7 +66,7 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
     @BindView(R.id.m_swipe_refresh_layout)
     SwipeRefreshLayout mSwipeRefreshLayout;
 
-    PullToRefreshHelper<List<String>,List<String>> pullToRefreshHelper;
+    PullToRefreshHelper<List<String>> pullToRefreshHelper;
     private SamplePullToRefreshView<List<String>,List<String>> refreshView;
 
     @Override

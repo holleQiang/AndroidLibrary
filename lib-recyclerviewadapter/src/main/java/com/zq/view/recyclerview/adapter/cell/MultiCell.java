@@ -1,5 +1,6 @@
 package com.zq.view.recyclerview.adapter.cell;
 
+import android.content.Context;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.Nullable;
 
@@ -33,6 +34,12 @@ public class MultiCell<T> extends BaseCell {
 
     public MultiCell(@LayoutRes int layoutId, int spanSize, T data, DataBinder<T> dataBinder) {
         super(layoutId, spanSize);
+        this.data = data;
+        this.dataBinder = dataBinder;
+    }
+
+    public MultiCell(Context context,@LayoutRes int layoutId, int spanSize, T data, DataBinder<T> dataBinder) {
+        super(context,layoutId, spanSize);
         this.data = data;
         this.dataBinder = dataBinder;
     }

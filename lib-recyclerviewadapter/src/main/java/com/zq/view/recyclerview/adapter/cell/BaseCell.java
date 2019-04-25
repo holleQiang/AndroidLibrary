@@ -1,7 +1,9 @@
 package com.zq.view.recyclerview.adapter.cell;
 
+import android.content.Context;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.Nullable;
+import android.view.ViewGroup;
 
 import com.zq.view.recyclerview.adapter.cell.ob.CellObservable;
 import com.zq.view.recyclerview.adapter.cell.ob.CellObserver;
@@ -27,12 +29,19 @@ public abstract class BaseCell implements Cell {
     private CellObservable cellObservable = new CellObservable();
     @Nullable
     private RVViewHolder viewHolder;
+    private Context context;
 
     public BaseCell(@LayoutRes int layoutId) {
         this(layoutId, 1);
     }
 
     public BaseCell(@LayoutRes int layoutId, int spanSize) {
+        this.layoutId = layoutId;
+        this.spanSize = spanSize;
+    }
+
+    public BaseCell(Context context,@LayoutRes int layoutId, int spanSize) {
+        this.context = context;
         this.layoutId = layoutId;
         this.spanSize = spanSize;
     }
@@ -83,6 +92,16 @@ public abstract class BaseCell implements Cell {
     }
 
     @Override
+    public RVViewHolder createView(ViewGroup parent) {
+        Context tempContext = context;
+        if (tempContext == null) {
+            tempContext = parent.getContext();
+        }
+        RVViewHolder rvViewHolder = RVViewHolder.create(tempContext, getLayoutId(), parent);
+        onViewCreated(rvViewHolder);
+        return rvViewHolder;
+    }
+
     public void onViewCreated(RVViewHolder viewHolder) {
 
     }
