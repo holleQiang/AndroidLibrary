@@ -35,6 +35,7 @@
         <activity android:name=".func.snaphelper.SnapHelperSampleActivity" />
         <activity android:name=".func.rulerview.RulerViewDemo" />
         <activity android:name=".func.shadow.ShadowTestActivity" />
+        <activity android:name=".func.celladpater.CellAdapterTestActivity" />
     </application>
 
 </manifest>

@@ -26,7 +26,7 @@ public abstract class RecyclerHeaderFooterAdapter<VH extends RecyclerView.ViewHo
     private OnItemLongLickListener onItemLongLickListener;
     @Nullable
     private RecyclerView attachedRecyclerView;
-    private int lastRawItemCount;
+    private boolean pendingLoopFix;
 
     @Override
     public final VH onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -75,7 +75,7 @@ public abstract class RecyclerHeaderFooterAdapter<VH extends RecyclerView.ViewHo
                     public void onClick(View v) {
 
                         int adapterPosition = holder.getAdapterPosition();
-                        if(adapterPosition == RecyclerView.NO_POSITION){
+                        if (adapterPosition == RecyclerView.NO_POSITION) {
                             return;
                         }
                         onItemClickListener.onItemClick(holder, adapterPosition - headerCount);
@@ -90,7 +90,7 @@ public abstract class RecyclerHeaderFooterAdapter<VH extends RecyclerView.ViewHo
                     public boolean onLongClick(View v) {
 
                         int adapterPosition = holder.getAdapterPosition();
-                        if(adapterPosition == RecyclerView.NO_POSITION){
+                        if (adapterPosition == RecyclerView.NO_POSITION) {
                             return false;
                         }
                         return onItemLongLickListener.onItemLongClick(holder, adapterPosition - headerCount);
@@ -107,11 +107,7 @@ public abstract class RecyclerHeaderFooterAdapter<VH extends RecyclerView.ViewHo
 
         int itemCount = getRawItemCount();
         if (loopEnable && itemCount > 0) {
-            itemCount =  Integer.MAX_VALUE;
-            if(lastRawItemCount != itemCount){
-                fixFirstLoopInvalid();
-                lastRawItemCount = itemCount;
-            }
+            itemCount = 65535;
         }
         return itemCount;
     }
@@ -244,7 +240,10 @@ public abstract class RecyclerHeaderFooterAdapter<VH extends RecyclerView.ViewHo
     @Override
     public void onAttachedToRecyclerView(RecyclerView recyclerView) {
         super.onAttachedToRecyclerView(recyclerView);
-
+        if (pendingLoopFix) {
+            pendingLoopFix = false;
+            fixFirstLoopInvalid(recyclerView);
+        }
         attachedRecyclerView = recyclerView;
 
         RecyclerView.LayoutManager layoutManager = recyclerView.getLayoutManager();
@@ -288,18 +287,16 @@ public abstract class RecyclerHeaderFooterAdapter<VH extends RecyclerView.ViewHo
     /**
      * 解决第一次反向滑动无效的问题
      */
-    private void fixFirstLoopInvalid() {
+    private void fixFirstLoopInvalid(RecyclerView recyclerView) {
 
-        RecyclerView recyclerView = getAttachedRecyclerView();
-        if(recyclerView == null){
-            return;
-        }
         final int itemCount = getRawItemCount();
-        if(itemCount <= 0){
+        if (itemCount <= 0) {
             return;
         }
         //滚到中间的周期的起始位置
-        recyclerView.scrollToPosition(Integer.MAX_VALUE / itemCount / 2 * itemCount);
+        int index = getItemCount() / 2;
+        index -= index % itemCount;
+        recyclerView.scrollToPosition(index);
     }
 
     public int fixLoopPosition(int position) {
@@ -369,10 +366,20 @@ public abstract class RecyclerHeaderFooterAdapter<VH extends RecyclerView.ViewHo
     }
 
     public void setLoopEnable(boolean loopEnable) {
-        if(this.loopEnable == loopEnable){
+        if (this.loopEnable == loopEnable) {
             return;
         }
         this.loopEnable = loopEnable;
         notifyDataSetChanged();
+        if (attachedRecyclerView != null) {
+            attachedRecyclerView.post(new Runnable() {
+                @Override
+                public void run() {
+                    fixFirstLoopInvalid(attachedRecyclerView);
+                }
+            });
+        } else {
+            pendingLoopFix = true;
+        }
     }
 }

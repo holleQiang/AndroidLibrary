@@ -12,6 +12,7 @@ import android.support.v7.widget.RecyclerView;
 import com.didi.virtualapk.PluginManager;
 import com.didi.virtualapk.internal.LoadedPlugin;
 import com.zq.func.behavior.BehaviorActivity;
+import com.zq.func.celladpater.CellAdapterTestActivity;
 import com.zq.func.flowlayout.FlowLayoutActivity;
 import com.zq.func.gesturepassword.GesturePasswordActivity;
 import com.zq.func.histogram.HistogramActivity;
@@ -250,6 +251,8 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
             } catch (Exception e) {
                 e.printStackTrace();
             }
+        }else if("Adapter Looper".equals(fun)){
+            startActivity(new Intent(MainActivity.this, CellAdapterTestActivity.class));
         }
     }
 
@@ -275,6 +278,7 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
         cellList.add(MultiCell.convert(R.layout.item_text, "RulerView", dataBinder));
         cellList.add(MultiCell.convert(R.layout.item_text, "ShadowTest", dataBinder));
         cellList.add(MultiCell.convert(R.layout.item_text, "插件测试", dataBinder));
+        cellList.add(MultiCell.convert(R.layout.item_text, "Adapter Looper", dataBinder));
         return cellList;
     }
 
